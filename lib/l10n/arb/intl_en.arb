@@ -37,6 +37,8 @@
   "fa": "Persian",
   "ar": "Arabic",
   "zh_TW": "Traditional Chinese",
+  "de": "German",
+  "fr": "French",
   "theme": "Theme",
   "themeDesc": "Customize dark mode and colors",
   "override": "Override",
