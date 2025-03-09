@@ -37,6 +37,8 @@
   "fa": "Persan",
   "ar": "Arabe",
   "zh_TW": "Chinois traditionnel",
+  "de": "Allemand",
+  "fr": "Français",
   "theme": "Thème",
   "themeDesc": "Personnaliser le mode sombre et les couleurs",
   "override": "Remplacer",
