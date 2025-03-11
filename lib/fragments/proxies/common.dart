@@ -30,6 +30,13 @@ proxyDelayTest(Proxy proxy, [String? testUrl]) async {
     return;
   }
   appController.setDelay(
+    Delay(
+      url: url,
+      name: state.proxyName,
+      value: 0,
+    ),
+  );
+  appController.setDelay(
     await clashCore.getDelay(
       url,
       state.proxyName,
@@ -84,6 +91,9 @@ double getScrollToSelectedOffset({
     (proxy) => proxy.name == selectedProxyName,
   );
   final selectedIndex = findSelectedIndex != -1 ? findSelectedIndex : 0;
+  final rows = (selectedIndex / columns).floor();
+  return rows * getItemHeight(proxyCardType) + (rows - 1) * 8;
+}
   final rows = (selectedIndex / columns).floor();
   return rows * getItemHeight(proxyCardType) + (rows - 1) * 8;
 }
