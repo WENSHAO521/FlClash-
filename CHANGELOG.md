@@ -4,6 +4,7 @@
 - DNS：明确全球网络优先隐私与速度，中国大陆等复杂网络优先兼容与稳定，并持续兼顾安全、隐私与解析效率
 - DNS：全球默认采用 Cloudflare / Quad9 / Google 多供应商 DoH 冗余，中国网络兼容预设采用区域加密 DNS，避免复杂网络下默认回落海外 DoH 导致解析失败
 - DNS：全球隐私优选与中国网络兼容预设默认关闭 HTTP/3 DNS，提高复杂网络下的解析稳定性
+- 安全：升级 Go 核心依赖 golang.org/x/crypto 与 golang.org/x/oauth2，消除 OSV 已知告警
 - Android：发布包拆分为 ARMv8、ARMv7、x64，应用内更新按设备 ABI 自动选择
 
 ## v2.0.2
