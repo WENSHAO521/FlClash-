@@ -220,7 +220,7 @@ class CommonAction extends _$CommonAction {
             'https://github.com/$repository/releases/download/$tagName';
         final String downloadUrl;
         if (Platform.isAndroid) {
-          downloadUrl = '$base/PSA-$version-android-arm64-v8a.apk';
+          downloadUrl = '$base/PSA-$version-android.apk';
         } else if (Platform.isWindows) {
           final isArm = (Platform.environment['PROCESSOR_ARCHITECTURE'] ?? '')
               .toUpperCase()

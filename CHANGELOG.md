@@ -1,3 +1,9 @@
+## v2.0.2
+
+- 修复 Android 应用内更新安装失败：发布 universal APK，避免下载固定 arm64 split APK 导致 ABI 不匹配
+- 修复 Android release 签名门禁：缺少正式 keystore 或签名参数时直接失败，避免 debug 签名包无法覆盖正式版
+- 更新：应用内 Android 更新链接改为通用安装包 `PSA-VERSION-android.apk`
+
 ## v2.0.1
 
 - 法务：重写免责声明，明确授权范围、合规用途、用户责任和责任限制，并同步 en / zh_CN / ja / ru

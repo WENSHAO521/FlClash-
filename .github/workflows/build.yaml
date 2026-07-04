@@ -83,12 +83,14 @@ jobs:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          if [ -n "$KEYSTORE_B64" ]; then
-            echo "$KEYSTORE_B64" | base64 --decode > android/app/keystore.jks
-            echo "keyAlias=$KEY_ALIAS" >> android/local.properties
-            echo "storePassword=$STORE_PASSWORD" >> android/local.properties
-            echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
+          if [ -z "$KEYSTORE_B64" ] || [ -z "$KEY_ALIAS" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Android stable release requires KEYSTORE, KEY_ALIAS, STORE_PASSWORD, and KEY_PASSWORD secrets."
+            exit 1
           fi
+          echo "$KEYSTORE_B64" | base64 --decode > android/app/keystore.jks
+          echo "keyAlias=$KEY_ALIAS" >> android/local.properties
+          echo "storePassword=$STORE_PASSWORD" >> android/local.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
 
       - name: Setup Go
         uses: actions/setup-go@v5

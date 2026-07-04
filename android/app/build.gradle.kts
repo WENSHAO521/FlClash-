@@ -22,6 +22,15 @@ val mKeyAlias: String? = localProperties.getProperty("keyAlias") ?: if (mStoreFi
 val mKeyPassword: String? = localProperties.getProperty("keyPassword") ?: if (mStoreFile.exists()) "psg-release-2024" else null
 val isRelease =
     mStoreFile.exists() && mStorePassword != null && mKeyAlias != null && mKeyPassword != null
+val requestedReleaseBuild = gradle.startParameter.taskNames.any {
+    it.contains("Release", ignoreCase = true)
+}
+
+if (requestedReleaseBuild && !isRelease) {
+    throw GradleException(
+        "Android release builds require keystore.jks and signing values in local.properties."
+    )
+}
 
 
 android {
@@ -72,8 +81,6 @@ android {
             isShrinkResources = true
             if (isRelease) {
                 signingConfig = signingConfigs.getByName("release")
-            } else {
-                signingConfig = signingConfigs.getByName("debug")
             }
 
             proguardFiles(
