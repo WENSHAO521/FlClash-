@@ -122,6 +122,16 @@ jobs:
                   print(f"No BOM in {path}")
           PY
 
+      - name: Setup macOS Rust targets
+        if: matrix.platform == 'macos'
+        shell: bash
+        run: |
+          rustup toolchain install stable --profile minimal
+          rustup default stable
+          rustup target add x86_64-apple-darwin aarch64-apple-darwin
+          rustc --version
+          rustup target list --installed
+
       - name: Enable git long paths (Windows)
         if: startsWith(matrix.os, 'windows')
         run: git config --global core.longpaths true
