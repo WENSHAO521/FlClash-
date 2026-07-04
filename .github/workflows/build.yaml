@@ -161,6 +161,15 @@ jobs:
         run: |
           dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
 
+      - name: Collect Android APK
+        if: startsWith(matrix.platform,'android')
+        shell: bash
+        run: |
+          version=$(awk '/^version:/{print $2}' pubspec.yaml | cut -d+ -f1)
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-release.apk "dist/PSA-${version}-android.apk"
+          ls -la dist
+
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
@@ -244,3 +253,4 @@ jobs:
         with:
           files: ./dist/*
           body_path: './release.md'
+          overwrite_files: true
