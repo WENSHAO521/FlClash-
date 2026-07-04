@@ -218,7 +218,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("禁用UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("免责声明"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "PSG 为 Panorama Scholarly Group 面向授权人员提供的内部网络访问与连接管理工具，仅用于合法、合规的工作场景。使用本软件前，您应确认已取得相应授权，并承诺遵守适用的法律法规、监管要求、网络安全规范及所在机构的内部管理规定。严禁利用本软件从事任何违法违规、侵犯第三方权益、危害网络安全或超出授权范围的行为。因用户自行配置、连接第三方服务或不当使用本软件所产生的全部责任、损失及争议，由用户自行承担；在法律允许的最大范围内，PSG 及其关联方不对此类行为承担责任。点击“同意”即表示您已阅读、理解并接受本免责声明。",
+      "Panorama Secure Access 是面向授权用户提供的网络访问与连接管理软件，仅用于合法、合规的工作或授权场景。使用本软件前，您应确认已取得相应授权，并承诺遵守适用的法律法规、监管要求、网络安全规范及所在机构的内部管理规定。严禁利用本软件从事任何违法违规、侵犯第三方权益、危害网络安全或超出授权范围的行为。因用户自行配置、连接第三方服务或不当使用本软件所产生的全部责任、损失及争议，由用户自行承担；在法律允许的最大范围内，Panorama Secure Access 及其相关权利方不对此类行为承担责任。点击“同意”即表示您已阅读、理解并接受本免责声明。",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("已断开"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage("发现新版本"),
@@ -230,12 +230,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "中国网络兼容",
     ),
     "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
-      "使用区域加密 DNS 提高中国网络可达性；相较全球预设，DNS 隐私性可能降低",
+      "在中国大陆等复杂网络环境中优先保障兼容与稳定，并持续兼顾安全、隐私与解析效率",
     ),
     "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("自定义"),
     "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage("全球隐私优先"),
     "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
-      "使用加密公共 DNS，适合全球通用和隐私优先场景",
+      "在全球网络环境中优先保障隐私与速度，并持续兼顾安全、隐私与解析效率",
     ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("是否要通过"),
     "domain": MessageLookupByLibrary.simpleMessage("域名"),

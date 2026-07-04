@@ -246,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("UDPを無効化"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("免責事項"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "PSGは、Panorama Scholarly Groupが認可された担当者向けに提供する内部ネットワークアクセスおよび接続管理ツールであり、合法かつコンプライアンスに沿った業務目的に限り使用できます。本ソフトウェアを使用する前に、必要な権限を有していることを確認し、適用される法令、規制、サイバーセキュリティ上の要件、および所属組織の内部規程を遵守するものとします。本ソフトウェアを、違法行為、無許可の利用、第三者の権利侵害、ネットワークセキュリティを害する行為、または許可範囲を超える目的で使用することを禁止します。ユーザー自身の設定、第三者サービスへの接続、または本ソフトウェアの不適切な使用に起因して発生する責任、損失、紛争は、すべてユーザー自身が負担します。法令で認められる最大限の範囲において、PSGおよびその関連会社は、かかる行為について責任を負いません。「同意」をクリックすることにより、本免責事項を読み、理解し、受諾したものとみなされます。",
+      "Panorama Secure Accessは、認可されたユーザー向けに提供されるネットワークアクセスおよび接続管理ソフトウェアであり、合法かつコンプライアンスに沿った業務目的またはその他の認可された目的に限り使用できます。本ソフトウェアを使用する前に、必要な権限を有していることを確認し、適用される法令、規制、サイバーセキュリティ上の要件、および所属組織の内部規程を遵守するものとします。本ソフトウェアを、違法行為、無許可の利用、第三者の権利侵害、ネットワークセキュリティを害する行為、または許可範囲を超える目的で使用することを禁止します。ユーザー自身の設定、第三者サービスへの接続、または本ソフトウェアの不適切な使用に起因して発生する責任、損失、紛争は、すべてユーザー自身が負担します。法令で認められる最大限の範囲において、Panorama Secure Accessおよび関連する権利者は、かかる行為について責任を負いません。「同意」をクリックすることにより、本免責事項を読み、理解し、受諾したものとみなされます。",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("切断済み"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage("新バージョンを発見"),
@@ -258,14 +258,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "中国ネットワーク互換",
     ),
     "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
-      "地域の暗号化DNSを使用して中国ネットワークでの到達性を高めます。グローバル設定よりDNSプライバシーが低下する場合があります",
+      "中国本土などの複雑なネットワーク環境で互換性と安定性を優先しつつ、セキュリティ、プライバシー、DNS効率のバランスを保ちます",
     ),
     "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("カスタム"),
     "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage(
       "グローバルプライバシー",
     ),
     "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
-      "暗号化されたパブリックDNSを使用し、グローバルでプライバシー優先の利用に適しています",
+      "グローバルなネットワーク環境でプライバシーと速度を優先しつつ、セキュリティ、プライバシー、DNS効率のバランスを保ちます",
     ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("通過させますか？"),
     "domain": MessageLookupByLibrary.simpleMessage("ドメイン"),

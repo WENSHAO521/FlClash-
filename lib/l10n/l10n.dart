@@ -1654,10 +1654,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Encrypted public DNS for global privacy-first use`
+  /// `Prioritizes privacy and speed on global networks while balancing security, privacy, and DNS efficiency`
   String get dnsPresetGlobalPrivacyDesc {
     return Intl.message(
-      'Encrypted public DNS for global privacy-first use',
+      'Prioritizes privacy and speed on global networks while balancing security, privacy, and DNS efficiency',
       name: 'dnsPresetGlobalPrivacyDesc',
       desc: '',
       args: [],
@@ -1674,10 +1674,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Uses regional encrypted DNS for China networks; improves availability but may reduce DNS privacy`
+  /// `Prioritizes compatibility and stability in complex network environments such as mainland China while balancing security, privacy, and DNS efficiency`
   String get dnsPresetChinaCompatibilityDesc {
     return Intl.message(
-      'Uses regional encrypted DNS for China networks; improves availability but may reduce DNS privacy',
+      'Prioritizes compatibility and stability in complex network environments such as mainland China while balancing security, privacy, and DNS efficiency',
       name: 'dnsPresetChinaCompatibilityDesc',
       desc: '',
       args: [],
@@ -1884,10 +1884,10 @@ class AppLocalizations {
     return Intl.message('Disclaimer', name: 'disclaimer', desc: '', args: []);
   }
 
-  /// `This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.`
+  /// `Panorama Secure Access is network access and connection management software provided for authorized users only, and may be used solely for lawful and compliant work-related or otherwise authorized purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, Panorama Secure Access and its relevant rights holders disclaim liability for such conduct. By clicking "Agree", you acknowledge that you have read, understood, and accepted this disclaimer.`
   String get disclaimerDesc {
     return Intl.message(
-      'This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.',
+      'Panorama Secure Access is network access and connection management software provided for authorized users only, and may be used solely for lawful and compliant work-related or otherwise authorized purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, Panorama Secure Access and its relevant rights holders disclaim liability for such conduct. By clicking "Agree", you acknowledge that you have read, understood, and accepted this disclaimer.',
       name: 'disclaimerDesc',
       desc: '',
       args: [],

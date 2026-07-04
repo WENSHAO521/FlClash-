@@ -316,7 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("Disable UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "PSG is an internal network access and connection management tool provided by Panorama Scholarly Group for authorized personnel only, and may be used solely for lawful and compliant work-related purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, PSG and its affiliates disclaim liability for such conduct. By clicking \"Agree\", you acknowledge that you have read, understood, and accepted this disclaimer.",
+      "Panorama Secure Access is network access and connection management software provided for authorized users only, and may be used solely for lawful and compliant work-related or otherwise authorized purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, Panorama Secure Access and its relevant rights holders disclaim liability for such conduct. By clicking \"Agree\", you acknowledge that you have read, understood, and accepted this disclaimer.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Disconnected"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
@@ -332,14 +332,14 @@ class MessageLookup extends MessageLookupByLibrary {
       "China network compatibility",
     ),
     "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
-      "Uses regional encrypted DNS for China networks; improves availability but may reduce DNS privacy",
+      "Prioritizes compatibility and stability in complex network environments such as mainland China while balancing security, privacy, and DNS efficiency",
     ),
     "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
     "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage(
       "Global privacy",
     ),
     "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
-      "Encrypted public DNS for global privacy-first use",
+      "Prioritizes privacy and speed on global networks while balancing security, privacy, and DNS efficiency",
     ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Do you want to pass",
