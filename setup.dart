@@ -177,8 +177,12 @@ Future<int> _package(
   if (depExit != 0) return depExit;
 
   final process = await Process.start(
-    'flutter_distributor',
+    'dart',
     [
+      'pub',
+      'global',
+      'run',
+      'flutter_distributor:flutter_distributor',
       'package',
       '--skip-clean',
       '--platform',
