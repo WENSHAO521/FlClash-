@@ -267,7 +267,7 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['1.1.1.1', '9.9.9.9'])
+    @Default(['1.1.1.1', '9.9.9.9', '8.8.8.8'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -285,13 +285,18 @@ abstract class Dns with _$Dns {
     @Default([
       'https://cloudflare-dns.com/dns-query',
       'https://dns.quad9.net/dns-query',
+      'https://dns.google/dns-query',
     ])
     List<String> nameserver,
-    @Default(['https://dns.google/dns-query'])
+    @Default([
+      'https://dns.google/dns-query',
+      'https://cloudflare-dns.com/dns-query',
+    ])
     List<String> fallback,
     @Default([
       'https://cloudflare-dns.com/dns-query',
       'https://dns.quad9.net/dns-query',
+      'https://dns.google/dns-query',
     ])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,

@@ -18,15 +18,20 @@ const _globalPrivacyDns = Dns(
   listen: '127.0.0.1:1053',
   preferH3: false,
   respectRules: true,
-  defaultNameserver: ['1.1.1.1', '9.9.9.9'],
+  defaultNameserver: ['1.1.1.1', '9.9.9.9', '8.8.8.8'],
   nameserver: [
     'https://cloudflare-dns.com/dns-query',
     'https://dns.quad9.net/dns-query',
+    'https://dns.google/dns-query',
   ],
-  fallback: ['https://dns.google/dns-query'],
+  fallback: [
+    'https://dns.google/dns-query',
+    'https://cloudflare-dns.com/dns-query',
+  ],
   proxyServerNameserver: [
     'https://cloudflare-dns.com/dns-query',
     'https://dns.quad9.net/dns-query',
+    'https://dns.google/dns-query',
   ],
   nameserverPolicy: {},
   fallbackFilter: _privacyFallbackFilter,
@@ -36,14 +41,14 @@ const _chinaCompatibilityDns = Dns(
   listen: '127.0.0.1:1053',
   preferH3: false,
   respectRules: true,
-  defaultNameserver: ['223.5.5.5', '119.29.29.29'],
+  defaultNameserver: ['223.5.5.5', '223.6.6.6', '119.29.29.29'],
   nameserver: [
     'https://dns.alidns.com/dns-query',
     'https://doh.pub/dns-query',
   ],
   fallback: [
-    'https://cloudflare-dns.com/dns-query',
-    'https://dns.quad9.net/dns-query',
+    'https://dns.alidns.com/dns-query',
+    'https://doh.pub/dns-query',
   ],
   proxyServerNameserver: [
     'https://dns.alidns.com/dns-query',

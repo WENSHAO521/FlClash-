@@ -2,6 +2,7 @@
 
 - 法务：免责声明主体统一为 Panorama Secure Access，并同步 en / zh_CN / ja / ru
 - DNS：明确全球网络优先隐私与速度，中国大陆等复杂网络优先兼容与稳定，并持续兼顾安全、隐私与解析效率
+- DNS：全球默认采用 Cloudflare / Quad9 / Google 多供应商 DoH 冗余，中国网络兼容预设采用区域加密 DNS，避免复杂网络下默认回落海外 DoH 导致解析失败
 - DNS：全球隐私优选与中国网络兼容预设默认关闭 HTTP/3 DNS，提高复杂网络下的解析稳定性
 - Android：发布包拆分为 ARMv8、ARMv7、x64，应用内更新按设备 ABI 自动选择
 
