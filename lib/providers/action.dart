@@ -11,6 +11,7 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,6 +24,21 @@ part 'generated/action.g.dart';
 class CommonAction extends _$CommonAction {
   @override
   void build() {}
+
+  Future<String> _androidUpdateApkName(String version) async {
+    final info = await DeviceInfoPlugin().androidInfo;
+    final supportedAbis = info.supportedAbis;
+    if (supportedAbis.contains('arm64-v8a')) {
+      return 'PSA-$version-android-arm64-v8a.apk';
+    }
+    if (supportedAbis.contains('armeabi-v7a')) {
+      return 'PSA-$version-android-armeabi-v7a.apk';
+    }
+    if (supportedAbis.contains('x86_64')) {
+      return 'PSA-$version-android-x86_64.apk';
+    }
+    return 'PSA-$version-android-arm64-v8a.apk';
+  }
 
   void updateStart() {
     ref
@@ -220,7 +236,7 @@ class CommonAction extends _$CommonAction {
             'https://github.com/$repository/releases/download/$tagName';
         final String downloadUrl;
         if (Platform.isAndroid) {
-          downloadUrl = '$base/PSA-$version-android.apk';
+          downloadUrl = '$base/${await _androidUpdateApkName(version)}';
         } else if (Platform.isWindows) {
           final isArm = (Platform.environment['PROCESSOR_ARCHITECTURE'] ?? '')
               .toUpperCase()
