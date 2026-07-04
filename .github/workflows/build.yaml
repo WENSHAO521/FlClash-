@@ -14,11 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Checkout Flutter plugin submodules
-        run: |
-          git clone --depth=1 -b FlClash https://github.com/chen08209/flutter_distributor.git plugins/flutter_distributor
-          git clone --depth=1 -b main https://github.com/chen08209/tray_manager.git plugins/tray_manager
+        with:
+          submodules: recursive
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -103,6 +100,25 @@ jobs:
       - name: Normalize Go modules
         shell: bash
         run: go -C core mod tidy
+
+      - name: Normalize macOS project encoding
+        if: matrix.platform == 'macos'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          for path in [
+              Path("macos/Runner.xcodeproj/project.pbxproj"),
+              Path("macos/Podfile"),
+          ]:
+              data = path.read_bytes()
+              if data.startswith(b"\xef\xbb\xbf"):
+                  path.write_bytes(data[3:])
+                  print(f"Removed UTF-8 BOM from {path}")
+              else:
+                  print(f"No BOM in {path}")
+          PY
 
       - name: Enable git long paths (Windows)
         if: startsWith(matrix.os, 'windows')
