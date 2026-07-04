@@ -182,7 +182,7 @@ Future<int> _package(
       'pub',
       'global',
       'run',
-      'flutter_distributor:flutter_distributor',
+      'flutter_distributor:main',
       'package',
       '--skip-clean',
       '--platform',
