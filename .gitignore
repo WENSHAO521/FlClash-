@@ -47,6 +47,11 @@ app.*.map.json
 # Documentation (generated/planning artifacts)
 docs/
 
+# Local signing secrets
+.secrets/
+*.jks
+/android/local.properties
+
 
 # Android Studio will place build artifacts here
 /android/app/debug
