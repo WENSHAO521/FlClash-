@@ -1,9 +1,95 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+enum DnsPreset {
+  globalPrivacy,
+  chinaCompatibility,
+  custom,
+}
+
+const _privacyFallbackFilter = FallbackFilter();
+
+const _globalPrivacyDns = Dns(
+  listen: '127.0.0.1:1053',
+  preferH3: true,
+  respectRules: true,
+  defaultNameserver: ['1.1.1.1', '9.9.9.9'],
+  nameserver: [
+    'https://cloudflare-dns.com/dns-query',
+    'https://dns.quad9.net/dns-query',
+  ],
+  fallback: ['https://dns.google/dns-query'],
+  proxyServerNameserver: [
+    'https://cloudflare-dns.com/dns-query',
+    'https://dns.quad9.net/dns-query',
+  ],
+  nameserverPolicy: {},
+  fallbackFilter: _privacyFallbackFilter,
+);
+
+const _chinaCompatibilityDns = Dns(
+  listen: '127.0.0.1:1053',
+  preferH3: true,
+  respectRules: true,
+  defaultNameserver: ['223.5.5.5', '119.29.29.29'],
+  nameserver: [
+    'https://dns.alidns.com/dns-query',
+    'https://doh.pub/dns-query',
+  ],
+  fallback: [
+    'https://cloudflare-dns.com/dns-query',
+    'https://dns.quad9.net/dns-query',
+  ],
+  proxyServerNameserver: [
+    'https://dns.alidns.com/dns-query',
+    'https://doh.pub/dns-query',
+  ],
+  nameserverPolicy: {},
+  fallbackFilter: _privacyFallbackFilter,
+);
+
+DnsPreset _resolveDnsPreset(Dns dns) {
+  if (dns == _globalPrivacyDns) {
+    return DnsPreset.globalPrivacy;
+  }
+  if (dns == _chinaCompatibilityDns) {
+    return DnsPreset.chinaCompatibility;
+  }
+  return DnsPreset.custom;
+}
+
+Dns _dnsForPreset(DnsPreset preset) {
+  return switch (preset) {
+    DnsPreset.globalPrivacy => _globalPrivacyDns,
+    DnsPreset.chinaCompatibility => _chinaCompatibilityDns,
+    DnsPreset.custom => _globalPrivacyDns,
+  };
+}
+
+String _dnsPresetLabel(DnsPreset preset) {
+  final appLocalizations = currentAppLocalizations;
+  return switch (preset) {
+    DnsPreset.globalPrivacy => appLocalizations.dnsPresetGlobalPrivacy,
+    DnsPreset.chinaCompatibility =>
+      appLocalizations.dnsPresetChinaCompatibility,
+    DnsPreset.custom => appLocalizations.dnsPresetCustom,
+  };
+}
+
+String _dnsPresetDescription(DnsPreset preset) {
+  final appLocalizations = currentAppLocalizations;
+  return switch (preset) {
+    DnsPreset.globalPrivacy => appLocalizations.dnsPresetGlobalPrivacyDesc,
+    DnsPreset.chinaCompatibility =>
+      appLocalizations.dnsPresetChinaCompatibilityDesc,
+    DnsPreset.custom => appLocalizations.dnsPresetCustom,
+  };
+}
 
 class OverrideItem extends ConsumerWidget {
   const OverrideItem({super.key});
@@ -20,6 +106,40 @@ class OverrideItem extends ConsumerWidget {
         onChanged: (bool value) async {
           ref.read(overrideDnsProvider.notifier).value = value;
         },
+      ),
+    );
+  }
+}
+
+class DnsPresetItem extends ConsumerWidget {
+  const DnsPresetItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
+    final dns = ref.watch(patchClashConfigProvider.select((state) => state.dns));
+    final preset = _resolveDnsPreset(dns);
+    return ListItem<DnsPreset>.options(
+      leading: const Icon(Icons.dns_outlined),
+      title: Text(appLocalizations.dnsPreset),
+      subtitle: Text(_dnsPresetDescription(preset)),
+      delegate: OptionsDelegate(
+        title: appLocalizations.dnsPreset,
+        options: DnsPreset.values,
+        onChanged: (value) {
+          if (value == null || value == DnsPreset.custom) {
+            return;
+          }
+          ref.read(overrideDnsProvider.notifier).value = true;
+          ref
+              .read(networkSettingProvider.notifier)
+              .update((state) => state.copyWith(appendSystemDns: false));
+          ref
+              .read(patchClashConfigProvider.notifier)
+              .update((state) => state.copyWith(dns: _dnsForPreset(value)));
+        },
+        textBuilder: _dnsPresetLabel,
+        value: preset,
       ),
     );
   }
@@ -668,6 +788,7 @@ class FallbackFilterOptions extends StatelessWidget {
 
 const dnsItems = <Widget>[
   OverrideItem(),
+  DnsPresetItem(),
   DnsOptions(),
   FallbackFilterOptions(),
 ];

@@ -323,7 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Отказ от ответственности",
     ),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "PSG — это внутренний инструмент доступа к сети для издательской группы, предназначенный только для авторизованных сотрудников. Пользователи обязаны соблюдать местное законодательство. Любое нарушение является исключительно ответственностью пользователя и не имеет отношения к PSG.",
+      "PSG — это внутренний инструмент сетевого доступа и управления подключениями, предоставляемый Panorama Scholarly Group только авторизованным пользователям и предназначенный исключительно для законных и соответствующих требованиям рабочих целей. Перед использованием этого программного обеспечения вы должны подтвердить наличие необходимых полномочий и обязуетесь соблюдать применимые законы, нормативные требования, требования к кибербезопасности и внутренние правила вашей организации. Запрещается использовать это программное обеспечение для незаконных, несанкционированных, нарушающих права третьих лиц, угрожающих сетевой безопасности или выходящих за пределы разрешенного использования действий. Пользователь самостоятельно несет ответственность за все обязательства, убытки и споры, возникающие в связи с его собственными настройками, подключением к сторонним сервисам или ненадлежащим использованием этого программного обеспечения. В максимально допустимой законом степени PSG и ее аффилированные лица не несут ответственности за такие действия. Нажимая «Согласен», вы подтверждаете, что прочитали, поняли и приняли настоящий отказ от ответственности.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Отключено"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
@@ -334,6 +334,20 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS-перехват"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("Режим DNS"),
+    "dnsPreset": MessageLookupByLibrary.simpleMessage("Предустановка DNS"),
+    "dnsPresetChinaCompatibility": MessageLookupByLibrary.simpleMessage(
+      "Совместимость с сетями Китая",
+    ),
+    "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
+      "Региональный зашифрованный DNS для лучшей доступности в сетях Китая; конфиденциальность DNS может быть ниже, чем в глобальном режиме",
+    ),
+    "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("Пользовательский"),
+    "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage(
+      "Глобальная конфиденциальность",
+    ),
+    "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
+      "Зашифрованный публичный DNS для глобального режима с приоритетом конфиденциальности",
+    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Вы хотите пропустить",
     ),
@@ -386,7 +400,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Диапазон Fakeip"),
     "fallback": MessageLookupByLibrary.simpleMessage("Резервный"),
     "fallbackDesc": MessageLookupByLibrary.simpleMessage(
-      "Обычно используется оффшорный DNS",
+      "Использовать зашифрованный публичный DNS в качестве резервного",
     ),
     "fallbackFilter": MessageLookupByLibrary.simpleMessage(
       "Фильтр резервного DNS",

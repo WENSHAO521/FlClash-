@@ -196,8 +196,8 @@ const _$TunStackEnumMap = {
 _FallbackFilter _$FallbackFilterFromJson(
   Map<String, dynamic> json,
 ) => _FallbackFilter(
-  geoip: json['geoip'] as bool? ?? true,
-  geoipCode: json['geoip-code'] as String? ?? 'CN',
+  geoip: json['geoip'] as bool? ?? false,
+  geoipCode: json['geoip-code'] as String? ?? 'US',
   geosite:
       (json['geosite'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
@@ -206,7 +206,7 @@ _FallbackFilter _$FallbackFilterFromJson(
       const ['240.0.0.0/4'],
   domain:
       (json['domain'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['+.google.com', '+.facebook.com', '+.youtube.com'],
+      const [],
 );
 
 Map<String, dynamic> _$FallbackFilterToJson(_FallbackFilter instance) =>
@@ -220,17 +220,17 @@ Map<String, dynamic> _$FallbackFilterToJson(_FallbackFilter instance) =>
 
 _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
   enable: json['enable'] as bool? ?? true,
-  listen: json['listen'] as String? ?? '0.0.0.0:1053',
+  listen: json['listen'] as String? ?? '127.0.0.1:1053',
   preferH3: json['prefer-h3'] as bool? ?? false,
   useHosts: json['use-hosts'] as bool? ?? true,
   useSystemHosts: json['use-system-hosts'] as bool? ?? true,
-  respectRules: json['respect-rules'] as bool? ?? false,
+  respectRules: json['respect-rules'] as bool? ?? true,
   ipv6: json['ipv6'] as bool? ?? false,
   defaultNameserver:
       (json['default-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['223.5.5.5'],
+      const ['1.1.1.1', '9.9.9.9'],
   enhancedMode:
       $enumDecodeNullable(_$DnsModeEnumMap, json['enhanced-mode']) ??
       DnsMode.fakeIp,
@@ -244,24 +244,26 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['nameserver-policy'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ) ??
-      const {
-        'www.baidu.com': '114.114.114.114',
-        '+.internal.crop.com': '10.0.0.1',
-        'geosite:cn': 'https://doh.pub/dns-query',
-      },
+      const {},
   nameserver:
       (json['nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'],
+      const [
+        'https://cloudflare-dns.com/dns-query',
+        'https://dns.quad9.net/dns-query',
+      ],
   fallback:
       (json['fallback'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const ['tls://8.8.4.4', 'tls://1.1.1.1'],
+      const ['https://dns.google/dns-query'],
   proxyServerNameserver:
       (json['proxy-server-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['https://doh.pub/dns-query'],
+      const [
+        'https://cloudflare-dns.com/dns-query',
+        'https://dns.quad9.net/dns-query',
+      ],
   fallbackFilter: json['fallback-filter'] == null
       ? const FallbackFilter()
       : FallbackFilter.fromJson(

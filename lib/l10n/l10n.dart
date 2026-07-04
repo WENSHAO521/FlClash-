@@ -1639,6 +1639,61 @@ class AppLocalizations {
     return Intl.message('DNS mode', name: 'dnsMode', desc: '', args: []);
   }
 
+  /// `DNS preset`
+  String get dnsPreset {
+    return Intl.message('DNS preset', name: 'dnsPreset', desc: '', args: []);
+  }
+
+  /// `Global privacy`
+  String get dnsPresetGlobalPrivacy {
+    return Intl.message(
+      'Global privacy',
+      name: 'dnsPresetGlobalPrivacy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Encrypted public DNS for global privacy-first use`
+  String get dnsPresetGlobalPrivacyDesc {
+    return Intl.message(
+      'Encrypted public DNS for global privacy-first use',
+      name: 'dnsPresetGlobalPrivacyDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `China network compatibility`
+  String get dnsPresetChinaCompatibility {
+    return Intl.message(
+      'China network compatibility',
+      name: 'dnsPresetChinaCompatibility',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Uses regional encrypted DNS for China networks; improves availability but may reduce DNS privacy`
+  String get dnsPresetChinaCompatibilityDesc {
+    return Intl.message(
+      'Uses regional encrypted DNS for China networks; improves availability but may reduce DNS privacy',
+      name: 'dnsPresetChinaCompatibilityDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Custom`
+  String get dnsPresetCustom {
+    return Intl.message(
+      'Custom',
+      name: 'dnsPresetCustom',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Fakeip range`
   String get fakeipRange {
     return Intl.message(
@@ -1754,10 +1809,10 @@ class AppLocalizations {
     return Intl.message('Fallback', name: 'fallback', desc: '', args: []);
   }
 
-  /// `Generally use offshore DNS`
+  /// `Use encrypted public DNS as fallback`
   String get fallbackDesc {
     return Intl.message(
-      'Generally use offshore DNS',
+      'Use encrypted public DNS as fallback',
       name: 'fallbackDesc',
       desc: '',
       args: [],

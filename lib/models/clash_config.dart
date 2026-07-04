@@ -246,12 +246,11 @@ extension TunExt on Tun {
 @freezed
 abstract class FallbackFilter with _$FallbackFilter {
   const factory FallbackFilter({
-    @Default(true) bool geoip,
-    @Default('CN') @JsonKey(name: 'geoip-code') String geoipCode,
+    @Default(false) bool geoip,
+    @Default('US') @JsonKey(name: 'geoip-code') String geoipCode,
     @Default([]) List<String> geosite,
     @Default(['240.0.0.0/4']) List<String> ipcidr,
-    @Default(['+.google.com', '+.facebook.com', '+.youtube.com'])
-    List<String> domain,
+    @Default([]) List<String> domain,
   }) = _FallbackFilter;
 
   factory FallbackFilter.fromJson(Map<String, Object?> json) =>
@@ -262,13 +261,13 @@ abstract class FallbackFilter with _$FallbackFilter {
 abstract class Dns with _$Dns {
   const factory Dns({
     @Default(true) bool enable,
-    @Default('0.0.0.0:1053') String listen,
+    @Default('127.0.0.1:1053') String listen,
     @Default(true) @JsonKey(name: 'prefer-h3') bool preferH3,
     @Default(true) @JsonKey(name: 'use-hosts') bool useHosts,
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
-    @Default(false) @JsonKey(name: 'respect-rules') bool respectRules,
+    @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['223.5.5.5'])
+    @Default(['1.1.1.1', '9.9.9.9'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -280,18 +279,20 @@ abstract class Dns with _$Dns {
     @Default(['*.lan', 'localhost.ptlogin2.qq.com'])
     @JsonKey(name: 'fake-ip-filter')
     List<String> fakeIpFilter,
-    @Default({
-      'www.baidu.com': '114.114.114.114',
-      '+.internal.crop.com': '10.0.0.1',
-      'geosite:cn': 'https://doh.pub/dns-query',
-    })
+    @Default({})
     @JsonKey(name: 'nameserver-policy')
     Map<String, String> nameserverPolicy,
-    @Default(['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'])
+    @Default([
+      'https://cloudflare-dns.com/dns-query',
+      'https://dns.quad9.net/dns-query',
+    ])
     List<String> nameserver,
-    @Default(['https://1.1.1.1/dns-query', 'https://8.8.8.8/dns-query'])
+    @Default(['https://dns.google/dns-query'])
     List<String> fallback,
-    @Default(['https://doh.pub/dns-query'])
+    @Default([
+      'https://cloudflare-dns.com/dns-query',
+      'https://dns.quad9.net/dns-query',
+    ])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
     @Default(FallbackFilter())

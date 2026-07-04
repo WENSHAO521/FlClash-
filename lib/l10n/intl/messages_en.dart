@@ -316,7 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("Disable UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "PSG is an internal network access tool for Panorama Scholarly Group, authorized personnel only. Users must comply with local laws and regulations. Any misuse is solely the responsibility of the user and has nothing to do with PSG.",
+      "PSG is an internal network access and connection management tool provided by Panorama Scholarly Group for authorized personnel only, and may be used solely for lawful and compliant work-related purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, PSG and its affiliates disclaim liability for such conduct. By clicking \"Agree\", you acknowledge that you have read, understood, and accepted this disclaimer.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Disconnected"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
@@ -327,6 +327,20 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS hijacking"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
+    "dnsPreset": MessageLookupByLibrary.simpleMessage("DNS preset"),
+    "dnsPresetChinaCompatibility": MessageLookupByLibrary.simpleMessage(
+      "China network compatibility",
+    ),
+    "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
+      "Uses regional encrypted DNS for China networks; improves availability but may reduce DNS privacy",
+    ),
+    "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
+    "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage(
+      "Global privacy",
+    ),
+    "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
+      "Encrypted public DNS for global privacy-first use",
+    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Do you want to pass",
     ),
@@ -375,7 +389,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Fakeip range"),
     "fallback": MessageLookupByLibrary.simpleMessage("Fallback"),
     "fallbackDesc": MessageLookupByLibrary.simpleMessage(
-      "Generally use offshore DNS",
+      "Use encrypted public DNS as fallback",
     ),
     "fallbackFilter": MessageLookupByLibrary.simpleMessage("Fallback filter"),
     "fidelityScheme": MessageLookupByLibrary.simpleMessage("Fidelity"),

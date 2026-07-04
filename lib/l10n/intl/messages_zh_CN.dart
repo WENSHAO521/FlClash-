@@ -218,13 +218,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("禁用UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("免责声明"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "PSG 是出版社集团内部专用网络访问工具，仅限授权人员使用。用户须遵守所在地区相关法律法规，合法合规使用本软件。任何违规使用行为均由用户本人承担相应责任，与 PSG 官方无关。",
+      "PSG 为 Panorama Scholarly Group 面向授权人员提供的内部网络访问与连接管理工具，仅用于合法、合规的工作场景。使用本软件前，您应确认已取得相应授权，并承诺遵守适用的法律法规、监管要求、网络安全规范及所在机构的内部管理规定。严禁利用本软件从事任何违法违规、侵犯第三方权益、危害网络安全或超出授权范围的行为。因用户自行配置、连接第三方服务或不当使用本软件所产生的全部责任、损失及争议，由用户自行承担；在法律允许的最大范围内，PSG 及其关联方不对此类行为承担责任。点击“同意”即表示您已阅读、理解并接受本免责声明。",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("已断开"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage("发现新版本"),
     "dnsDesc": MessageLookupByLibrary.simpleMessage("更新DNS相关设置"),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS劫持"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS模式"),
+    "dnsPreset": MessageLookupByLibrary.simpleMessage("DNS 预设"),
+    "dnsPresetChinaCompatibility": MessageLookupByLibrary.simpleMessage(
+      "中国网络兼容",
+    ),
+    "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
+      "使用区域加密 DNS 提高中国网络可达性；相较全球预设，DNS 隐私性可能降低",
+    ),
+    "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("自定义"),
+    "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage("全球隐私优先"),
+    "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
+      "使用加密公共 DNS，适合全球通用和隐私优先场景",
+    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage("是否要通过"),
     "domain": MessageLookupByLibrary.simpleMessage("域名"),
     "download": MessageLookupByLibrary.simpleMessage("下载"),
@@ -262,7 +274,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "fakeipFilter": MessageLookupByLibrary.simpleMessage("Fakeip过滤"),
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Fakeip范围"),
     "fallback": MessageLookupByLibrary.simpleMessage("Fallback"),
-    "fallbackDesc": MessageLookupByLibrary.simpleMessage("一般情况下使用境外DNS"),
+    "fallbackDesc": MessageLookupByLibrary.simpleMessage(
+      "使用加密公共 DNS 作为备用解析",
+    ),
     "fallbackFilter": MessageLookupByLibrary.simpleMessage("Fallback过滤"),
     "fidelityScheme": MessageLookupByLibrary.simpleMessage("高保真"),
     "file": MessageLookupByLibrary.simpleMessage("文件"),
