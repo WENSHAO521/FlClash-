@@ -262,7 +262,7 @@ abstract class Dns with _$Dns {
   const factory Dns({
     @Default(true) bool enable,
     @Default('127.0.0.1:1053') String listen,
-    @Default(true) @JsonKey(name: 'prefer-h3') bool preferH3,
+    @Default(false) @JsonKey(name: 'prefer-h3') bool preferH3,
     @Default(true) @JsonKey(name: 'use-hosts') bool useHosts,
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,

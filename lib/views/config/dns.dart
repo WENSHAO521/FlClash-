@@ -16,7 +16,7 @@ const _privacyFallbackFilter = FallbackFilter();
 
 const _globalPrivacyDns = Dns(
   listen: '127.0.0.1:1053',
-  preferH3: true,
+  preferH3: false,
   respectRules: true,
   defaultNameserver: ['1.1.1.1', '9.9.9.9'],
   nameserver: [
@@ -34,7 +34,7 @@ const _globalPrivacyDns = Dns(
 
 const _chinaCompatibilityDns = Dns(
   listen: '127.0.0.1:1053',
-  preferH3: true,
+  preferH3: false,
   respectRules: true,
   defaultNameserver: ['223.5.5.5', '119.29.29.29'],
   nameserver: [

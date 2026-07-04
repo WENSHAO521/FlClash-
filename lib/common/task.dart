@@ -197,7 +197,7 @@ Future<VM2<String, String>> _makeRealProfileTask(
   final isEnableDns = rawConfig['dns']['enable'] == true;
   const systemDns = 'system://';
   if (overrideDns || !isEnableDns) {
-    final dns = realPatchConfig.dns;
+    final dns = _normalizeDnsCompatibility(realPatchConfig.dns);
     rawConfig['dns'] = dns.toJson();
     rawConfig['dns']['nameserver-policy'] = {};
     for (final entry in dns.nameserverPolicy.entries) {
@@ -264,6 +264,45 @@ Future<VM2<String, String>> _makeRealProfileTask(
   rawConfig['rules'] = rules;
   final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
   return VM2(yaml, yaml.toMd5());
+}
+
+Dns _normalizeDnsCompatibility(Dns dns) {
+  if (!_isLegacyPresetWithH3(dns)) {
+    return dns;
+  }
+  return dns.copyWith(preferH3: false);
+}
+
+bool _isLegacyPresetWithH3(Dns dns) {
+  if (!dns.preferH3) {
+    return false;
+  }
+  final isGlobalPrivacy =
+      listEquals(dns.defaultNameserver, const ['1.1.1.1', '9.9.9.9']) &&
+      listEquals(dns.nameserver, const [
+        'https://cloudflare-dns.com/dns-query',
+        'https://dns.quad9.net/dns-query',
+      ]) &&
+      listEquals(dns.fallback, const ['https://dns.google/dns-query']) &&
+      listEquals(dns.proxyServerNameserver, const [
+        'https://cloudflare-dns.com/dns-query',
+        'https://dns.quad9.net/dns-query',
+      ]);
+  final isChinaCompatibility =
+      listEquals(dns.defaultNameserver, const ['223.5.5.5', '119.29.29.29']) &&
+      listEquals(dns.nameserver, const [
+        'https://dns.alidns.com/dns-query',
+        'https://doh.pub/dns-query',
+      ]) &&
+      listEquals(dns.fallback, const [
+        'https://cloudflare-dns.com/dns-query',
+        'https://dns.quad9.net/dns-query',
+      ]) &&
+      listEquals(dns.proxyServerNameserver, const [
+        'https://dns.alidns.com/dns-query',
+        'https://doh.pub/dns-query',
+      ]);
+  return isGlobalPrivacy || isChinaCompatibility;
 }
 
 Future<List<String>> shakingProfileTask(

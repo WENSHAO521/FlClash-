@@ -3,6 +3,7 @@
 - 修复 Android 应用内更新安装失败：发布 ARMv8 / ARMv7 / x64 分架构 APK，避免下载固定 arm64 包导致 ABI 不匹配
 - 修复 Android release 签名门禁：缺少正式 keystore 或签名参数时直接失败，避免 debug 签名包无法覆盖正式版
 - 更新：Android 发布包拆分为 ARMv8、ARMv7、x64，应用内更新按设备 ABI 自动选择
+- DNS：全球隐私优选关闭默认 HTTP/3 DNS，提升海外网络和受限网络下的解析稳定性
 
 ## v2.0.1
 
