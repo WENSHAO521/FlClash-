@@ -78,16 +78,6 @@ jobs:
         with:
           submodules: recursive
 
-      - name: Checkout packaging plugins
-        shell: bash
-        run: |
-          if [ ! -d plugins/flutter_distributor ]; then
-            git clone --depth=1 -b FlClash https://github.com/chen08209/flutter_distributor.git plugins/flutter_distributor
-          fi
-          if [ ! -d plugins/tray_manager ]; then
-            git clone --depth=1 -b main https://github.com/chen08209/tray_manager.git plugins/tray_manager
-          fi
-
       - name: Setup Android Signing
         if: startsWith(matrix.platform,'android')
         env:
