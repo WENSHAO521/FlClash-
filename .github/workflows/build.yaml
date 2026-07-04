@@ -100,6 +100,10 @@ jobs:
           cache-dependency-path: |
             core/go.sum
 
+      - name: Normalize Go modules
+        shell: bash
+        run: go -C core mod tidy
+
       - name: Enable git long paths (Windows)
         if: startsWith(matrix.os, 'windows')
         run: git config --global core.longpaths true
