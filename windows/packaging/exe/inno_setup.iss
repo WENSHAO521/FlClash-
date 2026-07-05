@@ -45,8 +45,8 @@ end;
 
 function InitializeSetup(): Boolean;
 begin
-  RemoveHelperService;
   KillProcesses;
+  RemoveHelperService;
   Result := True;
 end;
 

@@ -1,3 +1,7 @@
+## v2.0.12
+
+- Windows：安装新版时先结束旧 app/core/helper 进程，再删除 helper 服务，降低旧 helper 占用端口或服务删除失败的概率
+
 ## v2.0.11
 
 - Windows：修复 Rust helper 服务内部名称仍为 `FlClashHelperService` 的严重问题，统一为 `PSGHelperService`
