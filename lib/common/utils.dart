@@ -298,21 +298,10 @@ class Utils {
     return '${appName}_${DateTime.now().show}.log';
   }
 
-  Future<String?> getLocalIpAddress({String? preferredInterfaceName}) async {
+  Future<String?> getLocalIpAddress() async {
     final List<NetworkInterface> interfaces =
         await NetworkInterface.list(includeLoopback: false)
           ..sort((a, b) {
-            final preferredName = preferredInterfaceName?.toLowerCase();
-            if (preferredName != null && preferredName.isNotEmpty) {
-              final aName = a.name.toLowerCase();
-              final bName = b.name.toLowerCase();
-              final aPreferred =
-                  aName == preferredName || aName.contains(preferredName);
-              final bPreferred =
-                  bName == preferredName || bName.contains(preferredName);
-              if (aPreferred && !bPreferred) return -1;
-              if (!aPreferred && bPreferred) return 1;
-            }
             if (a.isWifi && !b.isWifi) return -1;
             if (!a.isWifi && b.isWifi) return 1;
             if (a.includesIPv4 && !b.includesIPv4) return -1;

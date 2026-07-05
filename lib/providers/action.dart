@@ -363,7 +363,6 @@ class SetupAction extends _$SetupAction {
       }
     }
     ref.read(realTunEnableProvider.notifier).value = enableTun;
-    await ref.read(systemActionProvider.notifier).updateLocalIp();
     return Result.success(enableTun);
   }
 
@@ -498,7 +497,7 @@ class CoreAction extends _$CoreAction {
     }
   }
 
-  Future<bool> connectCore() async {
+  Future<void> connectCore() async {
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
     final result = await Future.wait([
       coreController.preload(),
@@ -508,10 +507,9 @@ class CoreAction extends _$CoreAction {
     if (message.isNotEmpty) {
       ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
       globalState.showNotifier(message);
-      return false;
+      return;
     }
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connected;
-    return true;
   }
 
   Future<Result<bool>> requestAdmin(bool enableTun) async {
@@ -530,7 +528,6 @@ class CoreAction extends _$CoreAction {
       }
     }
     ref.read(realTunEnableProvider.notifier).value = enableTun;
-    await ref.read(systemActionProvider.notifier).updateLocalIp();
     return Result.success(enableTun);
   }
 
@@ -539,10 +536,7 @@ class CoreAction extends _$CoreAction {
         ref.read(coreStatusProvider) == CoreStatus.disconnected;
     ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
     await coreController.shutdown(!isDisconnected);
-    final connected = await connectCore();
-    if (!connected) {
-      return;
-    }
+    await connectCore();
     await initCore();
     if (start || ref.read(isStartProvider)) {
       await ref
@@ -652,12 +646,7 @@ class SystemAction extends _$SystemAction {
   Future<void> updateLocalIp() async {
     ref.read(localIpProvider.notifier).value = null;
     await Future.delayed(commonDuration);
-    final preferredInterfaceName = ref.read(realTunEnableProvider)
-        ? ref.read(patchClashConfigProvider).tun.device
-        : null;
-    ref.read(localIpProvider.notifier).value = await utils.getLocalIpAddress(
-      preferredInterfaceName: preferredInterfaceName,
-    );
+    ref.read(localIpProvider.notifier).value = await utils.getLocalIpAddress();
   }
 }
 

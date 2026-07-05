@@ -219,7 +219,7 @@ Future<void> runMain(List<String> args) async {
   try {
     initLogging();
 
-    final runner = CommandRunner('build_tool', 'PSG build tool')
+    final runner = CommandRunner('build_tool', 'Panorama Secure Access build tool')
       ..argParser.addOption(
         'root-dir',
         valueHelp: '<path>',

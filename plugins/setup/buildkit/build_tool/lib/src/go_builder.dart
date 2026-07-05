@@ -79,14 +79,6 @@ class GoBuilder {
     await runCommandStream('go', args,
         workingDirectory: _corePath, environment: env);
 
-    if (!Platform.isWindows) {
-      final chmodResult = await Process.run('chmod', ['+x', outFile]);
-      if (chmodResult.exitCode != 0) {
-        throw BuildException(
-            'Failed to mark Go core executable: ${chmodResult.stderr}');
-      }
-    }
-
     if (target.isLib && target.abi != null) {
       await _adjustAndroidOutput(
           outDir: p.join(_outputPath, target.platformDir),

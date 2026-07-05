@@ -1,8 +1,8 @@
 display_name: Panorama Secure Access
-package_name: psg
+package_name: panorama-secure-access
 maintainer:
   name: Panorama Scholarly Group
-  email: wainixueer3334@gmail.com
+  email: contact@panorama-sg.com
 
 priority: optional
 section: x11
@@ -16,9 +16,9 @@ dependencies:
 
 keywords:
   - Panorama Secure Access
-  - PSG
-  - Proxy
+  - Clash
   - ClashMeta
+  - Proxy
 
 generic_name: Panorama Secure Access
 

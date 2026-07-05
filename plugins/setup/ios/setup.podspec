@@ -5,9 +5,9 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 Panorama Secure Access Go core build harness (FFI plugin).
                        DESC
-  s.homepage         = 'https://panorama-sg.com/'
+  s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Panorama Scholarly Group' => 'wainixueer3334@gmail.com' }
+  s.author           = { 'Panorama Scholarly Group' => 'email@example.com' }
   s.module_name      = 'setup'
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'

@@ -295,7 +295,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m1,
     "deleteTip": m2,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.",
+      "Panorama Secure Access is a multi-platform proxy client for Panorama Scholarly Group.",
     ),
     "destination": MessageLookupByLibrary.simpleMessage("Destination"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
@@ -316,7 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disableUDP": MessageLookupByLibrary.simpleMessage("Disable UDP"),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "Panorama Secure Access is network access and connection management software provided for authorized users only, and may be used solely for lawful and compliant work-related or otherwise authorized purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, Panorama Secure Access and its relevant rights holders disclaim liability for such conduct. By clicking \"Agree\", you acknowledge that you have read, understood, and accepted this disclaimer.",
+      "This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Disconnected"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
@@ -327,20 +327,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS hijacking"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
-    "dnsPreset": MessageLookupByLibrary.simpleMessage("DNS preset"),
-    "dnsPresetChinaCompatibility": MessageLookupByLibrary.simpleMessage(
-      "China network compatibility",
-    ),
-    "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
-      "Prioritizes compatibility and stability in complex network environments such as mainland China while balancing security, privacy, and DNS efficiency",
-    ),
-    "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("Custom"),
-    "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage(
-      "Global privacy",
-    ),
-    "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
-      "Prioritizes privacy and speed on global networks while balancing security, privacy, and DNS efficiency",
-    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Do you want to pass",
     ),
@@ -389,7 +375,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Fakeip range"),
     "fallback": MessageLookupByLibrary.simpleMessage("Fallback"),
     "fallbackDesc": MessageLookupByLibrary.simpleMessage(
-      "Use encrypted public DNS as fallback",
+      "Generally use offshore DNS",
     ),
     "fallbackFilter": MessageLookupByLibrary.simpleMessage("Fallback filter"),
     "fidelityScheme": MessageLookupByLibrary.simpleMessage("Fidelity"),
@@ -959,24 +945,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
     "suspended": MessageLookupByLibrary.simpleMessage("Suspended..."),
-    "appLock": MessageLookupByLibrary.simpleMessage("App Lock"),
-    "appLockEnabled": MessageLookupByLibrary.simpleMessage("Enable App Lock"),
-    "appLockEnabledDesc": MessageLookupByLibrary.simpleMessage("Require PIN when launching or returning from background"),
-    "setPIN": MessageLookupByLibrary.simpleMessage("Set PIN"),
-    "changePIN": MessageLookupByLibrary.simpleMessage("Change PIN"),
-    "enterCurrentPIN": MessageLookupByLibrary.simpleMessage("Enter current PIN"),
-    "enterNewPIN": MessageLookupByLibrary.simpleMessage("Enter new PIN"),
-    "confirmPIN": MessageLookupByLibrary.simpleMessage("Confirm PIN"),
-    "pinMismatch": MessageLookupByLibrary.simpleMessage("PINs do not match, please try again"),
-    "pinTooShort": MessageLookupByLibrary.simpleMessage("PIN must be at least 4 digits"),
-    "pinSet": MessageLookupByLibrary.simpleMessage("PIN set successfully"),
-    "pinIncorrect": MessageLookupByLibrary.simpleMessage("Incorrect PIN"),
-    "autoLockTimeout": MessageLookupByLibrary.simpleMessage("Auto-lock timeout"),
-    "neverLock": MessageLookupByLibrary.simpleMessage("Never"),
-    "downloading": MessageLookupByLibrary.simpleMessage("Downloading"),
-    "downloadComplete": MessageLookupByLibrary.simpleMessage("Download complete, tap to install"),
-    "downloadFailed": MessageLookupByLibrary.simpleMessage("Download failed, please retry"),
-    "cancelDownload": MessageLookupByLibrary.simpleMessage("Cancel"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
     "systemApp": MessageLookupByLibrary.simpleMessage("System APP"),

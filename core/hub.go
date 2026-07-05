@@ -347,36 +347,34 @@ func handleGetExternalProvider(externalProviderName string) string {
 	return string(data)
 }
 
-func handleUpdateGeoData(geoType string, _ string, fn func(value string)) {
+func handleUpdateGeoData(geoType string, geoName string, fn func(value string)) {
 	go func() {
+		path := constant.Path.Resolve(geoName)
 		switch geoType {
 		case "MMDB":
-			err := updater.UpdateMMDB()
+			err := updater.UpdateMMDBWithPath(path)
 			if err != nil {
 				fn(err.Error())
 				return
 			}
 		case "ASN":
-			err := updater.UpdateASN()
+			err := updater.UpdateASNWithPath(path)
 			if err != nil {
 				fn(err.Error())
 				return
 			}
 		case "GEOIP":
-			err := updater.UpdateGeoIp()
+			err := updater.UpdateGeoIpWithPath(path)
 			if err != nil {
 				fn(err.Error())
 				return
 			}
 		case "GEOSITE":
-			err := updater.UpdateGeoSite()
+			err := updater.UpdateGeoSiteWithPath(path)
 			if err != nil {
 				fn(err.Error())
 				return
 			}
-		default:
-			fn("unsupported geo data type: " + geoType)
-			return
 		}
 		fn("")
 	}()

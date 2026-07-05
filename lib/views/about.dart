@@ -8,7 +8,6 @@ import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 @immutable
 class Contributor {
@@ -49,6 +48,13 @@ class AboutView extends StatelessWidget {
           },
         ),
         ListItem(
+          title: const Text('Telegram'),
+          onTap: () {
+            globalState.openUrl('https://github.com/$repository');
+          },
+          trailing: const Icon(Icons.launch),
+        ),
+        ListItem(
           title: Text(appLocalizations.project),
           onTap: () {
             globalState.openUrl('https://github.com/$repository');
@@ -59,7 +65,7 @@ class AboutView extends StatelessWidget {
           title: Text(appLocalizations.core),
           onTap: () {
             globalState.openUrl(
-              'https://github.com/chen08209/Clash.Meta/tree/FlClash',
+              'https://github.com/MetaCubeX/mihomo',
             );
           },
           trailing: const Icon(Icons.launch),
@@ -71,9 +77,14 @@ class AboutView extends StatelessWidget {
   List<Widget> _buildContributorsSection(AppLocalizations appLocalizations) {
     const contributors = [
       Contributor(
-        avatar: 'assets/images/psg_logo.svg',
-        name: 'PSG',
-        link: 'https://panorama-sg.com/',
+        avatar: 'assets/images/avatar/june2.jpg',
+        name: 'June2',
+        link: 'https://t.me/Jibadong',
+      ),
+      Contributor(
+        avatar: 'assets/images/avatar/arue.jpg',
+        name: 'Arue',
+        link: 'https://t.me/xrcm6868',
       ),
     ];
     return generateSection(
@@ -113,13 +124,10 @@ class AboutView extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(12),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            'assets/images/logo.svg',
-                            width: 64,
-                            height: 64,
-                            fit: BoxFit.contain,
-                          ),
+                        child: Image.asset(
+                          'assets/images/icon.png',
+                          width: 64,
+                          height: 64,
                         ),
                       ),
                       Column(
@@ -175,37 +183,25 @@ class Avatar extends StatelessWidget {
 
   const Avatar({super.key, required this.contributor});
 
-  ImageProvider get _image {
-    final avatar = contributor.avatar;
-    if (avatar.startsWith('http')) return NetworkImage(avatar);
-    return AssetImage(avatar);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final avatar = contributor.avatar;
-    final Widget avatarWidget;
-    if (avatar.endsWith('.svg')) {
-      avatarWidget = ClipOval(
-        child: SvgPicture.asset(
-          avatar,
-          width: 36,
-          height: 36,
-          fit: BoxFit.contain,
-        ),
-      );
-    } else {
-      avatarWidget = CircleAvatar(foregroundImage: _image);
-    }
     return GestureDetector(
-      onTap: () => globalState.openUrl(contributor.link),
       child: Column(
         children: [
-          SizedBox(width: 36, height: 36, child: avatarWidget),
+          SizedBox(
+            width: 36,
+            height: 36,
+            child: CircleAvatar(
+              foregroundImage: AssetImage(contributor.avatar),
+            ),
+          ),
           const SizedBox(height: 4),
           Text(contributor.name, style: context.textTheme.bodySmall),
         ],
       ),
+      // onTap: () {
+      //   globalState.openUrl(contributor.link);
+      // },
     );
   }
 }

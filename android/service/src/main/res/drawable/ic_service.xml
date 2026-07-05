@@ -1,36 +1,17 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="200"
-    android:viewportHeight="200">
-
-    <!-- Outer panorama arc -->
-    <path android:pathData="M40,100 A60,60 0 0,1 160,100"
-          android:strokeColor="#FFFFFF"
-          android:strokeWidth="8"
-          android:strokeLineCap="round"
-          android:fillColor="#00000000"/>
-
-    <!-- Middle panorama arc -->
-    <path android:pathData="M55,100 A45,45 0 0,1 145,100"
-          android:strokeColor="#FFFFFF"
-          android:strokeWidth="8"
-          android:strokeLineCap="round"
-          android:fillColor="#00000000"/>
-
-    <!-- Inner panorama arc -->
-    <path android:pathData="M70,100 A30,30 0 0,1 130,100"
-          android:strokeColor="#FFFFFF"
-          android:strokeWidth="8"
-          android:strokeLineCap="round"
-          android:fillColor="#00000000"/>
-
-    <!-- Secure-access pillar -->
-    <path android:pathData="M94,80 H106 V140 H94 Z"
-          android:fillColor="#FFFFFF"/>
-
-    <!-- Base line -->
-    <path android:pathData="M40,145 H160 V149 H40 Z"
-          android:fillColor="#FFFFFF"/>
-
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="240"
+    android:viewportHeight="240"
+    tools:ignore="VectorRaster">
+  <path
+      android:pathData="M48.1,80.89L168.44,11.41c11.08,-6.4 25.24,-2.6 31.64,8.48 0,0 0,0 0,0h0c6.4,11.08 2.6,25.24 -8.48,31.64 0,0 0,0 0,0l-120.34,69.48c-11.08,6.4 -25.24,2.6 -31.64,-8.48 0,0 0,0 0,0h0c-6.4,-11.08 -2.6,-25.24 8.48,-31.64 0,0 0,0 0,0Z"
+      android:fillColor="#6666FB"/>
+  <path
+      android:pathData="M78.98,134.37l60.18,-34.74c11.07,-6.39 25.23,-2.59 31.63,8.48h0c6.4,11.07 2.61,25.24 -8.47,31.64l-60.18,34.74c-11.08,6.4 -25.24,2.6 -31.64,-8.48 0,0 0,0 0,0h0c-6.4,-11.08 -2.6,-25.24 8.48,-31.64h0Z"
+      android:fillColor="#336AB6"/>
+  <path
+      android:pathData="M109.86,187.86h0c11.08,-6.4 25.24,-2.6 31.64,8.48 0,0 0,0 0,0h0c6.4,11.08 2.6,25.24 -8.48,31.64 0,0 0,0 0,0h0c-11.08,6.4 -25.24,2.6 -31.64,-8.48 0,0 0,0 0,0h0c-6.4,-11.08 -2.6,-25.24 8.48,-31.64 0,0 0,0 0,0Z"
+      android:fillColor="#5CA8E9"/>
 </vector>

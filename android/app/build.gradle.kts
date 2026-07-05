@@ -17,20 +17,11 @@ val localProperties = Properties().apply {
 }
 
 val mStoreFile: File = file("keystore.jks")
-val mStorePassword: String? = localProperties.getProperty("storePassword") ?: if (mStoreFile.exists()) "psg-release-2024" else null
-val mKeyAlias: String? = localProperties.getProperty("keyAlias") ?: if (mStoreFile.exists()) "psg" else null
-val mKeyPassword: String? = localProperties.getProperty("keyPassword") ?: if (mStoreFile.exists()) "psg-release-2024" else null
+val mStorePassword: String? = localProperties.getProperty("storePassword")
+val mKeyAlias: String? = localProperties.getProperty("keyAlias")
+val mKeyPassword: String? = localProperties.getProperty("keyPassword")
 val isRelease =
     mStoreFile.exists() && mStorePassword != null && mKeyAlias != null && mKeyPassword != null
-val requestedReleaseBuild = gradle.startParameter.taskNames.any {
-    it.contains("Release", ignoreCase = true)
-}
-
-if (requestedReleaseBuild && !isRelease) {
-    throw GradleException(
-        "Android release builds require keystore.jks and signing values in local.properties."
-    )
-}
 
 
 android {
@@ -46,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.psg.internal"
+        applicationId = "com.follow.clash"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
@@ -81,6 +72,9 @@ android {
             isShrinkResources = true
             if (isRelease) {
                 signingConfig = signingConfigs.getByName("release")
+            } else {
+                signingConfig = signingConfigs.getByName("debug")
+                applicationIdSuffix = ".dev"
             }
 
             proguardFiles(

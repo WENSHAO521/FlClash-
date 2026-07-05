@@ -1,7 +1,7 @@
 name: fl_clash
-description: PSG internal network proxy client — Panorama Scholarly Group internal tool.
+description: Panorama Secure Access proxy client for Panorama Scholarly Group.
 publish_to: 'none'
-version: 2.0.14+15
+version: 0.8.93+2026052901
 environment:
   sdk: '>=3.8.0 <4.0.0'
 

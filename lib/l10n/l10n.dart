@@ -774,10 +774,10 @@ class AppLocalizations {
     );
   }
 
-  /// `A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.`
+  /// `Panorama Secure Access is a multi-platform proxy client for Panorama Scholarly Group.`
   String get desc {
     return Intl.message(
-      'A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.',
+      'Panorama Secure Access is a multi-platform proxy client for Panorama Scholarly Group.',
       name: 'desc',
       desc: '',
       args: [],
@@ -1639,61 +1639,6 @@ class AppLocalizations {
     return Intl.message('DNS mode', name: 'dnsMode', desc: '', args: []);
   }
 
-  /// `DNS preset`
-  String get dnsPreset {
-    return Intl.message('DNS preset', name: 'dnsPreset', desc: '', args: []);
-  }
-
-  /// `Global privacy`
-  String get dnsPresetGlobalPrivacy {
-    return Intl.message(
-      'Global privacy',
-      name: 'dnsPresetGlobalPrivacy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Prioritizes privacy and speed on global networks while balancing security, privacy, and DNS efficiency`
-  String get dnsPresetGlobalPrivacyDesc {
-    return Intl.message(
-      'Prioritizes privacy and speed on global networks while balancing security, privacy, and DNS efficiency',
-      name: 'dnsPresetGlobalPrivacyDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `China network compatibility`
-  String get dnsPresetChinaCompatibility {
-    return Intl.message(
-      'China network compatibility',
-      name: 'dnsPresetChinaCompatibility',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Prioritizes compatibility and stability in complex network environments such as mainland China while balancing security, privacy, and DNS efficiency`
-  String get dnsPresetChinaCompatibilityDesc {
-    return Intl.message(
-      'Prioritizes compatibility and stability in complex network environments such as mainland China while balancing security, privacy, and DNS efficiency',
-      name: 'dnsPresetChinaCompatibilityDesc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Custom`
-  String get dnsPresetCustom {
-    return Intl.message(
-      'Custom',
-      name: 'dnsPresetCustom',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Fakeip range`
   String get fakeipRange {
     return Intl.message(
@@ -1809,10 +1754,10 @@ class AppLocalizations {
     return Intl.message('Fallback', name: 'fallback', desc: '', args: []);
   }
 
-  /// `Use encrypted public DNS as fallback`
+  /// `Generally use offshore DNS`
   String get fallbackDesc {
     return Intl.message(
-      'Use encrypted public DNS as fallback',
+      'Generally use offshore DNS',
       name: 'fallbackDesc',
       desc: '',
       args: [],
@@ -1884,10 +1829,10 @@ class AppLocalizations {
     return Intl.message('Disclaimer', name: 'disclaimer', desc: '', args: []);
   }
 
-  /// `Panorama Secure Access is network access and connection management software provided for authorized users only, and may be used solely for lawful and compliant work-related or otherwise authorized purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, Panorama Secure Access and its relevant rights holders disclaim liability for such conduct. By clicking "Agree", you acknowledge that you have read, understood, and accepted this disclaimer.`
+  /// `This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.`
   String get disclaimerDesc {
     return Intl.message(
-      'Panorama Secure Access is network access and connection management software provided for authorized users only, and may be used solely for lawful and compliant work-related or otherwise authorized purposes. Before using this software, you must confirm that you have the required authorization and agree to comply with all applicable laws, regulations, cybersecurity requirements, and internal policies of your organization. You must not use this software for any unlawful, unauthorized, infringing, security-harming, or otherwise prohibited activity. You are solely responsible for all liabilities, losses, and disputes arising from your own configuration, connection to third-party services, or improper use of this software. To the fullest extent permitted by law, Panorama Secure Access and its relevant rights holders disclaim liability for such conduct. By clicking "Agree", you acknowledge that you have read, understood, and accepted this disclaimer.',
+      'This software is only used for non-commercial purposes such as learning exchanges and scientific research. It is strictly prohibited to use this software for commercial purposes. Any commercial activity, if any, has nothing to do with this software.',
       name: 'disclaimerDesc',
       desc: '',
       args: [],
@@ -4432,96 +4377,6 @@ class AppLocalizations {
   /// `Suspended...`
   String get suspended {
     return Intl.message('Suspended...', name: 'suspended', desc: '', args: []);
-  }
-
-  /// `App Lock`
-  String get appLock {
-    return Intl.message('App Lock', name: 'appLock', desc: '', args: []);
-  }
-
-  /// `Enable App Lock`
-  String get appLockEnabled {
-    return Intl.message('Enable App Lock', name: 'appLockEnabled', desc: '', args: []);
-  }
-
-  /// `Require PIN when launching or returning from background`
-  String get appLockEnabledDesc {
-    return Intl.message('Require PIN when launching or returning from background', name: 'appLockEnabledDesc', desc: '', args: []);
-  }
-
-  /// `Set PIN`
-  String get setPIN {
-    return Intl.message('Set PIN', name: 'setPIN', desc: '', args: []);
-  }
-
-  /// `Change PIN`
-  String get changePIN {
-    return Intl.message('Change PIN', name: 'changePIN', desc: '', args: []);
-  }
-
-  /// `Enter current PIN`
-  String get enterCurrentPIN {
-    return Intl.message('Enter current PIN', name: 'enterCurrentPIN', desc: '', args: []);
-  }
-
-  /// `Enter new PIN`
-  String get enterNewPIN {
-    return Intl.message('Enter new PIN', name: 'enterNewPIN', desc: '', args: []);
-  }
-
-  /// `Confirm PIN`
-  String get confirmPIN {
-    return Intl.message('Confirm PIN', name: 'confirmPIN', desc: '', args: []);
-  }
-
-  /// `PINs do not match, please try again`
-  String get pinMismatch {
-    return Intl.message('PINs do not match, please try again', name: 'pinMismatch', desc: '', args: []);
-  }
-
-  /// `PIN must be at least 4 digits`
-  String get pinTooShort {
-    return Intl.message('PIN must be at least 4 digits', name: 'pinTooShort', desc: '', args: []);
-  }
-
-  /// `PIN set successfully`
-  String get pinSet {
-    return Intl.message('PIN set successfully', name: 'pinSet', desc: '', args: []);
-  }
-
-  /// `Incorrect PIN`
-  String get pinIncorrect {
-    return Intl.message('Incorrect PIN', name: 'pinIncorrect', desc: '', args: []);
-  }
-
-  /// `Auto-lock timeout`
-  String get autoLockTimeout {
-    return Intl.message('Auto-lock timeout', name: 'autoLockTimeout', desc: '', args: []);
-  }
-
-  /// `Never`
-  String get neverLock {
-    return Intl.message('Never', name: 'neverLock', desc: '', args: []);
-  }
-
-  /// `Downloading`
-  String get downloading {
-    return Intl.message('Downloading', name: 'downloading', desc: '', args: []);
-  }
-
-  /// `Download complete, tap to install`
-  String get downloadComplete {
-    return Intl.message('Download complete, tap to install', name: 'downloadComplete', desc: '', args: []);
-  }
-
-  /// `Download failed, please retry`
-  String get downloadFailed {
-    return Intl.message('Download failed, please retry', name: 'downloadFailed', desc: '', args: []);
-  }
-
-  /// `Cancel`
-  String get cancelDownload {
-    return Intl.message('Cancel', name: 'cancelDownload', desc: '', args: []);
   }
 }
 

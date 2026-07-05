@@ -25,6 +25,8 @@ class Window {
       protocol.register('clash');
       protocol.register('clashmeta');
       protocol.register('psg');
+      protocol.register('psa');
+      protocol.register('flclash');
     }
     await windowManager.ensureInitialized();
     // kDebugMode ? Size(680, 580) :

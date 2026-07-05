@@ -85,56 +85,26 @@ class CoreService extends CoreHandlerInterface {
     );
   }
 
-  Future<String> _waitCoreConnected({bool byHelper = false}) async {
-    try {
-      await _transport.connectionCompleter.future.timeout(
-        const Duration(seconds: 8),
-      );
-      return '';
-    } catch (e) {
-      final logs = byHelper ? await request.getHelperLogs() : '';
-      final message = [
-        'Failed to connect core IPC: $e',
-        if (logs.isNotEmpty) logs,
-      ].join('\n').trim();
-      commonPrint.log(message, logLevel: LogLevel.error);
-      _handleInvokeCrashEvent();
-      return message;
-    }
-  }
-
-  Future<String> start() async {
+  Future<void> start() async {
     if (_process != null) {
       await shutdown(false);
     }
-    try {
-      await _transport.ready.timeout(const Duration(seconds: 3));
-    } catch (e) {
-      final message = 'Failed to start IPC server before core launch: $e';
-      commonPrint.log(message, logLevel: LogLevel.error);
-      _handleInvokeCrashEvent();
-      return message;
-    }
-    final helperStatus = system.isWindows ? await windows?.checkService() : null;
-    if (helperStatus == WindowsHelperServiceStatus.running) {
-      final result = await request.startCoreByHelper(_transport.address);
-      if (result.type == ResultType.success) {
-        return _waitCoreConnected(byHelper: true);
+    if (system.isWindows && await system.checkIsAdmin()) {
+      final isSuccess = await request.startCoreByHelper(_transport.address);
+      if (isSuccess) {
+        await _transport.connectionCompleter.future;
+        return;
       }
-      final message = result.message.isNotEmpty
-          ? result.message
-          : 'Failed to start core by helper';
-      commonPrint.log(message, logLevel: LogLevel.error);
-      _handleInvokeCrashEvent();
-      return message;
     }
     try {
       _process = await Process.start(appPath.corePath, [_transport.address]);
     } catch (e) {
-      final message = 'Failed to start core process: $e';
-      commonPrint.log(message, logLevel: LogLevel.error);
+      commonPrint.log(
+        'Failed to start core process: $e',
+        logLevel: LogLevel.error,
+      );
       _handleInvokeCrashEvent();
-      return message;
+      return;
     }
     _process?.stdout.listen((_) {});
     _process?.stderr.listen((e) {
@@ -143,7 +113,7 @@ class CoreService extends CoreHandlerInterface {
         commonPrint.log(error, logLevel: LogLevel.warning);
       }
     });
-    return _waitCoreConnected();
+    await _transport.connectionCompleter.future;
   }
 
   @override
@@ -183,7 +153,8 @@ class CoreService extends CoreHandlerInterface {
 
   @override
   Future<String> preload() async {
-    return start();
+    await start();
+    return '';
   }
 
   @override

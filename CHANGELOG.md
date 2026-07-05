@@ -1,131 +1,990 @@
-## v2.0.14
+## v0.8.93
 
-- Windows：core 连接失败后停止后续初始化流程，避免启动失败后继续等待 IPC 导致界面长期停在连接中
+- Support custom overwrite
 
-## v2.0.13
+- Support run on demand
 
-- Windows：启动 core 前等待 IPC server ready，避免 `PSGCore.exe` 过早连接命名管道失败后界面一直停在连接中
-- Windows：core IPC 连接增加超时和 helper 日志回传，启动失败时显示明确错误，不再无限连接中
+- Optimize windows ipc
 
-## v2.0.12
+- Optimize windows arm64
 
-- Windows：安装新版时先结束旧 app/core/helper 进程，再删除 helper 服务，降低旧 helper 占用端口或服务删除失败的概率
+- Optimize build
 
-## v2.0.11
+- Optimize some details
 
-- Windows：修复 Rust helper 服务内部名称仍为 `FlClashHelperService` 的严重问题，统一为 `PSGHelperService`
-- Windows：helper 自修复和安装器会同时清理旧 `FlClashHelperService`，避免旧服务占用 helper 端口导致 TUN/core 启动异常
+- Update core
 
-## v2.0.10
+## v0.8.92
 
-- Windows：虚拟网卡开启后，内网 IP 显示优先读取 TUN 设备 IP，避免仍显示物理网卡 IP 造成误判
-- Windows：切换虚拟网卡后立即刷新内网 IP 状态
-- Windows：TUN 启用时写入 `auto-detect-interface` 和 `strict-route`，减少流量漏回物理网卡导致外网 IP 不变
+- Add sqlite store
 
-## v2.0.9
+- Optimize android quick action
 
-- Windows：安装新版时先停止并删除旧 `PSGHelperService`，避免旧服务注册项残留导致重装后虚拟网卡/TUN 仍不可用
+- Optimize backup and restore
 
-## v2.0.8
+- Optimize more details
 
-- Windows：管理员启动时也强制校验并注册 `PSGHelperService`，避免跳过 helper 后 TUN/core 启动链路失效
-- Windows：core 启动改为只要 helper 服务可用就通过 helper 启动，修复普通用户注册 helper 后仍直接启动 `PSGCore` 的问题
-- Windows：注册 helper 前检查 `PSGHelperService.exe` 是否存在，并延长服务注册后的等待时间，减少 UAC/服务删除延迟导致的误报失败
+## v0.8.91
 
-## v2.0.7
+- Fix windows some issues
 
-- Windows：修复 v2.0.6 构建分析失败，改用显式 `ResultType` 判断 helper 启动结果
+- Optimize overwrite handle
 
-## v2.0.6
+- Optimize access control page
 
-- Windows：修复旧版 helper 服务残留或 token/hash 不匹配时 TUN 无法启动的问题，自动重装当前版本 `PSGHelperService`
-- Windows：helper 启动 `PSGCore` 失败时显示具体错误并记录 helper 日志，避免虚拟网卡静默失效
+- Optimize some details
 
-## v2.0.5
+## v0.8.90
 
-- 网络：恢复原版 FlClash 的 DNS、VPN、TUN 配置生成与代理连接管理行为，仅保留 Panorama Secure Access 品牌和发布构建改动
-- DNS：移除此前新增的“全球隐私优先 / 中国网络兼容”预设与自动迁移逻辑，默认回到原版 nameserver、fallback、fallback-filter 与 system DNS 追加策略
-- 稳定性：撤回非原版的超时、测速、连接更新和生命周期改动，降低单站点访问异常时的软件侧变量
-- 品牌：官方 Logo 与全平台应用图标改为透明底扁平样式，移除玻璃底板、渐变、高光和半透明效果
+- Fix android tile service
 
-## v2.0.4
+- Support append system DNS
 
-- DNS：优化 TUN 场景下的全球隐私优选，用户域名 DoH 按规则路由，代理节点域名使用兼容 bootstrap，降低 DNS 泄露与复杂网络连接中断风险
-- DNS：旧版全球直连 DoH 预设会自动迁移到新的 TUN 兼容方案，减少 browserscan 等站点出现 ERR_CONNECTION_CLOSED 的情况
+- Fix some issues
 
-## v2.0.3
+- Update changelog
 
-- 法务：免责声明主体统一为 Panorama Secure Access，并同步 en / zh_CN / ja / ru
-- DNS：明确全球网络优先隐私与速度，中国大陆等复杂网络优先兼容与稳定，并持续兼顾安全、隐私与解析效率
-- DNS：全球默认采用 Cloudflare / Quad9 / Google 多供应商 DoH 冗余，中国网络兼容预设采用区域加密 DNS，避免复杂网络下默认回落海外 DoH 导致解析失败
-- DNS：全球隐私优选与中国网络兼容预设默认关闭 HTTP/3 DNS，提高复杂网络下的解析稳定性
-- 安全：升级 Go 核心依赖 golang.org/x/crypto 与 golang.org/x/oauth2，消除 OSV 已知告警
-- Android：发布包拆分为 ARMv8、ARMv7、x64，应用内更新按设备 ABI 自动选择
+## v0.8.89
 
-## v2.0.2
+- Fix some issues
 
-- 修复 Android 应用内更新安装失败：发布 ARMv8 / ARMv7 / x64 分架构 APK，避免下载固定 arm64 包导致 ABI 不匹配
-- 修复 Android release 签名门禁：缺少正式 keystore 或签名参数时直接失败，避免 debug 签名包无法覆盖正式版
-- 更新：Android 发布包拆分为 ARMv8、ARMv7、x64，应用内更新按设备 ABI 自动选择
-- DNS：全球隐私优选关闭默认 HTTP/3 DNS，提升海外网络和受限网络下的解析稳定性
+- Optimize Windows service mode
 
-## v2.0.1
+- Update core
 
-- 法务：重写免责声明，明确授权范围、合规用途、用户责任和责任限制，并同步 en / zh_CN / ja / ru
-- DNS：默认改为全球隐私优先的加密公共 DNS，关闭系统 DNS 静默回退，降低 DNS 泄露风险
-- DNS：新增“中国网络兼容”预设，由用户显式启用区域加密 DNS，提高中国网络环境下的可达性
-- 隐私：默认启用 DNS 覆写、DNS 劫持保护和规则跟随，降低本机 IP 与 DNS 泄露风险
-- 性能：修复代理延迟测试批处理逻辑，避免一次性创建过多测速任务
+- Update changelog
 
-## v2.0.0
+## v0.8.88
 
-- 正式发布 Panorama Secure Access 2.0，基于最新 ClashMeta (mihomo) 核心
-- 全平台支持：Android、Windows (x64/ARM64)、macOS (Intel/Apple Silicon)、Linux (x64/ARM64)
-- 品牌全面升级为 Panorama Scholarly Group (PSG) 设计语言
-- Material You 自适应界面，支持动态取色
-- 修复 CI 全平台构建流程（Go 核心权限、CocoaPods BOM 解析、子模块依赖）
+- Add android separates the core process
 
-## v1.0.8
+- Support core status check and force restart
 
-- 修复：统一四端 LOGO（macOS / Windows / Android Play Store 均替换为 PSG 黑底白字设计，此前仍显示旧版 FlClash 蓝色图标）
+- Optimize proxies page and access page
 
-## v1.0.7
+- Update flutter and pub dependencies
 
-- 修复：下载完成后自动触发安装（Android 使用系统包安装器，Windows/macOS/Linux 自动打开安装包）
-- 优化：更新下载进度弹窗 UI（圆角卡片、系统更新图标、文件名显示、更粗的进度条）
+- Update go version
 
-## v1.0.6
+- Optimize more details
 
-- 安全：修复 SSL 证书验证绕过漏洞，现仅对 localhost 跳过证书检查
-- DNS：启用 HTTP/3 (QUIC) 优先，加快 DNS 解析速度
-- DNS：fallback DNS 由 DoT(853端口) 改为 DoH(HTTPS 443端口)，更稳定且难被封锁
-- 性能：TCP keepAlive 间隔由 30s 降至 15s，不稳定网络下连接恢复更快
+- Update changelog
 
-## v1.0.5
+## v0.8.87
 
-- 安全：新增 PIN 锁屏功能（启动时、从后台返回时验证，支持自动锁定超时）
-- 安全：PIN 以 SHA-256 哈希存储，支持设置/修改 PIN（修改时需验证旧 PIN）
-- 更新：应用内下载安装包，显示实时进度条，支持取消
+- Optimize desktop view
 
-## v1.0.4
+- Optimize logs, requests, connection pages
 
-- 修复 Android 无法覆盖安装旧版问题（applicationId 改为 com.psg.internal，独立于原版 FlClash）
-- 修复 Android 签名一致性问题（提交固定 keystore，每次构建签名一致）
+- Optimize windows tray auto hide
 
-## v1.0.3
+- Optimize some details
 
-- 图标全面更新为 Bauhaus 黑底几何 P 设计，四端统一，圆角处理
-- 免责声明改为 PSG 内部工具专属说明
-- 关于页「检查更新」确认后自动下载对应平台安装包
+- Update core
 
-## v1.0.1
+- Update changelog
 
-- 修复 Android 自适应图标被裁切问题（元素缩放至安全区）
-- 修复 macOS 应用名称构建失败（PRODUCT_NAME = PSG）
-- 修复所有残余 FlClash 字符串引用
+## v0.8.86
 
-## v1.0.0
+- Fix windows tun issues
 
-- PSG 初版发布，基于 FlClash 完整品牌重塑
-- Bauhaus 德式极简设计风格（黑白红配色）
-- 支持 Android / Windows / macOS / Linux 四平台
+- Optimize android get system dns
+
+- Optimize more details
+
+- Update changelog
+
+## v0.8.85
+
+- Support override script
+
+- Support proxies search
+
+- Support svg display
+
+- Optimize config persistence
+
+- Add some scenes auto close connections
+
+- Update core
+
+- Optimize more details
+
+## v0.8.84
+
+- Fix windows service verify issues
+
+- Update changelog
+
+## v0.8.83
+
+- Add windows server mode start process verify
+
+- Add linux deb dependencies
+
+- Add backup recovery strategy select
+
+- Support custom text scaling
+
+- Optimize the display of different text scale
+
+- Optimize windows setup experience
+
+- Optimize startTun performance
+
+- Optimize android tv experience
+
+- Optimize default option
+
+- Optimize computed text size
+
+- Optimize hyperOS freeform window
+
+- Add developer mode
+
+- Update core
+
+- Optimize more details
+
+- Add issues template
+
+- Update changelog
+
+## v0.8.82
+
+- Optimize android vpn performance
+
+- Add custom primary color and color scheme
+
+- Add linux nad windows arm release
+
+- Optimize requests and logs page
+
+- Fix map input page delete issues
+
+- Update changelog
+
+## v0.8.81
+
+- Add rule override
+
+- Update core
+
+- Optimize more details
+
+- Update changelog
+
+## v0.8.80
+
+- Optimize dashboard performance
+
+- Fix some issues
+
+- Fix unselected proxy group delay issues
+
+- Fix asn url issues
+
+- Update changelog
+
+## v0.8.79
+
+- Fix tab delay view issues
+
+- Fix tray action issues
+
+- Fix get profile redirect client ua issues
+
+- Fix proxy card delay view issues
+
+- Add Russian, Japanese adaptation
+
+- Fix some issues
+
+- Update changelog
+
+## v0.8.78
+
+- Fix list form input view issues
+
+- Fix traffic view issues
+
+- Update changelog
+
+## v0.8.77
+
+- Optimize performance
+
+- Update core
+
+- Optimize core stability
+
+- Fix linux tun authority check error
+
+- Fix some issues
+
+- Fix scroll physics error
+
+- Update changelog
+
+## v0.8.75
+
+- Add windows storage corruption detection
+
+- Fix core crash caused by windows resource manager restart
+
+- Optimize logs, requests, access to pages
+
+- Fix macos bypass domain issues
+
+- Update changelog
+
+## v0.8.74
+
+- Fix some issues
+
+- Update changelog
+
+## v0.8.73
+
+- Update popup menu
+
+- Add file editor
+
+- Fix android service issues
+
+- Optimize desktop background performance
+
+- Optimize android main process performance
+
+- Optimize delay test
+
+- Optimize vpn protect
+
+- Update changelog
+
+## v0.8.72
+
+- Update core
+
+- Fix some issues
+
+- Update changelog
+
+## v0.8.71
+
+- Remake dashboard
+
+- Optimize theme
+
+- Optimize more details
+
+- Update flutter version
+
+- Update changelog
+
+## v0.8.70
+
+- Support better window position memory
+
+- Add windows arm64 and linux arm64 build script
+
+- Optimize some details
+
+## v0.8.69
+
+- Remake desktop
+
+- Optimize change proxy
+
+- Optimize network check
+
+- Fix fallback issues
+
+- Optimize lots of details
+
+- Update change.yaml
+
+- Fix android tile issues
+
+- Fix windows tray issues
+
+- Support setting bypassDomain
+
+- Update flutter version
+
+- Fix android service issues
+
+- Fix macos dock exit button issues
+
+- Add route address setting
+
+- Optimize provider view
+
+- Update changelog
+
+- Update CHANGELOG.md
+
+## v0.8.67
+
+- Add android shortcuts
+
+- Fix init params issues
+
+- Fix dynamic color issues
+
+- Optimize navigator animate
+
+- Optimize window init
+
+- Optimize fab
+
+- Optimize save
+
+## v0.8.66
+
+- Fix the collapse issues
+
+- Add fontFamily options
+
+## v0.8.65
+
+- Update core version
+
+- Update flutter version
+
+- Optimize ip check
+
+- Optimize url-test
+
+## v0.8.64
+
+- Update release message
+
+- Init auto gen changelog
+
+- Fix windows tray issues
+
+- Fix urltest issues
+
+- Add auto changelog
+
+- Fix windows admin auto launch issues
+
+- Add android vpn options
+
+- Support proxies icon configuration
+
+- Optimize android immersion display
+
+- Fix some issues
+
+- Optimize ip detection
+
+- Support android vpn ipv6 inbound switch
+
+- Support log export
+
+- Optimize more details
+
+- Fix android system dns issues
+
+- Optimize dns default option
+
+- Fix some issues
+
+- Update readme
+
+## v0.8.60
+
+- Fix build error2
+
+- Fix build error
+
+- Support desktop hotkey
+
+- Support android ipv6 inbound
+
+- Support android system dns
+
+- fix some bugs
+
+## v0.8.59
+
+- Fix delete profile error
+
+## v0.8.58
+
+- Fix submit error 2
+
+- Fix submit error
+
+- Optimize DNS strategy
+
+- Fix the problem that the tray is not displayed in some cases
+
+- Optimize tray
+
+- Update core
+
+- Fix some error
+
+## v0.8.57
+
+- Fix tun update issues
+
+- Add DNS override
+- Fixed some bugs
+- Optimize more detail
+
+- Add Hosts override
+
+## v0.8.56
+
+- fix android tip error
+- fix windows auto launch error
+
+## v0.8.55
+
+- Fix windows tray issues
+
+- Optimize windows logic
+
+- Optimize app logic
+
+- Support windows administrator auto launch
+
+- Support android close vpn
+
+## v0.8.53
+
+- Change flutter version
+
+- Support profiles sort
+
+- Support windows country flags display
+
+- Optimize proxies page and profiles page columns
+
+## v0.8.52
+
+- Update flutter version
+
+- Update version
+
+- Update timeout time
+
+- Update access control page
+
+- Fix bug
+
+## v0.8.51
+
+- Optimize provider page
+
+- Optimize delay test
+
+- Support local backup and recovery
+
+- Fix android tile service issues
+
+## v0.8.49
+
+- Fix linux core build error
+
+- Add proxy-only traffic statistics
+
+- Update core
+
+- Optimize more details
+
+- Merge pull request #140 from txyyh/main
+
+- 添加自建 F-Droid 仓库相关 workflow
+- Rename readme fingerprint
+
+- Rename workflow deploy repo name
+
+- Add download guide to README
+
+- Add push release files to fdroid-repo
+
+## v0.8.48
+
+- Optimize proxies page
+
+- Fix ua issues
+
+- Optimize more details
+
+## v0.8.47
+
+- Fix windows build error
+
+## v0.8.46
+
+- Update app icon
+
+- Fix desktop backup error
+
+- Optimize request ua
+
+- Change android icon
+
+- Optimize dashboard
+
+## v0.8.44
+
+- Remove request validate certificate
+
+- Sync core
+
+## v0.8.43
+
+- Fix windows error
+
+## v0.8.42
+
+- Fix setup.dart error
+
+- Fix android system proxy not effective
+
+- Add macos arm64
+
+## v0.8.41
+
+- Optimize proxies page
+
+- Support mouse drag scroll
+
+- Adjust desktop ui
+
+- Revert "Fix android vpn issues"
+
+- This reverts commit 891977408e6938e2acd74e9b9adb959c48c79988.
+
+## v0.8.40
+
+- Fix android vpn issues
+
+- Fix android vpn issues
+
+- Rollback partial modification
+
+## v0.8.39
+
+- Fix the problem that ui can't be synchronized when android vpn is occupied by an external
+
+- Override default socksPort,port
+
+## v0.8.38
+
+- Fix fab issues
+
+## v0.8.37
+
+- Update version
+
+- Fix the problem that vpn cannot be started in some cases
+
+- Fix the problem that geodata url does not take effect
+
+## v0.8.36
+
+- Update ua
+
+- Fix change outbound mode without check ip issues
+
+- Separate android ui and vpn
+
+- Fix url validate issues 2
+
+- Add android hidden from the recent task
+
+- Add geoip file
+
+- Support modify geoData URL
+
+## v0.8.35
+
+- Fix url validate issues
+
+- Fix check ip performance problem
+
+- Optimize resources page
+
+## v0.8.34
+
+- Add ua selector
+
+- Support modify test url
+
+- Optimize android proxy
+
+- Fix the error that async proxy provider could not selected the proxy
+
+## v0.8.33
+
+- Fix android proxy error
+
+- Fix submit error
+
+- Add windows tun
+
+- Optimize android proxy
+
+- Optimize change profile
+
+- Update application ua
+
+- Optimize delay test
+
+## v0.8.32
+
+- Fix android repeated request notification issues
+
+## v0.8.31
+
+- Fix memory overflow issues
+
+## v0.8.30
+
+- Optimize proxies expansion panel 2
+
+- Fix android scan qrcode error
+
+## v0.8.29
+
+- Optimize proxies expansion panel
+
+- Fix text error
+
+## v0.8.28
+
+- Optimize proxy
+
+- Optimize delayed sorting performance
+
+- Add expansion panel proxies page
+
+- Support to adjust the proxy card size
+
+- Support to adjust proxies columns number
+
+- Fix autoRun show issues
+
+- Fix Android 10 issues
+
+- Optimize ip show
+
+## v0.8.26
+
+- Add intranet IP display
+
+- Add connections page
+
+- Add search in connections, requests
+
+- Add keyword search in connections, requests, logs
+
+- Add basic viewing editing capabilities
+
+- Optimize update profile
+
+## v0.8.25
+
+- Update version
+
+- Fix the problem of excessive memory usage in traffic usage.
+
+- Add lightBlue theme color
+
+- Fix start unable to update profile issues
+
+- Fix flashback caused by process
+
+## v0.8.23
+
+- Add build version
+
+- Optimize quick start
+
+- Update system default option
+
+## v0.8.22
+
+- Update build.yml
+
+- Fix android vpn close issues
+
+- Add requests page
+
+- Fix checkUpdate dark mode style error
+
+- Fix quickStart error open app
+
+- Add memory proxies tab index
+
+- Support hidden group
+
+- Optimize logs
+
+- Fix externalController hot load error
+
+## v0.8.21
+
+- Add tcp concurrent switch
+
+- Add system proxy switch
+
+- Add geodata loader switch
+
+- Add external controller switch
+
+- Add auto gc on trim memory
+
+- Fix android notification error
+
+## v0.8.20
+
+- Fix ipv6 error
+
+- Fix android udp direct error
+
+- Add ipv6 switch
+
+- Add access all selected button
+
+- Remove android low version splash
+
+## v0.8.19
+
+- Update version
+
+- Add allowBypass
+
+- Fix Android only pick .text file issues
+
+## v0.8.18
+
+- Fix search issues
+
+## v0.8.17
+
+- Fix LoadBalance, Relay load error
+
+- Fix build.yml4
+
+- Fix build.yml3
+
+- Fix build.yml2
+
+- Fix build.yml
+
+- Add search function at access control
+
+- Fix the issues with the profile add button to cover the edit button
+
+- Adapt LoadBalance and Relay
+
+- Add arm
+
+- Fix android notification icon error
+
+## v0.8.16
+
+- Add one-click update all profiles
+- Add expire show
+
+## v0.8.15
+
+- Temp remove tun mode
+
+- Remove macos in workflow
+
+- Change go version
+
+## v0.8.14
+
+- Update Version
+
+- Fix tun unable to open
+
+## v0.8.13
+
+- Optimize delay test2
+
+- Optimize delay test
+
+- Add check ip
+
+- add check ip request
+
+## v0.8.12
+
+- Fix the problem that the download of remote resources failed after GeodataMode was turned on, which caused the
+  application to flash back.
+
+- Fix edit profile error
+
+- Fix quickStart change proxy error
+
+- Fix core version
+
+## v0.8.10
+
+- Fix core version
+
+## v0.8.9
+
+- Update file_picker
+
+- Add resources page
+
+- Optimize more detail
+
+- Add access selected sorted
+
+- Fix notification duplicate creation issue
+
+- Fix AccessControl click issue
+
+## v0.8.7
+
+- Fix Workflow
+
+- Fix Linux unable to open
+
+- Update README.md 3
+
+- Create LICENSE
+- Update README.md 2
+
+- Update README.md
+
+- Optimize workFlow
+
+## v0.8.6
+
+- optimize checkUpdate
+
+## v0.8.5
+
+- Fix submit error
+
+## v0.8.4
+
+- add WebDAV
+
+- add Auto check updates
+
+- Optimize more details
+
+- optimize delayTest
+
+## v0.8.2
+
+- upgrade flutter version
+
+## v0.8.1
+
+- Update kernel
+- Add import profile via QR code image
+
+## v0.8.0
+
+- Add compatibility mode and adapt clash scheme.
+
+## v0.7.14
+
+- update Version
+
+- Reconstruction application proxy logic
+
+## v0.7.13
+
+- Fix Tab destroy error
+
+## v0.7.12
+
+- Optimize repeat healthcheck
+
+## v0.7.11
+
+- Optimize Direct mode ui
+
+## v0.7.10
+
+- Optimize Healthcheck
+
+- Remove proxies position animation, improve performance
+- Add Telegram Link
+
+- Update healthcheck policy
+
+- New Check URLTest
+
+- Fix the problem of invalid auto-selection
+
+## v0.7.8
+
+- New Async UpdateConfig
+
+- add changeProfileDebounce
+
+- Update Workflow
+
+- Fix ChangeProfile block
+
+- Fix Release Message Error
+
+## v0.7.7
+
+- Update Selector 2
+
+## v0.7.6
+
+- Update Version
+
+- Fix Proxies Select Error
+
+## v0.7.5
+
+- Fix the problem that the proxy group is empty in global mode.
+
+- Fix the problem that the proxy group is empty in global mode.
+
+## v0.7.4
+
+- Add ProxyProvider2
+
+## v0.7.3
+
+- Add ProxyProvider
+
+- Update Version
+
+- Update ProxyGroup Sort
+
+- Fix Android quickStart VpnService some problems
+
+## v0.7.1
+
+- Update version
+
+- Set Android notification low importance
+
+- Fix the issue that VpnService can't be closed correctly in special cases
+
+- Fix the problem that TileService is not destroyed correctly in some cases
+
+- Adjust tab animation defaults
+
+- Add Telegram in README_zh_CN.md
+
+- Add Telegram
+
+## v0.7.0
+
+- update mobile_scanner
+
+- Initial commit

@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 
 const appName = 'Panorama Secure Access';
 const appHelperService = 'PSGHelperService';
-const legacyAppHelperService = 'FlClashHelperService';
 const coreName = 'clash.meta';
 const browserUa =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
@@ -103,7 +102,7 @@ const proxiesListStoreKey = PageStorageKey<String>('proxies_list');
 const toolsStoreKey = PageStorageKey<String>('tools');
 const profilesStoreKey = PageStorageKey<String>('profiles');
 
-// PSG brand red — Bauhaus primary
+// PSG brand red.
 const defaultPrimaryColor = 0XFFCC0000;
 
 double getWidgetHeight(num lines) {
@@ -117,7 +116,6 @@ const mainIsolate = 'PSGMainIsolate';
 
 const serviceIsolate = 'PSGServiceIsolate';
 
-// PSG color palette: red, deep red, charcoal, mid gray, near-white
 const defaultPrimaryColors = [
   defaultPrimaryColor,
   0xFFAA0000,

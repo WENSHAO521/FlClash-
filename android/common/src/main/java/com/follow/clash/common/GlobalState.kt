@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 
 object GlobalState : CoroutineScope by CoroutineScope(Dispatchers.Default) {
 
-    const val NOTIFICATION_CHANNEL = "PSG"
+    const val NOTIFICATION_CHANNEL = "Panorama Secure Access"
 
     const val NOTIFICATION_ID = 1
 
@@ -28,7 +28,7 @@ object GlobalState : CoroutineScope by CoroutineScope(Dispatchers.Default) {
 
 
     fun log(text: String) {
-        Log.d("[PSG]", text)
+        Log.d("[PSA]", text)
     }
 
     fun init(application: Application) {

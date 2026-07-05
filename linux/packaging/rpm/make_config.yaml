@@ -1,7 +1,7 @@
 display_name: Panorama Secure Access
 
 packager: Panorama Scholarly Group
-packagerEmail: wainixueer3334@gmail.com
+packagerEmail: contact@panorama-sg.com
 license: Other
 
 priority: optional
@@ -12,9 +12,9 @@ icon: ./assets/images/icon.png
 
 keywords:
   - Panorama Secure Access
-  - PSG
-  - Proxy
+  - Clash
   - ClashMeta
+  - Proxy
 
 generic_name: Panorama Secure Access
 

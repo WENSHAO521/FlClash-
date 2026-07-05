@@ -162,24 +162,7 @@ class Request {
     }
   }
 
-  Future<String> getHelperLogs() async {
-    try {
-      final response = await dio
-          .get(
-            'http://$localhost:$helperPort/logs',
-            options: Options(responseType: ResponseType.plain),
-          )
-          .timeout(const Duration(milliseconds: 2000));
-      if (response.statusCode != HttpStatus.ok) {
-        return '';
-      }
-      return (response.data as String?)?.trim() ?? '';
-    } catch (_) {
-      return '';
-    }
-  }
-
-  Future<Result<bool>> startCoreByHelper(String arg) async {
+  Future<bool> startCoreByHelper(String arg) async {
     try {
       final response = await dio
           .post(
@@ -189,21 +172,12 @@ class Request {
       )
           .timeout(const Duration(milliseconds: 2000));
       if (response.statusCode != HttpStatus.ok) {
-        return Result.error(
-          'Helper start failed with status ${response.statusCode}',
-        );
+        return false;
       }
-      final data = ((response.data as String?) ?? '').trim();
-      if (data.isEmpty) {
-        return Result.success(true);
-      }
-      final logs = await getHelperLogs();
-      final message = logs.isEmpty ? data : '$data\n$logs';
-      return Result.error(message.trim());
-    } catch (e) {
-      final logs = await getHelperLogs();
-      final message = logs.isEmpty ? '$e' : '$e\n$logs';
-      return Result.error(message.trim());
+      final data = response.data as String;
+      return data.isEmpty;
+    } catch (_) {
+      return false;
     }
   }
 

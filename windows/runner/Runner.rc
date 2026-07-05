@@ -92,7 +92,7 @@ BEGIN
             VALUE "CompanyName", "Panorama Scholarly Group" "\0"
             VALUE "FileDescription", "Panorama Secure Access" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "Panorama Secure Access" "\0"
+            VALUE "InternalName", "PSA" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 Panorama Scholarly Group. All rights reserved." "\0"
             VALUE "OriginalFilename", "PSA.exe" "\0"
             VALUE "ProductName", "Panorama Secure Access" "\0"

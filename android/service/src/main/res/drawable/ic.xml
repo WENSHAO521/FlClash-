@@ -5,40 +5,13 @@
     android:viewportWidth="240"
     android:viewportHeight="240"
     tools:ignore="VectorRaster">
-
-    <!--
-        Quick Settings tile icon — panorama security design.
-        Scaled from 200×200 to 240×240 (factor 1.2), center at (120, 120).
-        Stroke width = 8 × 1.2 = 9.6.
-    -->
-
-    <!-- Outer arc: radius 60 → 72 -->
-    <path android:pathData="M48,120 A72,72 0 0,1 192,120"
-          android:strokeColor="#FFFFFF"
-          android:strokeWidth="9.6"
-          android:strokeLineCap="round"
-          android:fillColor="#00000000"/>
-
-    <!-- Middle arc: radius 45 → 54 -->
-    <path android:pathData="M66,120 A54,54 0 0,1 174,120"
-          android:strokeColor="#FFFFFF"
-          android:strokeWidth="9.6"
-          android:strokeLineCap="round"
-          android:fillColor="#00000000"/>
-
-    <!-- Inner arc: radius 30 → 36 -->
-    <path android:pathData="M84,120 A36,36 0 0,1 156,120"
-          android:strokeColor="#FFFFFF"
-          android:strokeWidth="9.6"
-          android:strokeLineCap="round"
-          android:fillColor="#00000000"/>
-
-    <!-- Secure-access pillar -->
-    <path android:pathData="M112.8,96 H127.2 V168 H112.8 Z"
-          android:fillColor="#FFFFFF"/>
-
-    <!-- Base line -->
-    <path android:pathData="M48,174 H192 V178.8 H48 Z"
-          android:fillColor="#FFFFFF"/>
-
+  <path
+      android:pathData="M48.1,80.89L168.44,11.41c11.08,-6.4 25.24,-2.6 31.64,8.48 0,0 0,0 0,0h0c6.4,11.08 2.6,25.24 -8.48,31.64 0,0 0,0 0,0l-120.34,69.48c-11.08,6.4 -25.24,2.6 -31.64,-8.48 0,0 0,0 0,0h0c-6.4,-11.08 -2.6,-25.24 8.48,-31.64 0,0 0,0 0,0Z"
+      android:fillColor="#FFFFFF"/>
+  <path
+      android:pathData="M78.98,134.37l60.18,-34.74c11.07,-6.39 25.23,-2.59 31.63,8.48h0c6.4,11.07 2.61,25.24 -8.47,31.64l-60.18,34.74c-11.08,6.4 -25.24,2.6 -31.64,-8.48 0,0 0,0 0,0h0c-6.4,-11.08 -2.6,-25.24 8.48,-31.64h0Z"
+      android:fillColor="#FFFFFF"/>
+  <path
+      android:pathData="M109.86,187.86h0c11.08,-6.4 25.24,-2.6 31.64,8.48 0,0 0,0 0,0h0c6.4,11.08 2.6,25.24 -8.48,31.64 0,0 0,0 0,0h0c-11.08,6.4 -25.24,2.6 -31.64,-8.48 0,0 0,0 0,0h0c-6.4,-11.08 -2.6,-25.24 8.48,-31.64 0,0 0,0 0,0Z"
+      android:fillColor="#FFFFFF"/>
 </vector>

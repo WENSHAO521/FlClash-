@@ -302,7 +302,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m1,
     "deleteTip": m2,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "Многоплатформенный прокси-клиент на основе ClashMeta, простой и удобный в использовании, с открытым исходным кодом и без рекламы.",
+      "Panorama Secure Access is a multi-platform proxy client for Panorama Scholarly Group.",
     ),
     "destination": MessageLookupByLibrary.simpleMessage("Назначение"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
@@ -323,7 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Отказ от ответственности",
     ),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "Panorama Secure Access — это программное обеспечение для сетевого доступа и управления подключениями, предоставляемое только авторизованным пользователям и предназначенное исключительно для законных и соответствующих требованиям рабочих или иных разрешенных целей. Перед использованием этого программного обеспечения вы должны подтвердить наличие необходимых полномочий и обязуетесь соблюдать применимые законы, нормативные требования, требования к кибербезопасности и внутренние правила вашей организации. Запрещается использовать это программное обеспечение для незаконных, несанкционированных, нарушающих права третьих лиц, угрожающих сетевой безопасности или выходящих за пределы разрешенного использования действий. Пользователь самостоятельно несет ответственность за все обязательства, убытки и споры, возникающие в связи с его собственными настройками, подключением к сторонним сервисам или ненадлежащим использованием этого программного обеспечения. В максимально допустимой законом степени Panorama Secure Access и соответствующие правообладатели не несут ответственности за такие действия. Нажимая «Согласен», вы подтверждаете, что прочитали, поняли и приняли настоящий отказ от ответственности.",
+      "Это программное обеспечение используется только в некоммерческих целях, таких как учебные обмены и научные исследования. Запрещено использовать это программное обеспечение в коммерческих целях. Любая коммерческая деятельность, если таковая имеется, не имеет отношения к этому программному обеспечению.",
     ),
     "disconnected": MessageLookupByLibrary.simpleMessage("Отключено"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
@@ -334,20 +334,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dnsHijacking": MessageLookupByLibrary.simpleMessage("DNS-перехват"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("Режим DNS"),
-    "dnsPreset": MessageLookupByLibrary.simpleMessage("Предустановка DNS"),
-    "dnsPresetChinaCompatibility": MessageLookupByLibrary.simpleMessage(
-      "Совместимость с сетями Китая",
-    ),
-    "dnsPresetChinaCompatibilityDesc": MessageLookupByLibrary.simpleMessage(
-      "Приоритет совместимости и стабильности в сложных сетевых средах, включая материковый Китай, при сохранении баланса безопасности, приватности и эффективности DNS",
-    ),
-    "dnsPresetCustom": MessageLookupByLibrary.simpleMessage("Пользовательский"),
-    "dnsPresetGlobalPrivacy": MessageLookupByLibrary.simpleMessage(
-      "Глобальная конфиденциальность",
-    ),
-    "dnsPresetGlobalPrivacyDesc": MessageLookupByLibrary.simpleMessage(
-      "Приоритет конфиденциальности и скорости в глобальных сетях при сохранении баланса безопасности, приватности и эффективности DNS",
-    ),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Вы хотите пропустить",
     ),
@@ -400,7 +386,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "fakeipRange": MessageLookupByLibrary.simpleMessage("Диапазон Fakeip"),
     "fallback": MessageLookupByLibrary.simpleMessage("Резервный"),
     "fallbackDesc": MessageLookupByLibrary.simpleMessage(
-      "Использовать зашифрованный публичный DNS в качестве резервного",
+      "Обычно используется оффшорный DNS",
     ),
     "fallbackFilter": MessageLookupByLibrary.simpleMessage(
       "Фильтр резервного DNS",
@@ -1010,24 +996,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "submit": MessageLookupByLibrary.simpleMessage("Отправить"),
     "suspended": MessageLookupByLibrary.simpleMessage("Приостановлено..."),
-    "appLock": MessageLookupByLibrary.simpleMessage("Блокировка приложения"),
-    "appLockEnabled": MessageLookupByLibrary.simpleMessage("Включить блокировку"),
-    "appLockEnabledDesc": MessageLookupByLibrary.simpleMessage("Требовать PIN при запуске или возврате из фона"),
-    "setPIN": MessageLookupByLibrary.simpleMessage("Установить PIN"),
-    "changePIN": MessageLookupByLibrary.simpleMessage("Изменить PIN"),
-    "enterCurrentPIN": MessageLookupByLibrary.simpleMessage("Введите текущий PIN"),
-    "enterNewPIN": MessageLookupByLibrary.simpleMessage("Введите новый PIN"),
-    "confirmPIN": MessageLookupByLibrary.simpleMessage("Подтвердите PIN"),
-    "pinMismatch": MessageLookupByLibrary.simpleMessage("PIN-коды не совпадают, попробуйте снова"),
-    "pinTooShort": MessageLookupByLibrary.simpleMessage("PIN должен содержать не менее 4 цифр"),
-    "pinSet": MessageLookupByLibrary.simpleMessage("PIN успешно установлен"),
-    "pinIncorrect": MessageLookupByLibrary.simpleMessage("Неверный PIN"),
-    "autoLockTimeout": MessageLookupByLibrary.simpleMessage("Время автоблокировки"),
-    "neverLock": MessageLookupByLibrary.simpleMessage("Никогда"),
-    "downloading": MessageLookupByLibrary.simpleMessage("Загрузка"),
-    "downloadComplete": MessageLookupByLibrary.simpleMessage("Загрузка завершена, нажмите для установки"),
-    "downloadFailed": MessageLookupByLibrary.simpleMessage("Ошибка загрузки, повторите попытку"),
-    "cancelDownload": MessageLookupByLibrary.simpleMessage("Отмена"),
     "sync": MessageLookupByLibrary.simpleMessage("Синхронизация"),
     "system": MessageLookupByLibrary.simpleMessage("Система"),
     "systemApp": MessageLookupByLibrary.simpleMessage("Системное приложение"),

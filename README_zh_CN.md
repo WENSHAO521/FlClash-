@@ -6,93 +6,127 @@
 
 ## Panorama Secure Access
 
-[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
-[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
-[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
-**Panorama Scholarly Group (PSG)** 出品的多平台安全代理客户端，基于 [ClashMeta](https://github.com/MetaCubeX/mihomo)，简单易用，开源无广告。
+[![Project](https://img.shields.io/badge/GitHub-Project-blue?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access)
 
-官网：[panorama-sg.com](https://panorama-sg.com/)
+Panorama Secure Access 是 Panorama Scholarly Group 使用的多平台代理客户端。
 
-## 功能特性
+on Desktop:
+<p style="text-align: center;">
+    <img alt="desktop" src="snapshots/desktop.gif">
+</p>
 
-- **多平台支持** — Android、Windows、macOS、Linux 全平台覆盖
-- **自适应界面** — 支持多种屏幕尺寸与颜色主题
-- **Material You 设计** — 简洁现代的界面风格，类 [Surfboard](https://github.com/getsurfboard/surfboard) 体验
-- **WebDAV 同步** — 跨设备同步配置与设置
-- **订阅一键导入** — 快速导入代理订阅链接
-- **深色模式** — 完整深色/浅色主题支持
+on Mobile:
+<p style="text-align: center;">
+    <img alt="mobile" src="snapshots/mobile.gif">
+</p>
 
-## 下载
+## Features
 
-前往 [GitHub Releases](https://github.com/WENSHAO521/panorama-secure-access/releases) 下载最新版本。
+✈️ 多平台: Android, Windows, macOS and Linux
 
-| 平台 | 文件 |
-|---|---|
-| Android | `PSA-{version}-android-arm64-v8a.apk` |
-| Windows (x64) | `PSA-{version}-windows-amd64-setup.exe` |
-| Windows (ARM) | `PSA-{version}-windows-arm64-setup.exe` |
-| macOS (Intel) | `PSA-{version}-macos-amd64.dmg` |
-| macOS (Apple Silicon) | `PSA-{version}-macos-arm64.dmg` |
-| Linux (x64) | `PSA-{version}-linux-amd64.AppImage` |
+💻 自适应多个屏幕尺寸,多种颜色主题可供选择
 
-## 使用说明
+💡 基本 Material You 设计, 类[Surfboard](https://github.com/getsurfboard/surfboard)用户界面
+
+☁️ 支持通过WebDAV同步数据
+
+✨ 支持一键导入订阅, 深色模式
+
+## Use
 
 ### Linux
 
-首次使用前请安装以下系统依赖：
+⚠️ 使用前请确保安装以下依赖
 
-```bash
-sudo apt-get install libayatana-appindicator3-dev
-sudo apt-get install libkeybinder-3.0-dev
-```
+   ```bash
+    sudo apt-get install libayatana-appindicator3-dev
+    sudo apt-get install libkeybinder-3.0-dev
+   ```
 
 ### Android
 
-支持以下广播 Intent 用于自动化控制：
+支持下列操作
 
-```
-com.follow.clash.action.START
-com.follow.clash.action.STOP
-com.follow.clash.action.TOGGLE
-```
-
-## 构建
-
-1. 克隆仓库（包含子模块）：
    ```bash
-   git clone --recurse-submodules https://github.com/WENSHAO521/panorama-secure-access
-   cd FlClash-
+    com.follow.clash.action.START
+
+    com.follow.clash.action.STOP
+
+    com.follow.clash.action.TOGGLE
    ```
 
-2. 安装 [Flutter](https://flutter.dev/docs/get-started/install) 和 [Go](https://golang.org/dl/)（1.24+）
+## Download
 
-3. 构建目标平台：
+<a href="https://github.com/WENSHAO521/panorama-secure-access/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
 
-   **Android**
+## Build
+
+1. 更新 submodules
    ```bash
-   # 安装 Android SDK 和 NDK（r28c），设置 ANDROID_NDK 环境变量
-   dart setup.dart android
+   git submodule update --init --recursive
    ```
 
-   **Windows**
-   ```bash
-   # 需要 GCC 和 Inno Setup
-   dart setup.dart windows
-   ```
+2. 安装 `Flutter` 以及 `Golang` 环境
 
-   **Linux**
-   ```bash
-   # 依赖会由脚本自动安装，或手动安装：
-   sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
-   dart setup.dart linux
-   ```
+3. 构建应用
 
-   **macOS**
-   ```bash
-   dart setup.dart macos
-   ```
+    - android
 
-## 开源协议
+        1. 安装  `Android SDK` ,  `Android NDK`
 
-[GPL-3.0](LICENSE) — Panorama Scholarly Group
+        2. 设置 `ANDROID_NDK` 环境变量
+
+        3. 运行构建脚本
+
+           ```bash
+           dart setup.dart android
+           ```
+
+    - windows
+
+        1. 你需要一个windows客户端
+
+        2. 安装 `GCC`，`Inno Setup`
+
+        3. 运行构建脚本
+
+           ```bash
+           dart setup.dart windows
+           ```
+
+    - linux
+
+        1. 你需要一个linux客户端
+
+        2. 依赖会由 setup 脚本自动安装，也可以手动安装：
+           ```bash
+           sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
+           ```
+
+        3. 运行构建脚本
+
+           ```bash
+           dart setup.dart linux
+           ```
+
+    - macOS
+
+        1. 你需要一个macOS客户端
+
+        2. 运行构建脚本
+
+           ```bash
+           dart setup.dart macos
+           ```
+
+## Star
+
+支持开发者的最简单方式是点击页面顶部的星标（⭐）。
+
+<p style="text-align: center;">
+    <a href="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date">
+        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date"/>
+    </a>
+</p>

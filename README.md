@@ -6,93 +6,127 @@
 
 ## Panorama Secure Access
 
-[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
-[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)
-[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
-A multi-platform secure proxy client built by **Panorama Scholarly Group (PSG)**, based on [ClashMeta](https://github.com/MetaCubeX/mihomo). Simple to use, open-source, and ad-free.
+[![Project](https://img.shields.io/badge/GitHub-Project-blue?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access)
 
-Official website: [panorama-sg.com](https://panorama-sg.com/)
+Panorama Secure Access is a multi-platform proxy client for Panorama Scholarly Group.
+
+on Desktop:
+<p style="text-align: center;">
+    <img alt="desktop" src="snapshots/desktop.gif">
+</p>
+
+on Mobile:
+<p style="text-align: center;">
+    <img alt="mobile" src="snapshots/mobile.gif">
+</p>
 
 ## Features
 
-- **Multi-platform** — Android, Windows, macOS and Linux
-- **Adaptive UI** — Responsive layout for all screen sizes, multiple color themes
-- **Material You** — Clean, modern design inspired by [Surfboard](https://github.com/getsurfboard/surfboard)
-- **WebDAV Sync** — Sync profiles and settings across devices
-- **Subscription support** — Import proxy subscriptions with one click
-- **Dark mode** — Full dark/light theme support
+✈️ Multi-platform: Android, Windows, macOS and Linux
 
-## Download
+💻 Adaptive multiple screen sizes, Multiple color themes available
 
-Get the latest release from [GitHub Releases](https://github.com/WENSHAO521/panorama-secure-access/releases).
+💡 Based on Material You Design, [Surfboard](https://github.com/getsurfboard/surfboard)-like UI
 
-| Platform | File |
-|---|---|
-| Android | `PSA-{version}-android-arm64-v8a.apk` |
-| Windows (x64) | `PSA-{version}-windows-amd64-setup.exe` |
-| Windows (ARM) | `PSA-{version}-windows-arm64-setup.exe` |
-| macOS (Intel) | `PSA-{version}-macos-amd64.dmg` |
-| macOS (Apple Silicon) | `PSA-{version}-macos-arm64.dmg` |
-| Linux (x64) | `PSA-{version}-linux-amd64.AppImage` |
+☁️ Supports data sync via WebDAV
 
-## Usage
+✨ Support subscription link, Dark mode
+
+## Use
 
 ### Linux
 
-Install required system dependencies before first run:
+⚠️ Make sure to install the following dependencies before using them
 
-```bash
-sudo apt-get install libayatana-appindicator3-dev
-sudo apt-get install libkeybinder-3.0-dev
-```
+   ```bash
+    sudo apt-get install libayatana-appindicator3-dev
+    sudo apt-get install libkeybinder-3.0-dev
+   ```
 
 ### Android
 
-The following broadcast intents are supported for automation:
+Support the following actions
 
-```
-com.follow.clash.action.START
-com.follow.clash.action.STOP
-com.follow.clash.action.TOGGLE
-```
+   ```bash
+    com.follow.clash.action.START
+
+    com.follow.clash.action.STOP
+
+    com.follow.clash.action.TOGGLE
+   ```
+
+## Download
+
+<a href="https://github.com/WENSHAO521/panorama-secure-access/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
 
 ## Build
 
-1. Clone with submodules:
+1. Update submodules
    ```bash
-   git clone --recurse-submodules https://github.com/WENSHAO521/panorama-secure-access
-   cd FlClash-
+   git submodule update --init --recursive
    ```
 
-2. Install [Flutter](https://flutter.dev/docs/get-started/install) and [Go](https://golang.org/dl/) (1.24+)
+2. Install `Flutter` and `Golang` environment
 
-3. Build for your target platform:
+3. Build Application
 
-   **Android**
-   ```bash
-   # Install Android SDK and NDK (r28c), set ANDROID_NDK
-   dart setup.dart android
-   ```
+    - android
 
-   **Windows**
-   ```bash
-   # Requires GCC and Inno Setup
-   dart setup.dart windows
-   ```
+        1. Install `Android SDK`, `Android NDK`
 
-   **Linux**
-   ```bash
-   # Dependencies are installed automatically, or manually:
-   sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
-   dart setup.dart linux
-   ```
+        2. Set `ANDROID_NDK` environment variable
 
-   **macOS**
-   ```bash
-   dart setup.dart macos
-   ```
+        3. Run build script
 
-## License
+           ```bash
+           dart setup.dart android
+           ```
 
-[GPL-3.0](LICENSE) — Panorama Scholarly Group
+    - windows
+
+        1. Requires a Windows client
+
+        2. Install `GCC`, `Inno Setup`
+
+        3. Run build script
+
+           ```bash
+           dart setup.dart windows
+           ```
+
+    - linux
+
+        1. Requires a Linux client
+
+        2. Dependencies are auto-installed by setup script, or manually:
+           ```bash
+           sudo apt-get install -y libayatana-appindicator3-dev libkeybinder-3.0-dev
+           ```
+
+        3. Run build script
+
+           ```bash
+           dart setup.dart linux
+           ```
+
+    - macOS
+
+        1. Requires a macOS client
+
+        2. Run build script
+
+           ```bash
+           dart setup.dart macos
+           ```
+
+## Star
+
+The easiest way to support developers is to click on the star (⭐) at the top of the page.
+
+<p style="text-align: center;">
+    <a href="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date">
+        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date"/>
+    </a>
+</p>

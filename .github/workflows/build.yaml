@@ -37,7 +37,6 @@ jobs:
     needs: [ test ]
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
         include:
           - platform: android
@@ -77,20 +76,12 @@ jobs:
 
       - name: Setup Android Signing
         if: startsWith(matrix.platform,'android')
-        env:
-          KEYSTORE_B64: ${{ secrets.KEYSTORE }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          if [ -z "$KEYSTORE_B64" ] || [ -z "$KEY_ALIAS" ] || [ -z "$STORE_PASSWORD" ] || [ -z "$KEY_PASSWORD" ]; then
-            echo "::error::Android stable release requires KEYSTORE, KEY_ALIAS, STORE_PASSWORD, and KEY_PASSWORD secrets."
-            exit 1
-          fi
-          echo "$KEYSTORE_B64" | base64 --decode > android/app/keystore.jks
-          echo "keyAlias=$KEY_ALIAS" >> android/local.properties
-          echo "storePassword=$STORE_PASSWORD" >> android/local.properties
-          echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
+          echo "${{ secrets.KEYSTORE }}" | base64 --decode > android/app/keystore.jks
+          echo "${{ secrets.SERVICE_JSON }}" | base64 --decode > android/app/google-services.json
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/local.properties
+          echo "storePassword=${{ secrets.STORE_PASSWORD }}" >> android/local.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/local.properties
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -98,39 +89,6 @@ jobs:
           go-version: '1.24.0'
           cache-dependency-path: |
             core/go.sum
-
-      - name: Normalize Go modules
-        shell: bash
-        run: go -C core mod tidy
-
-      - name: Normalize macOS project encoding
-        if: matrix.platform == 'macos'
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          for path in [
-              Path("macos/Runner.xcodeproj/project.pbxproj"),
-              Path("macos/Podfile"),
-          ]:
-              data = path.read_bytes()
-              if data.startswith(b"\xef\xbb\xbf"):
-                  path.write_bytes(data[3:])
-                  print(f"Removed UTF-8 BOM from {path}")
-              else:
-                  print(f"No BOM in {path}")
-          PY
-
-      - name: Setup macOS Rust targets
-        if: matrix.platform == 'macos'
-        shell: bash
-        run: |
-          rustup toolchain install stable --profile minimal
-          rustup default stable
-          rustup target add x86_64-apple-darwin aarch64-apple-darwin
-          rustc --version
-          rustup target list --installed
 
       - name: Enable git long paths (Windows)
         if: startsWith(matrix.os, 'windows')
@@ -165,26 +123,7 @@ jobs:
           flutter pub get
 
       - name: Setup
-        shell: bash
-        env:
-          APPIMAGE_EXTRACT_AND_RUN: 1
-        run: |
-          if [ "${{ matrix.platform }}" = "android" ]; then
-            version=$(awk '/^version:/{print $2}' pubspec.yaml | cut -d+ -f1)
-            mkdir -p dist
-            for arch in arm64 arm amd64; do
-              dart setup.dart android ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} --arch "$arch" -v
-              case "$arch" in
-                arm64) suffix="arm64-v8a" ;;
-                arm) suffix="armeabi-v7a" ;;
-                amd64) suffix="x86_64" ;;
-              esac
-              cp build/app/outputs/flutter-apk/app-release.apk "dist/PSA-${version}-android-${suffix}.apk"
-            done
-            ls -la dist
-          else
-            dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
-          fi
+        run: dart setup.dart ${{ matrix.platform }} ${{ env.IS_STABLE == 'true' && '--env stable' || '' }} -v
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -206,7 +145,26 @@ jobs:
       - name: Generate
         if: ${{ env.IS_STABLE == 'true' }}
         run: |
-          echo "CHANGELOG.md is manually maintained — no auto-generation."
+          last_ver=$(grep -m1 '^## ' CHANGELOG.md 2>/dev/null | sed 's/^## //')
+
+          tags=($(git tag --merged HEAD --sort=-creatordate))
+
+          temp="NEW_CHANGELOG.md" > "$temp"
+
+          for i in "${!tags[@]}"; do
+              curr="${tags[i]}"
+              [[ "$curr" == "$last_ver" ]] && break
+
+              prev="${tags[i+1]}"
+              range="${prev:+$prev..}$curr"
+
+              echo -e "## $curr\n" >> "$temp"
+              git log --no-merges --pretty=format:"%B" "$range" | \
+              awk '!/Update changelog/ && NF {print "- " $0 "\n"}' >> "$temp"
+          done
+          [ -f CHANGELOG.md ] && cat CHANGELOG.md >> "$temp"
+
+          mv "$temp" CHANGELOG.md
 
       - name: Commit
         if: ${{ env.IS_STABLE == 'true' }}
@@ -214,8 +172,8 @@ jobs:
           git add CHANGELOG.md
           if ! git diff --cached --quiet; then
             echo "Commit pushing"
-            git config --local user.email "wainixueer3334@gmail.com"
-            git config --local user.name "WENSHAO521"
+            git config --local user.email "chen08209@gmail.com"
+            git config --local user.name "chen08209"
             git commit -m "Update changelog"
             git push
             if [ $? -eq 0 ]; then
@@ -233,6 +191,14 @@ jobs:
     permissions: write-all
     needs: [ build ]
     runs-on: ubuntu-latest
+    services:
+      telegram-bot-api:
+        image: aiogram/telegram-bot-api:latest
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+        ports:
+          - 8081:8081
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -248,10 +214,34 @@ jobs:
 
       - name: Generate release.md
         run: |
-          tag="${{ github.ref_name }}"
-          # Extract only the current tag's section from CHANGELOG.md
-          awk "/^## $tag$/{p=1;next} /^## /{p=0} p" CHANGELOG.md > release.md
-          echo "" >> release.md
+          tags=($(git tag --merged HEAD --sort=-creatordate))
+          preTag=$(curl -s "https://api.github.com/repos/WENSHAO521/panorama-secure-access/releases/latest" | \
+          sed -nE 's/.*"tag_name": "([^"]+)".*/\1/p')
+
+          [ -z "$preTag" ] && preTag=""
+
+          out="release.md" > "$out"
+
+          for i in "${!tags[@]}"; do
+            curr="${tags[i]}"
+            [[ "$curr" == "$preTag" ]] && break
+
+            prev="${tags[i+1]}"
+            range="${prev:+$prev..}$curr"
+
+            git log --no-merges --pretty=format:"%B" "$range" | \
+            awk '!/Update changelog/ && NF {print "- " $0 "\n"}' >> "$out"
+          done
+      - name: Push to telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+          python release_telegram.py
+
       - name: Patch release.md
         run: |
           version=$(echo "${{ github.ref_name }}" | sed 's/^v//')
@@ -263,18 +253,31 @@ jobs:
           cd ./dist
           sha256sum * > SHA256SUMS
 
-      - name: Delete stale Android universal APK
-        if: ${{ env.IS_STABLE == 'true' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          version=$(echo "${{ github.ref_name }}" | sed 's/^v//')
-          gh release delete-asset "${{ github.ref_name }}" "PSA-${version}-android.apk" -y || true
-
       - name: Release
         if: ${{ env.IS_STABLE == 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           files: ./dist/*
           body_path: './release.md'
-          overwrite_files: true
+
+      - name: Create Fdroid Source Dir
+        if: ${{ env.IS_STABLE == 'true' }}
+        run: |
+          mkdir -p ./tmp
+          cp ./dist/*android-arm64-v8a* ./tmp/ || true
+          echo "Files copied successfully"
+
+      - name: Push to fdroid repo
+        if: ${{ env.IS_STABLE == 'true' }}
+        uses: cpina/github-action-push-to-another-repository@v1.7.2
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        with:
+          source-directory: ./tmp/
+          destination-github-username: WENSHAO521
+          destination-repository-name: panorama-secure-access-fdroid-repo
+          user-name: 'github-actions[bot]'
+          user-email: 'github-actions[bot]@users.noreply.github.com'
+          target-branch: main
+          commit-message: Update from ${{ github.ref_name }}
+          target-directory: /tmp/

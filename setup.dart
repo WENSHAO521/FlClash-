@@ -105,6 +105,9 @@ List<String> createFlutterBuildArgs({
     if (verbose) 'verbose',
     'dart-define-from-file=env.json',
   ];
+  if (platform == 'android') {
+    flutterBuildArgs.add('split-per-abi');
+  }
   return flutterBuildArgs;
 }
 
@@ -174,12 +177,8 @@ Future<int> _package(
   if (depExit != 0) return depExit;
 
   final process = await Process.start(
-    'dart',
+    'flutter_distributor',
     [
-      'pub',
-      'global',
-      'run',
-      'flutter_distributor:main',
       'package',
       '--skip-clean',
       '--platform',
