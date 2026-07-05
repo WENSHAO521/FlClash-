@@ -1,3 +1,8 @@
+## v2.0.6
+
+- Windows：修复旧版 helper 服务残留或 token/hash 不匹配时 TUN 无法启动的问题，自动重装当前版本 `PSGHelperService`
+- Windows：helper 启动 `PSGCore` 失败时显示具体错误并记录 helper 日志，避免虚拟网卡静默失效
+
 ## v2.0.5
 
 - 网络：恢复原版 FlClash 的 DNS、VPN、TUN 配置生成与代理连接管理行为，仅保留 Panorama Secure Access 品牌和发布构建改动
