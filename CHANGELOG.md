@@ -1,3 +1,7 @@
+## v2.0.7
+
+- Windows：修复 v2.0.6 构建分析失败，改用显式 `ResultType` 判断 helper 启动结果
+
 ## v2.0.6
 
 - Windows：修复旧版 helper 服务残留或 token/hash 不匹配时 TUN 无法启动的问题，自动重装当前版本 `PSGHelperService`

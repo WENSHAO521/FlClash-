@@ -91,7 +91,7 @@ class CoreService extends CoreHandlerInterface {
     }
     if (system.isWindows && await system.checkIsAdmin()) {
       final result = await request.startCoreByHelper(_transport.address);
-      if (result.isSuccess) {
+      if (result.type == ResultType.success) {
         await _transport.connectionCompleter.future;
         return '';
       }
