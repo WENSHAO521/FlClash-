@@ -293,41 +293,20 @@ class Windows {
       return true;
     }
 
-    final command = [
-      '/d',
-      '/s',
-      '/c',
+    final commands = [
       if (status == WindowsHelperServiceStatus.presence) ...[
-        'sc.exe',
-        'stop',
-        appHelperService,
-        '&',
-        'taskkill',
-        '/F',
-        '/IM',
-        '$appHelperService.exe'
-            ' & '
-            'sc.exe',
-        'delete',
-        appHelperService,
-        '&',
-        'ping',
-        '-n',
-        '3',
-        '127.0.0.1',
-        '>nul',
-        '&',
+        'sc.exe stop $appHelperService',
+        'taskkill /F /IM $appHelperService.exe',
+        'sc.exe delete $appHelperService',
       ],
-      'sc.exe',
-      'create',
-      appHelperService,
-      'binPath= "${appPath.helperPath}"',
-      'start= auto',
-      '&&',
-      'sc.exe',
-      'start',
-      appHelperService,
-    ].join(' ');
+      'sc.exe stop $legacyAppHelperService',
+      'taskkill /F /IM $legacyAppHelperService.exe',
+      'sc.exe delete $legacyAppHelperService',
+      'ping -n 3 127.0.0.1 >nul',
+      'sc.exe create $appHelperService binPath= "${appPath.helperPath}" start= auto',
+      'sc.exe start $appHelperService',
+    ];
+    final command = ['/d', '/s', '/c', commands.join(' & ')].join(' ');
 
     final res = runas('cmd.exe', command);
 

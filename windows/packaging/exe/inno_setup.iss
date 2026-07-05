@@ -25,7 +25,7 @@ var
   i: Integer;
   ResultCode: Integer;
 begin
-  Processes := ['PSA.exe', 'PSGCore.exe', 'PSGHelperService.exe'];
+  Processes := ['PSA.exe', 'PSGCore.exe', 'PSGHelperService.exe', 'FlClashHelperService.exe'];
 
   for i := 0 to GetArrayLength(Processes)-1 do
   begin
@@ -39,6 +39,8 @@ var
 begin
   Exec('sc.exe', 'stop PSGHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   Exec('sc.exe', 'delete PSGHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec('sc.exe', 'stop FlClashHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec('sc.exe', 'delete FlClashHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
 end;
 
 function InitializeSetup(): Boolean;

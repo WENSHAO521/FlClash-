@@ -1,3 +1,8 @@
+## v2.0.11
+
+- Windows：修复 Rust helper 服务内部名称仍为 `FlClashHelperService` 的严重问题，统一为 `PSGHelperService`
+- Windows：helper 自修复和安装器会同时清理旧 `FlClashHelperService`，避免旧服务占用 helper 端口导致 TUN/core 启动异常
+
 ## v2.0.10
 
 - Windows：虚拟网卡开启后，内网 IP 显示优先读取 TUN 设备 IP，避免仍显示物理网卡 IP 造成误判
