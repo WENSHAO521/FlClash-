@@ -89,7 +89,8 @@ class CoreService extends CoreHandlerInterface {
     if (_process != null) {
       await shutdown(false);
     }
-    if (system.isWindows && await system.checkIsAdmin()) {
+    final helperStatus = system.isWindows ? await windows?.checkService() : null;
+    if (helperStatus == WindowsHelperServiceStatus.running) {
       final result = await request.startCoreByHelper(_transport.address);
       if (result.type == ResultType.success) {
         await _transport.connectionCompleter.future;

@@ -1,3 +1,9 @@
+## v2.0.8
+
+- Windows：管理员启动时也强制校验并注册 `PSGHelperService`，避免跳过 helper 后 TUN/core 启动链路失效
+- Windows：core 启动改为只要 helper 服务可用就通过 helper 启动，修复普通用户注册 helper 后仍直接启动 `PSGCore` 的问题
+- Windows：注册 helper 前检查 `PSGHelperService.exe` 是否存在，并延长服务注册后的等待时间，减少 UAC/服务删除延迟导致的误报失败
+
 ## v2.0.7
 
 - Windows：修复 v2.0.6 构建分析失败，改用显式 `ResultType` 判断 helper 启动结果

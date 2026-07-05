@@ -73,11 +73,6 @@ class System {
     if (system.isAndroid) {
       return AuthorizeCode.error;
     }
-    final isAdmin = await checkIsAdmin();
-    if (isAdmin) {
-      return AuthorizeCode.none;
-    }
-
     if (system.isWindows) {
       final result = await windows?.registerService();
       if (result == true) {
@@ -87,6 +82,11 @@ class System {
       commonPrint.log(message, logLevel: LogLevel.error);
       globalState.showNotifier(message);
       return AuthorizeCode.error;
+    }
+
+    final isAdmin = await checkIsAdmin();
+    if (isAdmin) {
+      return AuthorizeCode.none;
     }
 
     if (system.isMacOS) {
@@ -278,6 +278,15 @@ class Windows {
   }
 
   Future<bool> registerService() async {
+    final helperFile = File(appPath.helperPath);
+    if (!await helperFile.exists()) {
+      commonPrint.log(
+        'Windows helper executable does not exist: ${appPath.helperPath}',
+        logLevel: LogLevel.error,
+      );
+      return false;
+    }
+
     final status = await checkService();
 
     if (status == WindowsHelperServiceStatus.running) {
@@ -285,9 +294,11 @@ class Windows {
     }
 
     final command = [
+      '/d',
+      '/s',
       '/c',
       if (status == WindowsHelperServiceStatus.presence) ...[
-        'sc',
+        'sc.exe',
         'stop',
         appHelperService,
         '&',
@@ -296,28 +307,34 @@ class Windows {
         '/IM',
         '$appHelperService.exe'
             ' & '
-            'sc',
+            'sc.exe',
         'delete',
         appHelperService,
         '&',
+        'ping',
+        '-n',
+        '3',
+        '127.0.0.1',
+        '>nul',
+        '&',
       ],
-      'sc',
+      'sc.exe',
       'create',
       appHelperService,
       'binPath= "${appPath.helperPath}"',
       'start= auto',
       '&&',
-      'sc',
+      'sc.exe',
       'start',
       appHelperService,
     ].join(' ');
 
     final res = runas('cmd.exe', command);
 
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(const Duration(seconds: 1));
     final retryStatus = await retry(
       task: checkService,
-      maxAttempts: 5,
+      maxAttempts: 45,
       retryIf: (status) => status != WindowsHelperServiceStatus.running,
       delay: const Duration(seconds: 1),
     );
