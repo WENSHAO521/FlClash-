@@ -115,8 +115,8 @@ void main() {
   });
 
   group('OverrideDns provider', () {
-    test('default is true', () {
-      expect(container.read(overrideDnsProvider), true);
+    test('default is false', () {
+      expect(container.read(overrideDnsProvider), false);
     });
 
     test('can toggle on', () {
@@ -156,7 +156,7 @@ void main() {
       expect(config.vpnProps.enable, true);
       expect(config.networkProps.systemProxy, true);
       expect(config.currentProfileId, null);
-      expect(config.overrideDns, true);
+      expect(config.overrideDns, false);
       expect(config.hotKeyActions, isEmpty);
     });
 
