@@ -5,7 +5,7 @@
     android:viewportHeight="108">
 
     <!--
-        Panorama Secure Access adaptive icon foreground — transparent background.
+        Panorama Secure Access adaptive icon foreground - transparent background.
         Safe zone 18dp–90dp: scale=0.36, offset=18dp. Center=(54,54).
         Stroke width = 8 × 0.36 = 2.88.
     -->
@@ -34,10 +34,6 @@
     <!-- Pillar body -->
     <path android:pathData="M51.84,46.8 H56.16 V68.4 H51.84 Z"
           android:fillColor="#C62828"/>
-
-    <!-- Pillar glass catchlight -->
-    <path android:pathData="M52.4,48.0 H53.9 V55.2 H52.4 Z"
-          android:fillColor="#80FFFFFF"/>
 
     <!-- Base line -->
     <path android:pathData="M32.4,70.2 H75.6 V71.64 H32.4 Z"

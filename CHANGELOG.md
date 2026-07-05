@@ -3,6 +3,7 @@
 - 网络：恢复原版 FlClash 的 DNS、VPN、TUN 配置生成与代理连接管理行为，仅保留 Panorama Secure Access 品牌和发布构建改动
 - DNS：移除此前新增的“全球隐私优先 / 中国网络兼容”预设与自动迁移逻辑，默认回到原版 nameserver、fallback、fallback-filter 与 system DNS 追加策略
 - 稳定性：撤回非原版的超时、测速、连接更新和生命周期改动，降低单站点访问异常时的软件侧变量
+- 品牌：官方 Logo 与全平台应用图标改为透明底扁平样式，移除玻璃底板、渐变、高光和半透明效果
 
 ## v2.0.4
 
