@@ -230,7 +230,7 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['default-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const ['1.1.1.1', '9.9.9.9', '8.8.8.8'],
+        const ['223.5.5.5', '119.29.29.29', '1.1.1.1'],
   enhancedMode:
       $enumDecodeNullable(_$DnsModeEnumMap, json['enhanced-mode']) ??
       DnsMode.fakeIp,
@@ -249,26 +249,26 @@ _Dns _$DnsFromJson(Map<String, dynamic> json) => _Dns(
       (json['nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-        'https://dns.google/dns-query',
-      ],
+        const [
+          'https://dns.google/dns-query#RULES',
+          'https://cloudflare-dns.com/dns-query#RULES',
+          'https://dns.quad9.net/dns-query#RULES',
+        ],
   fallback:
       (json['fallback'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const [
-        'https://dns.google/dns-query',
-        'https://cloudflare-dns.com/dns-query',
-      ],
+        const [
+          'https://dns.google/dns-query#RULES',
+          'https://cloudflare-dns.com/dns-query#RULES',
+        ],
   proxyServerNameserver:
       (json['proxy-server-nameserver'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList() ??
-      const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-        'https://dns.google/dns-query',
-      ],
+        const [
+          'https://dns.alidns.com/dns-query',
+          'https://doh.pub/dns-query',
+          '1.1.1.1',
+        ],
   fallbackFilter: json['fallback-filter'] == null
       ? const FallbackFilter()
       : FallbackFilter.fromJson(

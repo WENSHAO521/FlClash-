@@ -1,3 +1,8 @@
+## v2.0.4
+
+- DNS：优化 TUN 场景下的全球隐私优选，用户域名 DoH 按规则路由，代理节点域名使用兼容 bootstrap，降低 DNS 泄露与复杂网络连接中断风险
+- DNS：旧版全球直连 DoH 预设会自动迁移到新的 TUN 兼容方案，减少 browserscan 等站点出现 ERR_CONNECTION_CLOSED 的情况
+
 ## v2.0.3
 
 - 法务：免责声明主体统一为 Panorama Secure Access，并同步 en / zh_CN / ja / ru

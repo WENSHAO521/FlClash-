@@ -267,7 +267,7 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['1.1.1.1', '9.9.9.9', '8.8.8.8'])
+    @Default(['223.5.5.5', '119.29.29.29', '1.1.1.1'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -283,20 +283,20 @@ abstract class Dns with _$Dns {
     @JsonKey(name: 'nameserver-policy')
     Map<String, String> nameserverPolicy,
     @Default([
-      'https://cloudflare-dns.com/dns-query',
-      'https://dns.quad9.net/dns-query',
-      'https://dns.google/dns-query',
+      'https://dns.google/dns-query#RULES',
+      'https://cloudflare-dns.com/dns-query#RULES',
+      'https://dns.quad9.net/dns-query#RULES',
     ])
     List<String> nameserver,
     @Default([
-      'https://dns.google/dns-query',
-      'https://cloudflare-dns.com/dns-query',
+      'https://dns.google/dns-query#RULES',
+      'https://cloudflare-dns.com/dns-query#RULES',
     ])
     List<String> fallback,
     @Default([
-      'https://cloudflare-dns.com/dns-query',
-      'https://dns.quad9.net/dns-query',
-      'https://dns.google/dns-query',
+      'https://dns.alidns.com/dns-query',
+      'https://doh.pub/dns-query',
+      '1.1.1.1',
     ])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,

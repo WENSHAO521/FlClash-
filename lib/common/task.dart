@@ -267,23 +267,25 @@ Future<VM2<String, String>> _makeRealProfileTask(
 }
 
 Dns _normalizeDnsCompatibility(Dns dns) {
-  if (_isOldGlobalPrivacyPreset(dns) || _isGlobalPrivacyPreset(dns)) {
+  if (_isOldGlobalPrivacyPreset(dns) ||
+      _isDirectGlobalPrivacyPreset(dns) ||
+      _isGlobalPrivacyPreset(dns)) {
     return dns.copyWith(
       preferH3: false,
-      defaultNameserver: const ['1.1.1.1', '9.9.9.9', '8.8.8.8'],
+      defaultNameserver: const ['223.5.5.5', '119.29.29.29', '1.1.1.1'],
       nameserver: const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-        'https://dns.google/dns-query',
+        'https://dns.google/dns-query#RULES',
+        'https://cloudflare-dns.com/dns-query#RULES',
+        'https://dns.quad9.net/dns-query#RULES',
       ],
       fallback: const [
-        'https://dns.google/dns-query',
-        'https://cloudflare-dns.com/dns-query',
+        'https://dns.google/dns-query#RULES',
+        'https://cloudflare-dns.com/dns-query#RULES',
       ],
       proxyServerNameserver: const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-        'https://dns.google/dns-query',
+        'https://dns.alidns.com/dns-query',
+        'https://doh.pub/dns-query',
+        '1.1.1.1',
       ],
     );
   }
@@ -322,7 +324,7 @@ bool _isOldGlobalPrivacyPreset(Dns dns) {
       ]);
 }
 
-bool _isGlobalPrivacyPreset(Dns dns) {
+bool _isDirectGlobalPrivacyPreset(Dns dns) {
   return listEquals(dns.defaultNameserver, const [
         '1.1.1.1',
         '9.9.9.9',
@@ -341,6 +343,28 @@ bool _isGlobalPrivacyPreset(Dns dns) {
         'https://cloudflare-dns.com/dns-query',
         'https://dns.quad9.net/dns-query',
         'https://dns.google/dns-query',
+      ]);
+}
+
+bool _isGlobalPrivacyPreset(Dns dns) {
+  return listEquals(dns.defaultNameserver, const [
+        '223.5.5.5',
+        '119.29.29.29',
+        '1.1.1.1',
+      ]) &&
+      listEquals(dns.nameserver, const [
+        'https://dns.google/dns-query#RULES',
+        'https://cloudflare-dns.com/dns-query#RULES',
+        'https://dns.quad9.net/dns-query#RULES',
+      ]) &&
+      listEquals(dns.fallback, const [
+        'https://dns.google/dns-query#RULES',
+        'https://cloudflare-dns.com/dns-query#RULES',
+      ]) &&
+      listEquals(dns.proxyServerNameserver, const [
+        'https://dns.alidns.com/dns-query',
+        'https://doh.pub/dns-query',
+        '1.1.1.1',
       ]);
 }
 
