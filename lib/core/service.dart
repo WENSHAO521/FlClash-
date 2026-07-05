@@ -85,26 +85,30 @@ class CoreService extends CoreHandlerInterface {
     );
   }
 
-  Future<void> start() async {
+  Future<String> start() async {
     if (_process != null) {
       await shutdown(false);
     }
     if (system.isWindows && await system.checkIsAdmin()) {
-      final isSuccess = await request.startCoreByHelper(_transport.address);
-      if (isSuccess) {
+      final result = await request.startCoreByHelper(_transport.address);
+      if (result.isSuccess) {
         await _transport.connectionCompleter.future;
-        return;
+        return '';
       }
+      final message = result.message.isNotEmpty
+          ? result.message
+          : 'Failed to start core by helper';
+      commonPrint.log(message, logLevel: LogLevel.error);
+      _handleInvokeCrashEvent();
+      return message;
     }
     try {
       _process = await Process.start(appPath.corePath, [_transport.address]);
     } catch (e) {
-      commonPrint.log(
-        'Failed to start core process: $e',
-        logLevel: LogLevel.error,
-      );
+      final message = 'Failed to start core process: $e';
+      commonPrint.log(message, logLevel: LogLevel.error);
       _handleInvokeCrashEvent();
-      return;
+      return message;
     }
     _process?.stdout.listen((_) {});
     _process?.stderr.listen((e) {
@@ -114,6 +118,7 @@ class CoreService extends CoreHandlerInterface {
       }
     });
     await _transport.connectionCompleter.future;
+    return '';
   }
 
   @override
@@ -153,8 +158,7 @@ class CoreService extends CoreHandlerInterface {
 
   @override
   Future<String> preload() async {
-    await start();
-    return '';
+    return start();
   }
 
   @override
