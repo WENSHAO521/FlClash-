@@ -33,8 +33,17 @@ begin
   end;
 end;
 
+procedure RemoveHelperService;
+var
+  ResultCode: Integer;
+begin
+  Exec('sc.exe', 'stop PSGHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec('sc.exe', 'delete PSGHelperService', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+end;
+
 function InitializeSetup(): Boolean;
 begin
+  RemoveHelperService;
   KillProcesses;
   Result := True;
 end;

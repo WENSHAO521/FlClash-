@@ -1,3 +1,7 @@
+## v2.0.9
+
+- Windows：安装新版时先停止并删除旧 `PSGHelperService`，避免旧服务注册项残留导致重装后虚拟网卡/TUN 仍不可用
+
 ## v2.0.8
 
 - Windows：管理员启动时也强制校验并注册 `PSGHelperService`，避免跳过 helper 后 TUN/core 启动链路失效
