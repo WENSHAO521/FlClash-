@@ -1,3 +1,7 @@
+## v2.0.14
+
+- Windows：core 连接失败后停止后续初始化流程，避免启动失败后继续等待 IPC 导致界面长期停在连接中
+
 ## v2.0.13
 
 - Windows：启动 core 前等待 IPC server ready，避免 `PSGCore.exe` 过早连接命名管道失败后界面一直停在连接中

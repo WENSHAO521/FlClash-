@@ -498,7 +498,7 @@ class CoreAction extends _$CoreAction {
     }
   }
 
-  Future<void> connectCore() async {
+  Future<bool> connectCore() async {
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
     final result = await Future.wait([
       coreController.preload(),
@@ -508,9 +508,10 @@ class CoreAction extends _$CoreAction {
     if (message.isNotEmpty) {
       ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
       globalState.showNotifier(message);
-      return;
+      return false;
     }
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connected;
+    return true;
   }
 
   Future<Result<bool>> requestAdmin(bool enableTun) async {
@@ -538,7 +539,10 @@ class CoreAction extends _$CoreAction {
         ref.read(coreStatusProvider) == CoreStatus.disconnected;
     ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
     await coreController.shutdown(!isDisconnected);
-    await connectCore();
+    final connected = await connectCore();
+    if (!connected) {
+      return;
+    }
     await initCore();
     if (start || ref.read(isStartProvider)) {
       await ref
