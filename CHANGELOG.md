@@ -1,3 +1,8 @@
+## v2.0.13
+
+- Windows：启动 core 前等待 IPC server ready，避免 `PSGCore.exe` 过早连接命名管道失败后界面一直停在连接中
+- Windows：core IPC 连接增加超时和 helper 日志回传，启动失败时显示明确错误，不再无限连接中
+
 ## v2.0.12
 
 - Windows：安装新版时先结束旧 app/core/helper 进程，再删除 helper 服务，降低旧 helper 占用端口或服务删除失败的概率

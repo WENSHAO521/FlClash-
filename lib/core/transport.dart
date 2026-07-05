@@ -28,6 +28,8 @@ class IPCCoreTransport {
 
   Completer<void> get connectionCompleter => _completer;
 
+  Future<void> get ready => _readyCompleter.future;
+
   Stream<Uint8List> get dataStream => _dataController.stream;
 
   Future<void> init() async {
