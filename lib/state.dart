@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:animations/animations.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/theme.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/list.dart';
@@ -54,8 +55,12 @@ class GlobalState {
   }
 
   Future<void> _initDynamicColor() async {
-    // PSG brand: fixed color scheme, system wallpaper extraction disabled
-    accentColor = const Color(defaultPrimaryColor);
+    try {
+      corePalette = await DynamicColorPlugin.getCorePalette();
+      accentColor =
+          await DynamicColorPlugin.getAccentColor() ??
+          const Color(defaultPrimaryColor);
+    } catch (_) {}
   }
 
   String get ua => container

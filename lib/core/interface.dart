@@ -194,7 +194,6 @@ abstract class CoreHandlerInterface with CoreInterface {
     return await _invoke<String>(
           method: ActionMethod.changeProxy,
           data: json.encode(changeProxyParams),
-          timeout: const Duration(seconds: 5),
         ) ??
         '';
   }
@@ -246,29 +245,17 @@ abstract class CoreHandlerInterface with CoreInterface {
 
   @override
   Future<String> getConnections() async {
-    return await _invoke<String>(
-          method: ActionMethod.getConnections,
-          timeout: const Duration(seconds: 5),
-        ) ??
-        '';
+    return await _invoke<String>(method: ActionMethod.getConnections) ?? '';
   }
 
   @override
   Future<bool> closeConnections() async {
-    return await _invoke<bool>(
-          method: ActionMethod.closeConnections,
-          timeout: const Duration(seconds: 5),
-        ) ??
-        false;
+    return await _invoke<bool>(method: ActionMethod.closeConnections) ?? false;
   }
 
   @override
   Future<bool> resetConnections() async {
-    return await _invoke<bool>(
-          method: ActionMethod.resetConnections,
-          timeout: const Duration(seconds: 5),
-        ) ??
-        false;
+    return await _invoke<bool>(method: ActionMethod.resetConnections) ?? false;
   }
 
   @override
@@ -276,7 +263,6 @@ abstract class CoreHandlerInterface with CoreInterface {
     return await _invoke<bool>(
           method: ActionMethod.closeConnection,
           data: id,
-          timeout: const Duration(seconds: 5),
         ) ??
         false;
   }
@@ -286,7 +272,6 @@ abstract class CoreHandlerInterface with CoreInterface {
     return await _invoke<String>(
           method: ActionMethod.getTotalTraffic,
           data: onlyStatisticsProxy,
-          timeout: const Duration(seconds: 3),
         ) ??
         '';
   }
@@ -296,7 +281,6 @@ abstract class CoreHandlerInterface with CoreInterface {
     return await _invoke<String>(
           method: ActionMethod.getTraffic,
           data: onlyStatisticsProxy,
-          timeout: const Duration(seconds: 3),
         ) ??
         '';
   }

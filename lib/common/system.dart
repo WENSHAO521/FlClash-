@@ -414,7 +414,7 @@ class MacOS {
       if (originDns == null) {
         return;
       }
-      const needAddDns = '1.1.1.1';
+      const needAddDns = '223.5.5.5';
       if (originDns.contains(needAddDns)) {
         return;
       }

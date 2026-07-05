@@ -12,7 +12,7 @@ const defaultDns = Dns();
 const defaultGeoXUrl = GeoXUrl();
 
 const defaultMixedPort = 7890;
-const defaultKeepAliveInterval = 15;
+const defaultKeepAliveInterval = 30;
 
 const defaultBypassPrivateRouteAddress = [
   '1.0.0.0/8',
@@ -207,7 +207,7 @@ abstract class SnifferConfig with _$SnifferConfig {
 abstract class Tun with _$Tun {
   const factory Tun({
     @Default(false) bool enable,
-    @Default('PSA') String device,
+    @Default(appName) String device,
     @JsonKey(name: 'auto-route') @Default(false) bool autoRoute,
     @Default(TunStack.mixed) TunStack stack,
     @JsonKey(name: 'dns-hijack') @Default(['any:53']) List<String> dnsHijack,
@@ -246,11 +246,12 @@ extension TunExt on Tun {
 @freezed
 abstract class FallbackFilter with _$FallbackFilter {
   const factory FallbackFilter({
-    @Default(false) bool geoip,
-    @Default('US') @JsonKey(name: 'geoip-code') String geoipCode,
+    @Default(true) bool geoip,
+    @Default('CN') @JsonKey(name: 'geoip-code') String geoipCode,
     @Default([]) List<String> geosite,
     @Default(['240.0.0.0/4']) List<String> ipcidr,
-    @Default([]) List<String> domain,
+    @Default(['+.google.com', '+.facebook.com', '+.youtube.com'])
+    List<String> domain,
   }) = _FallbackFilter;
 
   factory FallbackFilter.fromJson(Map<String, Object?> json) =>
@@ -261,13 +262,13 @@ abstract class FallbackFilter with _$FallbackFilter {
 abstract class Dns with _$Dns {
   const factory Dns({
     @Default(true) bool enable,
-    @Default('127.0.0.1:1053') String listen,
+    @Default('0.0.0.0:1053') String listen,
     @Default(false) @JsonKey(name: 'prefer-h3') bool preferH3,
     @Default(true) @JsonKey(name: 'use-hosts') bool useHosts,
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
-    @Default(true) @JsonKey(name: 'respect-rules') bool respectRules,
+    @Default(false) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['223.5.5.5', '119.29.29.29', '1.1.1.1'])
+    @Default(['223.5.5.5'])
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -279,25 +280,17 @@ abstract class Dns with _$Dns {
     @Default(['*.lan', 'localhost.ptlogin2.qq.com'])
     @JsonKey(name: 'fake-ip-filter')
     List<String> fakeIpFilter,
-    @Default({})
+    @Default({
+      'www.baidu.com': '114.114.114.114',
+      '+.internal.crop.com': '10.0.0.1',
+      'geosite:cn': 'https://doh.pub/dns-query',
+    })
     @JsonKey(name: 'nameserver-policy')
     Map<String, String> nameserverPolicy,
-    @Default([
-      'https://dns.google/dns-query#RULES',
-      'https://cloudflare-dns.com/dns-query#RULES',
-      'https://dns.quad9.net/dns-query#RULES',
-    ])
+    @Default(['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'])
     List<String> nameserver,
-    @Default([
-      'https://dns.google/dns-query#RULES',
-      'https://cloudflare-dns.com/dns-query#RULES',
-    ])
-    List<String> fallback,
-    @Default([
-      'https://dns.alidns.com/dns-query',
-      'https://doh.pub/dns-query',
-      '1.1.1.1',
-    ])
+    @Default(['tls://8.8.4.4', 'tls://1.1.1.1']) List<String> fallback,
+    @Default(['https://doh.pub/dns-query'])
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
     @Default(FallbackFilter())

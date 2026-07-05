@@ -197,7 +197,12 @@ Future<VM2<String, String>> _makeRealProfileTask(
   final isEnableDns = rawConfig['dns']['enable'] == true;
   const systemDns = 'system://';
   if (overrideDns || !isEnableDns) {
-    final dns = _normalizeDnsCompatibility(realPatchConfig.dns);
+    final dns = switch (!isEnableDns) {
+      true => realPatchConfig.dns.copyWith(
+        nameserver: [...realPatchConfig.dns.nameserver, systemDns],
+      ),
+      false => realPatchConfig.dns,
+    };
     rawConfig['dns'] = dns.toJson();
     rawConfig['dns']['nameserver-policy'] = {};
     for (final entry in dns.nameserverPolicy.entries) {
@@ -264,147 +269,6 @@ Future<VM2<String, String>> _makeRealProfileTask(
   rawConfig['rules'] = rules;
   final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
   return VM2(yaml, yaml.toMd5());
-}
-
-Dns _normalizeDnsCompatibility(Dns dns) {
-  if (_isOldGlobalPrivacyPreset(dns) ||
-      _isDirectGlobalPrivacyPreset(dns) ||
-      _isGlobalPrivacyPreset(dns)) {
-    return dns.copyWith(
-      preferH3: false,
-      defaultNameserver: const ['223.5.5.5', '119.29.29.29', '1.1.1.1'],
-      nameserver: const [
-        'https://dns.google/dns-query#RULES',
-        'https://cloudflare-dns.com/dns-query#RULES',
-        'https://dns.quad9.net/dns-query#RULES',
-      ],
-      fallback: const [
-        'https://dns.google/dns-query#RULES',
-        'https://cloudflare-dns.com/dns-query#RULES',
-      ],
-      proxyServerNameserver: const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-        '1.1.1.1',
-      ],
-    );
-  }
-  if (_isOldChinaCompatibilityPreset(dns) ||
-      _isChinaCompatibilityPreset(dns)) {
-    return dns.copyWith(
-      preferH3: false,
-      defaultNameserver: const ['223.5.5.5', '223.6.6.6', '119.29.29.29'],
-      nameserver: const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ],
-      fallback: const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ],
-      proxyServerNameserver: const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ],
-    );
-  }
-  return dns;
-}
-
-bool _isOldGlobalPrivacyPreset(Dns dns) {
-  return listEquals(dns.defaultNameserver, const ['1.1.1.1', '9.9.9.9']) &&
-      listEquals(dns.nameserver, const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-      ]) &&
-      listEquals(dns.fallback, const ['https://dns.google/dns-query']) &&
-      listEquals(dns.proxyServerNameserver, const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-      ]);
-}
-
-bool _isDirectGlobalPrivacyPreset(Dns dns) {
-  return listEquals(dns.defaultNameserver, const [
-        '1.1.1.1',
-        '9.9.9.9',
-        '8.8.8.8',
-      ]) &&
-      listEquals(dns.nameserver, const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-        'https://dns.google/dns-query',
-      ]) &&
-      listEquals(dns.fallback, const [
-        'https://dns.google/dns-query',
-        'https://cloudflare-dns.com/dns-query',
-      ]) &&
-      listEquals(dns.proxyServerNameserver, const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-        'https://dns.google/dns-query',
-      ]);
-}
-
-bool _isGlobalPrivacyPreset(Dns dns) {
-  return listEquals(dns.defaultNameserver, const [
-        '223.5.5.5',
-        '119.29.29.29',
-        '1.1.1.1',
-      ]) &&
-      listEquals(dns.nameserver, const [
-        'https://dns.google/dns-query#RULES',
-        'https://cloudflare-dns.com/dns-query#RULES',
-        'https://dns.quad9.net/dns-query#RULES',
-      ]) &&
-      listEquals(dns.fallback, const [
-        'https://dns.google/dns-query#RULES',
-        'https://cloudflare-dns.com/dns-query#RULES',
-      ]) &&
-      listEquals(dns.proxyServerNameserver, const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-        '1.1.1.1',
-      ]);
-}
-
-bool _isOldChinaCompatibilityPreset(Dns dns) {
-  return listEquals(
-        dns.defaultNameserver,
-        const ['223.5.5.5', '119.29.29.29'],
-      ) &&
-      listEquals(dns.nameserver, const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ]) &&
-      listEquals(dns.fallback, const [
-        'https://cloudflare-dns.com/dns-query',
-        'https://dns.quad9.net/dns-query',
-      ]) &&
-      listEquals(dns.proxyServerNameserver, const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ]);
-}
-
-bool _isChinaCompatibilityPreset(Dns dns) {
-  return listEquals(dns.defaultNameserver, const [
-        '223.5.5.5',
-        '223.6.6.6',
-        '119.29.29.29',
-      ]) &&
-      listEquals(dns.nameserver, const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ]) &&
-      listEquals(dns.fallback, const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ]) &&
-      listEquals(dns.proxyServerNameserver, const [
-        'https://dns.alidns.com/dns-query',
-        'https://doh.pub/dns-query',
-      ]);
 }
 
 Future<List<String>> shakingProfileTask(

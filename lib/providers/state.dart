@@ -1,8 +1,10 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -34,7 +36,8 @@ GroupsState currentGroupsState(Ref ref) {
       Mode.global => groups.toList(),
       Mode.rule =>
         groups
-            .where((item) => item.hidden != true && item.name != GroupName.GLOBAL.name)
+            .where((item) => item.hidden == false)
+            .where((element) => element.name != GroupName.GLOBAL.name)
             .toList(),
     },
   );
@@ -528,10 +531,22 @@ ColorScheme genColorScheme(
       (state) => VM2(state.primaryColor, state.schemeVariant),
     ),
   );
-  // PSG brand: always use configured color or brand red; never pull from system wallpaper
-  final seedColor = color ?? Color(vm2.a ?? defaultPrimaryColor);
+  if (color == null && (ignoreConfig == true || vm2.a == null)) {
+    // if (globalState.corePalette != null) {
+    //   return globalState.corePalette!.toColorScheme(brightness: brightness);
+    // }
+    return ColorScheme.fromSeed(
+      seedColor:
+          globalState.corePalette
+              ?.toColorScheme(brightness: brightness)
+              .primary ??
+          globalState.accentColor,
+      brightness: brightness,
+      dynamicSchemeVariant: vm2.b,
+    );
+  }
   return ColorScheme.fromSeed(
-    seedColor: seedColor,
+    seedColor: color ?? Color(vm2.a!),
     brightness: brightness,
     dynamicSchemeVariant: vm2.b,
   );
@@ -789,12 +804,8 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
           ? null
           : await database.scriptsDao.get(scriptId).getSingleOrNull();
     } else {
-      final results = await Future.wait([
-        database.rulesDao.queryProfileCustomRules(profileId).get(),
-        database.proxyGroupsDao.query(profileId).get(),
-      ]);
-      rules = results[0] as List<Rule>;
-      proxyGroups = results[1] as List<ProxyGroup>;
+      rules = await database.rulesDao.queryProfileCustomRules(profileId).get();
+      proxyGroups = await database.proxyGroupsDao.query(profileId).get();
     }
   }
   return SetupState(

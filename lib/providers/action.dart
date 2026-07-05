@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/database/database.dart';
@@ -11,12 +10,10 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:open_file/open_file.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'generated/action.g.dart';
 
@@ -24,21 +21,6 @@ part 'generated/action.g.dart';
 class CommonAction extends _$CommonAction {
   @override
   void build() {}
-
-  Future<String> _androidUpdateApkName(String version) async {
-    final info = await DeviceInfoPlugin().androidInfo;
-    final supportedAbis = info.supportedAbis;
-    if (supportedAbis.contains('arm64-v8a')) {
-      return 'PSA-$version-android-arm64-v8a.apk';
-    }
-    if (supportedAbis.contains('armeabi-v7a')) {
-      return 'PSA-$version-android-armeabi-v7a.apk';
-    }
-    if (supportedAbis.contains('x86_64')) {
-      return 'PSA-$version-android-x86_64.apk';
-    }
-    return 'PSA-$version-android-arm64-v8a.apk';
-  }
 
   void updateStart() {
     ref
@@ -76,128 +58,10 @@ class CommonAction extends _$CommonAction {
     final onlyStatisticsProxy = ref.read(
       appSettingProvider.select((state) => state.onlyStatisticsProxy),
     );
-    final results = await Future.wait([
-      coreController.getTraffic(onlyStatisticsProxy),
-      coreController.getTotalTraffic(onlyStatisticsProxy),
-    ]);
-    ref.read(trafficsProvider.notifier).addTraffic(results[0]);
-    ref.read(totalTrafficProvider.notifier).value = results[1];
-  }
-
-  Future<void> _downloadUpdate(String url) async {
-    final context = globalState.navigatorKey.currentContext!;
-    final loc = currentAppLocalizations;
-    final fileName = url.split('/').last;
-    final tmpDir = await getTemporaryDirectory();
-    final savePath = '${tmpDir.path}/$fileName';
-    final progress = ValueNotifier<double>(0);
-    CancelToken? cancelToken = CancelToken();
-
-    if (!context.mounted) return;
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        final theme = Theme.of(ctx);
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 28, 24, 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Icon(
-                  Icons.system_update_rounded,
-                  size: 44,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(height: 14),
-                Text(
-                  loc.downloading,
-                  style: theme.textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  fileName,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
-                  ),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 22),
-                ValueListenableBuilder<double>(
-                  valueListenable: progress,
-                  builder: (_, v, _) => Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: LinearProgressIndicator(
-                          value: v == 0 ? null : v,
-                          minHeight: 7,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        v == 0 ? '–' : '${(v * 100).toStringAsFixed(1)} %',
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {
-                    cancelToken?.cancel();
-                    Navigator.of(ctx).pop();
-                  },
-                  child: Text(loc.cancelDownload),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    try {
-      await Dio().download(
-        url,
-        savePath,
-        cancelToken: cancelToken,
-        onReceiveProgress: (received, total) {
-          if (total > 0) progress.value = received / total;
-        },
-      );
-      if (context.mounted) Navigator.of(context).pop();
-      progress.dispose();
-      cancelToken = null;
-      if (Platform.isAndroid) {
-        await OpenFile.open(
-          savePath,
-          type: 'application/vnd.android.package-archive',
-        );
-      } else {
-        await OpenFile.open(savePath);
-      }
-    } on DioException catch (e) {
-      if (context.mounted) Navigator.of(context).pop();
-      progress.dispose();
-      if (e.type != DioExceptionType.cancel && context.mounted) {
-        globalState.showMessage(
-          title: loc.downloadFailed,
-          message: TextSpan(text: e.message ?? ''),
-        );
-      }
-    }
+    final traffic = await coreController.getTraffic(onlyStatisticsProxy);
+    ref.read(trafficsProvider.notifier).addTraffic(traffic);
+    ref.read(totalTrafficProvider.notifier).value = await coreController
+        .getTotalTraffic(onlyStatisticsProxy);
   }
 
   Future<void> autoCheckUpdate() async {
@@ -231,31 +95,7 @@ class CommonAction extends _$CommonAction {
         cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
       );
       if (res == true) {
-        final version = (tagName as String).replaceFirst('v', '');
-        final base =
-            'https://github.com/$repository/releases/download/$tagName';
-        final String downloadUrl;
-        if (Platform.isAndroid) {
-          downloadUrl = '$base/${await _androidUpdateApkName(version)}';
-        } else if (Platform.isWindows) {
-          final isArm = (Platform.environment['PROCESSOR_ARCHITECTURE'] ?? '')
-              .toUpperCase()
-              .contains('ARM');
-          downloadUrl =
-              '$base/PSA-$version-windows-${isArm ? 'arm64' : 'amd64'}-setup.exe';
-        } else if (Platform.isMacOS) {
-          final result =
-              await Process.run('uname', ['-m'], runInShell: true);
-          final arch =
-              result.stdout.toString().trim() == 'arm64' ? 'arm64' : 'amd64';
-          downloadUrl = '$base/PSA-$version-macos-$arch.dmg';
-        } else if (Platform.isLinux) {
-          downloadUrl = '$base/PSA-$version-linux-amd64.AppImage';
-        } else {
-          downloadUrl =
-              'https://github.com/$repository/releases/tag/$tagName';
-        }
-        _downloadUpdate(downloadUrl);
+        launchUrl(Uri.parse('https://github.com/$repository/releases/latest'));
       } else if (!isUser && res == false) {
         ref
             .read(appSettingProvider.notifier)
@@ -304,7 +144,6 @@ class SetupAction extends _$SetupAction {
     if (!ref.read(suspendProvider)) {
       await coreController.startListener();
     }
-    _updateTimer?.cancel();
     _updateTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       ref.read(commonActionProvider.notifier).updateRunTime();
       ref.read(commonActionProvider.notifier).updateTraffic();
@@ -434,10 +273,8 @@ class SetupAction extends _$SetupAction {
       silence: silence,
       preloadInvoke: preloadInvoke,
       onUpdated: () async {
-        await Future.wait([
-          ref.read(proxiesActionProvider.notifier).updateGroups(),
-          ref.read(providersProvider.notifier).syncProviders(),
-        ]);
+        await ref.read(proxiesActionProvider.notifier).updateGroups();
+        await ref.read(providersProvider.notifier).syncProviders();
       },
     );
   }
@@ -662,7 +499,11 @@ class CoreAction extends _$CoreAction {
 
   Future<void> connectCore() async {
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
-    final message = await coreController.preload();
+    final result = await Future.wait([
+      coreController.preload(),
+      Future.delayed(const Duration(milliseconds: 300)),
+    ]);
+    final String message = result[0];
     if (message.isNotEmpty) {
       ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
       globalState.showNotifier(message);

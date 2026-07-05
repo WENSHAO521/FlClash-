@@ -18,7 +18,7 @@ Future<void> main() async {
     }
     final version = await system.version;
     final container = await globalState.init(version);
-    HttpOverrides.global = PSGHttpOverrides();
+    HttpOverrides.global = FlClashHttpOverrides();
     runApp(
       UncontrolledProviderScope(
         container: container,

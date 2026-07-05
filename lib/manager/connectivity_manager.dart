@@ -28,16 +28,12 @@ class _ConnectivityManagerState extends State<ConnectivityManager> {
   @override
   void initState() {
     super.initState();
-    subscription = Connectivity().onConnectivityChanged.listen((results) async {
+    subscription = Connectivity().onConnectivityChanged.listen((results) {
       if (results.contains(ConnectivityResult.wifi)) {
-        try {
-          final ssid = await WifiSsidManager.instance.getSsid();
-          if (!mounted) return;
+        WifiSsidManager.instance.getSsid().then((ssid) {
           globalState.container.read(currentSSIDProvider.notifier).value = ssid;
-          commonPrint.log('Wi-fi SSID: $ssid', logLevel: LogLevel.info);
-        } catch (e) {
-          commonPrint.log('Failed to get SSID: $e', logLevel: LogLevel.warning);
-        }
+          commonPrint.log('Wi-fi SSID: $ssid ', logLevel: LogLevel.info);
+        });
       } else {
         globalState.container.read(currentSSIDProvider.notifier).value = null;
       }

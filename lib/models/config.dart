@@ -84,9 +84,6 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(false) bool developerMode,
     @Default(RestoreStrategy.compatible) RestoreStrategy restoreStrategy,
     @Default(true) bool showTrayTitle,
-    @Default(false) bool appLockEnabled,
-    String? appLockPin,
-    @Default(5) int autoLockMinutes,
   }) = _AppSettingProps;
 
   factory AppSettingProps.fromJson(Map<String, Object?> json) =>
@@ -156,8 +153,8 @@ abstract class VpnProps with _$VpnProps {
     @Default(true) bool enable,
     @Default(true) bool systemProxy,
     @Default(false) bool ipv6,
-    @Default(false) bool allowBypass,
-    @Default(true) bool dnsHijacking,
+    @Default(true) bool allowBypass,
+    @Default(false) bool dnsHijacking,
     @Default(defaultAccessControlProps) AccessControlProps accessControlProps,
   }) = _VpnProps;
 
@@ -235,7 +232,7 @@ abstract class ThemeProps with _$ThemeProps {
 abstract class Config with _$Config {
   const factory Config({
     int? currentProfileId,
-    @Default(true) bool overrideDns,
+    @Default(false) bool overrideDns,
     @Default([]) List<HotKeyAction> hotKeyActions,
     @JsonKey(fromJson: AppSettingProps.safeFromJson)
     @Default(defaultAppSettingProps)

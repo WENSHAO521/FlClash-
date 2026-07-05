@@ -35,7 +35,6 @@ class _ProxyManagerState extends ConsumerState<ProxyManager> {
 
   void _scheduleUpdateProxy(ProxyState proxyState) {
     _pendingUpdate = _pendingUpdate
-        .timeout(const Duration(seconds: 8), onTimeout: () {})
         .then((_) => _updateProxy(proxyState))
         .catchError((Object error) {
           commonPrint.log(

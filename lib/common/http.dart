@@ -5,7 +5,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PSGHttpOverrides extends HttpOverrides {
+class FlClashHttpOverrides extends HttpOverrides {
   static String handleFindProxy(Uri url) {
     if ([localhost].contains(url.host)) {
       return 'DIRECT';
@@ -24,8 +24,7 @@ class PSGHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     final client = super.createHttpClient(context);
-    client.badCertificateCallback = (cert, host, port) =>
-        host == localhost || host == '::1';
+    client.badCertificateCallback = (_, _, _) => true;
     client.findProxy = handleFindProxy;
     return client;
   }

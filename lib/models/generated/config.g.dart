@@ -35,9 +35,6 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
           ) ??
           RestoreStrategy.compatible,
       showTrayTitle: json['showTrayTitle'] as bool? ?? true,
-      appLockEnabled: json['appLockEnabled'] as bool? ?? false,
-      appLockPin: json['appLockPin'] as String?,
-      autoLockMinutes: json['autoLockMinutes'] as int? ?? 5,
     );
 
 Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
@@ -64,9 +61,6 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'developerMode': instance.developerMode,
       'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
       'showTrayTitle': instance.showTrayTitle,
-      'appLockEnabled': instance.appLockEnabled,
-      'appLockPin': instance.appLockPin,
-      'autoLockMinutes': instance.autoLockMinutes,
     };
 
 const _$RestoreStrategyEnumMap = {
@@ -151,8 +145,8 @@ _VpnProps _$VpnPropsFromJson(Map<String, dynamic> json) => _VpnProps(
   enable: json['enable'] as bool? ?? true,
   systemProxy: json['systemProxy'] as bool? ?? true,
   ipv6: json['ipv6'] as bool? ?? false,
-  allowBypass: json['allowBypass'] as bool? ?? false,
-  dnsHijacking: json['dnsHijacking'] as bool? ?? true,
+  allowBypass: json['allowBypass'] as bool? ?? true,
+  dnsHijacking: json['dnsHijacking'] as bool? ?? false,
   accessControlProps: json['accessControlProps'] == null
       ? defaultAccessControlProps
       : AccessControlProps.fromJson(
@@ -312,7 +306,7 @@ const _$DynamicSchemeVariantEnumMap = {
 
 _Config _$ConfigFromJson(Map<String, dynamic> json) => _Config(
   currentProfileId: (json['currentProfileId'] as num?)?.toInt(),
-  overrideDns: json['overrideDns'] as bool? ?? true,
+  overrideDns: json['overrideDns'] as bool? ?? false,
   hotKeyActions:
       (json['hotKeyActions'] as List<dynamic>?)
           ?.map((e) => HotKeyAction.fromJson(e as Map<String, dynamic>))

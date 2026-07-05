@@ -67,7 +67,7 @@ class DavSetting extends _$DavSetting with AutoDisposeNotifierMixin {
 class OverrideDns extends _$OverrideDns with AutoDisposeNotifierMixin {
   @override
   bool build() {
-    return true;
+    return false;
   }
 }
 
