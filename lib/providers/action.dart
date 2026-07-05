@@ -363,6 +363,7 @@ class SetupAction extends _$SetupAction {
       }
     }
     ref.read(realTunEnableProvider.notifier).value = enableTun;
+    await ref.read(systemActionProvider.notifier).updateLocalIp();
     return Result.success(enableTun);
   }
 
@@ -528,6 +529,7 @@ class CoreAction extends _$CoreAction {
       }
     }
     ref.read(realTunEnableProvider.notifier).value = enableTun;
+    await ref.read(systemActionProvider.notifier).updateLocalIp();
     return Result.success(enableTun);
   }
 
@@ -646,7 +648,12 @@ class SystemAction extends _$SystemAction {
   Future<void> updateLocalIp() async {
     ref.read(localIpProvider.notifier).value = null;
     await Future.delayed(commonDuration);
-    ref.read(localIpProvider.notifier).value = await utils.getLocalIpAddress();
+    final preferredInterfaceName = ref.read(realTunEnableProvider)
+        ? ref.read(patchClashConfigProvider).tun.device
+        : null;
+    ref.read(localIpProvider.notifier).value = await utils.getLocalIpAddress(
+      preferredInterfaceName: preferredInterfaceName,
+    );
   }
 }
 

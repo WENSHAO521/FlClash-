@@ -1,3 +1,9 @@
+## v2.0.10
+
+- Windows：虚拟网卡开启后，内网 IP 显示优先读取 TUN 设备 IP，避免仍显示物理网卡 IP 造成误判
+- Windows：切换虚拟网卡后立即刷新内网 IP 状态
+- Windows：TUN 启用时写入 `auto-detect-interface` 和 `strict-route`，减少流量漏回物理网卡导致外网 IP 不变
+
 ## v2.0.9
 
 - Windows：安装新版时先停止并删除旧 `PSGHelperService`，避免旧服务注册项残留导致重装后虚拟网卡/TUN 仍不可用
