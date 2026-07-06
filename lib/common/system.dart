@@ -8,6 +8,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/input.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 
@@ -72,17 +73,20 @@ class System {
     if (system.isAndroid) {
       return AuthorizeCode.error;
     }
-    final isAdmin = await checkIsAdmin();
-    if (isAdmin) {
-      return AuthorizeCode.none;
-    }
-
     if (system.isWindows) {
       final result = await windows?.registerService();
       if (result == true) {
         return AuthorizeCode.success;
       }
+      const message = 'Failed to register Windows helper service';
+      commonPrint.log(message, logLevel: LogLevel.error);
+      globalState.showNotifier(message);
       return AuthorizeCode.error;
+    }
+
+    final isAdmin = await checkIsAdmin();
+    if (isAdmin) {
+      return AuthorizeCode.none;
     }
 
     if (system.isMacOS) {
@@ -202,6 +206,37 @@ class Windows {
     return true;
   }
 
+  @visibleForTesting
+  String? parseServiceBinaryPath(String output) {
+    for (final line in output.split(RegExp(r'\r?\n'))) {
+      final parts = line.split(':');
+      if (parts.length < 2) {
+        continue;
+      }
+      if (parts.first.trim() != 'BINARY_PATH_NAME') {
+        continue;
+      }
+      final value = parts.sublist(1).join(':').trim();
+      if (value.isEmpty) {
+        return null;
+      }
+      return value.replaceAll('"', '');
+    }
+    return null;
+  }
+
+  @visibleForTesting
+  bool isSameWindowsPath(String a, String b) {
+    return normalize(a).toLowerCase() == normalize(b).toLowerCase();
+  }
+
+  bool _isCurrentHelperPath(String? servicePath) {
+    if (servicePath == null || servicePath.isEmpty) {
+      return false;
+    }
+    return isSameWindowsPath(servicePath, appPath.helperPath);
+  }
+
   // Future<void> _killProcess(int port) async {
   //   final result = await Process.run('netstat', ['-ano']);
   //   final lines = result.stdout.toString().trim().split('\n');
@@ -218,11 +253,19 @@ class Windows {
   // }
 
   Future<WindowsHelperServiceStatus> checkService() async {
-    // final qcResult = await Process.run('sc', ['qc', appHelperService]);
-    // final qcOutput = qcResult.stdout.toString();
-    // if (qcResult.exitCode != 0 || !qcOutput.contains(appPath.helperPath)) {
-    //   return WindowsHelperServiceStatus.none;
-    // }
+    final qcResult = await Process.run('sc', ['qc', appHelperService]);
+    final qcOutput = qcResult.stdout.toString();
+    if (qcResult.exitCode != 0) {
+      return WindowsHelperServiceStatus.none;
+    }
+    if (!_isCurrentHelperPath(parseServiceBinaryPath(qcOutput))) {
+      commonPrint.log(
+        'Windows helper service path mismatch: $qcOutput',
+        logLevel: LogLevel.warning,
+      );
+      return WindowsHelperServiceStatus.presence;
+    }
+
     final result = await Process.run('sc', ['query', appHelperService]);
     if (result.exitCode != 0) {
       return WindowsHelperServiceStatus.none;
@@ -235,46 +278,54 @@ class Windows {
   }
 
   Future<bool> registerService() async {
+    final helperFile = File(appPath.helperPath);
+    if (!await helperFile.exists()) {
+      commonPrint.log(
+        'Windows helper executable does not exist: ${appPath.helperPath}',
+        logLevel: LogLevel.error,
+      );
+      return false;
+    }
+
     final status = await checkService();
 
     if (status == WindowsHelperServiceStatus.running) {
       return true;
     }
 
-    final command = [
-      '/c',
+    final commands = [
       if (status == WindowsHelperServiceStatus.presence) ...[
-        'taskkill',
-        '/F',
-        '/IM',
-        '$appHelperService.exe'
-            ' & '
-            'sc',
-        'delete',
-        appHelperService,
-        '&',
+        'sc.exe stop $appHelperService',
+        'taskkill /F /IM $appHelperService.exe',
+        'sc.exe delete $appHelperService',
       ],
-      'sc',
-      'create',
-      appHelperService,
-      'binPath= "${appPath.helperPath}"',
-      'start= auto',
-      '&&',
-      'sc',
-      'start',
-      appHelperService,
-    ].join(' ');
+      'sc.exe stop $legacyAppHelperService',
+      'taskkill /F /IM $legacyAppHelperService.exe',
+      'sc.exe delete $legacyAppHelperService',
+      'ping -n 3 127.0.0.1 >nul',
+      'sc.exe create $appHelperService binPath= "${appPath.helperPath}" start= auto',
+      'sc.exe start $appHelperService',
+    ];
+    final command = ['/d', '/s', '/c', commands.join(' & ')].join(' ');
 
     final res = runas('cmd.exe', command);
 
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(const Duration(seconds: 1));
     final retryStatus = await retry(
       task: checkService,
-      maxAttempts: 5,
+      maxAttempts: 45,
       retryIf: (status) => status != WindowsHelperServiceStatus.running,
       delay: const Duration(seconds: 1),
     );
-    return res && retryStatus == WindowsHelperServiceStatus.running;
+    final success = res && retryStatus == WindowsHelperServiceStatus.running;
+    if (!success) {
+      final logs = await request.getHelperLogs();
+      commonPrint.log(
+        'Failed to register Windows helper service. status: $retryStatus logs: $logs',
+        logLevel: LogLevel.error,
+      );
+    }
+    return success;
   }
 
   Future<bool> registerTask(String appName) async {
