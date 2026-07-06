@@ -1,7 +1,7 @@
 name: fl_clash
 description: Panorama Secure Access proxy client for Panorama Scholarly Group.
 publish_to: 'none'
-version: 2.0.19+2026070703
+version: 2.0.20+2026070704
 environment:
   sdk: '>=3.8.0 <4.0.0'
 

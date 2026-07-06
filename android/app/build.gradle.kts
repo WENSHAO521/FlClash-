@@ -37,7 +37,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.psg.internal"
+        applicationId = "panorama.secure.access"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
