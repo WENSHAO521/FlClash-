@@ -24,7 +24,7 @@ class Request {
         final client = HttpClient();
         client.findProxy = (Uri uri) {
           client.userAgent = globalState.ua;
-          return FlClashHttpOverrides.handleFindProxy(uri);
+          return PanoramaHttpOverrides.handleFindProxy(uri);
         };
         return client;
       },

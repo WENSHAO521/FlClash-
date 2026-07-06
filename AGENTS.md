@@ -4,7 +4,7 @@ This file provides guidance for AI coding agents working with code in this repos
 
 ## Project Overview
 
-FlClash is a multi-platform proxy client based on ClashMeta (mihomo), built with Flutter. Supports Android, Windows,
+Panorama Secure Access is a multi-platform proxy client based on ClashMeta (mihomo), built with Flutter. Supports Android, Windows,
 macOS, and Linux. Material You design with Surfboard-like UI.
 
 ## Common Development Commands
@@ -204,7 +204,7 @@ in the project root.
 
 Architecture detection is automatic (host arch via `uname -m` on Unix, `PROCESSOR_ARCHITECTURE` on Windows). The
 `--description` flag passed to flutter_distributor adds arch suffix to artifact names (e.g.,
-`FlClash-0.8.93-macos-arm64.dmg`).
+`Panorama-Secure-Access-2.0.15-macos-arm64.dmg`).
 
 ### Local Plugins (`plugins/`)
 

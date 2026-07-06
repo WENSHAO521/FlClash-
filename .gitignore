@@ -75,3 +75,6 @@ devtools_options.yaml
 # FVM Version Cache
 .fvm/
 .fvmrc
+
+# Secrets (keystores, CI tokens) - never commit
+.secrets/

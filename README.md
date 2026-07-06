@@ -6,6 +6,10 @@
 
 ## Panorama Secure Access
 
+<p>
+  <img alt="Panorama Secure Access" src="assets/images/logo.svg" width="400">
+</p>
+
 [![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
 [![Project](https://img.shields.io/badge/GitHub-Project-blue?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access)

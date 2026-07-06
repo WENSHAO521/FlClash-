@@ -1,10 +1,15 @@
-<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <path d="M40 100 A60 60 0 0 1 160 100"
-        stroke="#E0E0E0" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <path d="M55 100 A45 45 0 0 1 145 100"
-        stroke="#BDBDBD" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <path d="M70 100 A30 30 0 0 1 130 100"
-        stroke="#757575" stroke-width="8" fill="none" stroke-linecap="round"/>
-  <rect x="94" y="80" width="12" height="60" rx="2" fill="#C62828"/>
-  <rect x="40" y="145" width="120" height="4" fill="#424242"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100">
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0F172A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <g transform="translate(10, 10)">
+    <path d="M40 0C17.9 0 0 17.9 0 40C0 62.1 17.9 80 40 80C62.1 80 80 62.1 80 40C80 17.9 62.1 0 40 0ZM40 72C22.3 72 8 57.7 8 40C8 22.3 22.3 8 40 8C57.7 8 72 22.3 72 40C72 57.7 57.7 72 40 72Z" fill="url(#brandGradient)"/>
+    <path d="M40 20V60M30 30H50M35 20C35 20 25 22 25 35C25 48 40 60 40 60C40 60 55 48 55 35C55 22 45 20 45 20H35Z" fill="none" stroke="url(#brandGradient)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M25 40C25 40 32 45 40 45C48 45 55 40 55 40" fill="none" stroke="url(#brandGradient)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <text x="100" y="48" font-family="sans-serif" font-weight="700" font-size="28" fill="#0F172A">PANORAMA</text>
+  <text x="100" y="75" font-family="sans-serif" font-weight="400" font-size="20" fill="#64748B" letter-spacing="2">SECURE ACCESS</text>
 </svg>
