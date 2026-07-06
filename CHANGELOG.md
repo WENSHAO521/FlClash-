@@ -1,3 +1,413 @@
+## v2.0.20
+
+- Bump version to 2.0.20
+
+- Align Android applicationId with the real Firebase project. The
+
+- google-services.json downloaded from the Firebase console only
+
+- registers the package name "panorama.secure.access", not
+
+- "com.psg.internal", so committing it as-is would make the Google
+
+- Services Gradle plugin fail with "No matching client found for
+
+- package name". Set applicationId to panorama.secure.access to match,
+
+- and commit the real (non-secret) google-services.json in place of
+
+- the placeholder.
+
+## v2.0.19
+
+- Bump version to 2.0.19
+
+- Fix Android CI build: SERVICE_JSON secret referenced by the
+
+- "Setup Android Signing" step was never actually created in this repo
+
+- (only KEYSTORE/KEY_ALIAS/KEY_PASSWORD/STORE_PASSWORD exist), so CI
+
+- overwrote android/app/google-services.json with an empty string,
+
+- and the Google Services Gradle plugin failed with "Malformed root
+
+- json". Only decode/overwrite the file when the secret is present,
+
+- otherwise keep the placeholder google-services.json already
+
+- committed in the repo.
+
+## v2.0.18
+
+- Bump version to 2.0.18
+
+- Fix Linux packaging build failure: distribute_options.yaml's top-level
+
+- app_name was set to the spaced display string "Panorama Secure Access",
+
+- which flutter_distributor's RPM/AppImage makers use directly as an
+
+- identifier (RPM spec "Name:" tag, AppImage .desktop Exec/dir names).
+
+- RPM's Name tag rejects whitespace ("Tag takes single token only"),
+
+- which broke the whole v2.0.17 build matrix via CI's fail-fast.
+
+- Reverted to the single-token "PSA", matching the binary/executable
+
+- name already used everywhere else (linux/CMakeLists.txt BINARY_NAME,
+
+- windows executable_name).
+
+## v2.0.17
+
+- Bump version to 2.0.17
+
+- Fix Dependabot alerts by bumping golang.org/x/net (>=0.55.0),
+
+- golang.org/x/crypto (>=0.51.0), and golang.org/x/oauth2 (>=0.27.0)
+
+- in core/go.mod, resolving all 7 open Go vulnerability alerts.
+
+- Also restore several correctness fixes that "Apply Panorama Secure
+
+- Access branding" (de8397d) accidentally reverted by overwriting files
+
+- with a stale pre-branding snapshot:
+
+- - core/hub.go: geo updater calls used WithPath variants that no longer
+
+-   exist in the Clash.Meta submodule, breaking the Go core build entirely.
+
+- - lib/core/service.dart & transport.dart: guarded IPC startup and
+
+-   helper-based core start (from "Guard core IPC startup").
+
+- - lib/providers/action.dart: connectCore() failure now stops
+
+-   restartCore() from calling initCore() (from "Stop init after core
+
+-   connection failure"), and updateLocalIp() is called again after
+
+-   admin/tun requests.
+
+- - lib/common/system.dart: Windows helper service binary-path
+
+-   verification (parseServiceBinaryPath/isSameWindowsPath), legacy
+
+-   service cleanup, and user-facing error notification on registration
+
+-   failure.
+
+- - lib/common/constant.dart & request.dart: legacyAppHelperService
+
+-   constant and getHelperLogs()/Result<bool> diagnostics for the
+
+-   Windows helper.
+
+- - lib/common/utils.dart & task.dart: preferred-interface local IP
+
+-   detection and Windows-specific tun auto-detect-interface/strict-route
+
+-   settings.
+
+- - android: applicationId restored to com.psg.internal (matches the
+
+-   existing PSG signing keystore/CI secrets; "com.follow.clash" was
+
+-   upstream FlClash's id) and REQUEST_INSTALL_PACKAGES permission
+
+-   restored.
+
+- Also bump CI's pinned Go version to 1.25.0 to match the new go.mod
+
+- minimum required by the updated golang.org/x/* modules.
+
+## v2.0.16
+
+- Bump version to 2.0.16
+
+- Ignore .secrets/ (keystore and CI secrets should never be tracked).
+
+## v2.0.15
+
+- Bump version to 2.0.15
+
+- Apply Panorama Secure Access branding
+
+## v2.0.14
+
+- Stop init after core connection failure
+
+## v2.0.13
+
+- Guard core IPC startup
+
+## v2.0.12
+
+- Improve Windows helper install cleanup
+
+## v2.0.11
+
+- Align Windows helper service name
+
+## v2.0.10
+
+- Strengthen Windows TUN routing
+
+## v2.0.9
+
+- Clean helper service during Windows install
+
+## v2.0.8
+
+- Fix Windows helper registration flow
+
+## v2.0.7
+
+- Fix helper startup result analysis
+
+## v2.0.6
+
+- Bump version to 2.0.6
+
+- Fix Windows helper core startup diagnostics
+
+## v2.0.5
+
+- Use flat transparent logo assets
+
+- Restore config default tests
+
+- Restore upstream network defaults
+
+## v2.0.4
+
+- Release 2.0.4 TUN DNS routing
+
+## v2.0.3
+
+- Install macOS Rust targets in CI
+
+- Update Go security dependencies
+
+- Refine DNS presets for global and complex networks
+
+- Release 2.0.3 policy copy updates
+
+## v2.0.2
+
+- Improve DNS preset compatibility
+
+- Split Android release APKs by ABI
+
+- Publish Android APK artifact
+
+- Ignore local Android signing secrets
+
+- Update setup tests for universal Android APK
+
+- Fix Android update packaging for 2.0.2
+
+- chore(deps): Bump golang.org/x/net from 0.35.0 to 0.55.0 in /core
+
+- Bumps [golang.org/x/net](https://github.com/golang/net) from 0.35.0 to 0.55.0.
+
+- - [Commits](https://github.com/golang/net/compare/v0.35.0...v0.55.0)
+
+- ---
+
+- updated-dependencies:
+
+- - dependency-name: golang.org/x/net
+
+-   dependency-version: 0.55.0
+
+-   dependency-type: indirect
+
+- ...
+
+- Signed-off-by: dependabot[bot] <support@github.com>
+
+## v2.0.1
+
+- Update geo updater API usage
+
+- Fix CI platform packaging prerequisites
+
+- Normalize wrapper Go modules in CI
+
+- Remove duplicate Linux diagnostic build
+
+- Restore upstream submodule packaging flow
+
+- Align CI packaging with upstream workflow
+
+- Normalize Go core modules in CI
+
+- Fix flutter distributor executable
+
+- Fix CI distributor invocation
+
+- Release 2.0.1 privacy and DNS updates
+
+## v2.0.0
+
+- release: v2.0.0 - restore full linux targets, add changelog entry
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+## v2.0.0-rc7
+
+- fix: remove UTF-8 BOM from project.pbxproj (fixes CocoaPods nanaimo parse error)
+
+- BOM (EF BB BF) was introduced when editing project.pbxproj on Windows.
+
+- CocoaPods nanaimo parser fails with ParseError on the BOM character.
+
+- Affects both macOS arm64 and macOS amd64 builds.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+## v2.0.0-rc6
+
+- fix: restore execute permissions on all shell scripts
+
+- ZIP extraction strips +x bits; run_build_tool.sh and build_pod.sh
+
+- need to be executable for CMake to invoke them directly.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+## v2.0.0-rc5
+
+- fix: add fail-fast: false so platform failures are independent
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+## v2.0.0-rc4
+
+- fix: use submodule update --init --recursive instead of --shallow-submodules
+
+- --shallow-submodules can fail to fetch exact pinned commit hashes inside
+
+- Clash.Meta; switching to explicit submodule update with full depth so
+
+- nested Go/native dependencies are always correctly initialized.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+## v2.0.0-rc3
+
+- fix: add --recurse-submodules to clone steps to match FlClash original
+
+- Original FlClash uses submodules: recursive in checkout action which
+
+- initializes all nested submodules. Our shallow clones without
+
+- --recurse-submodules left nested submodules empty (e.g. inside
+
+- Clash.Meta), causing Go build to fail during flutter build linux.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+## v2.0.0-rc2
+
+- diag: add flutter build linux verbose step to capture cmake errors
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+## v2.0.0-rc1
+
+- diag: limit linux-amd64 to deb-only to isolate AppImage/RPM failure
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- fix: pre-extract appimagetool to avoid FUSE dependency in CI
+
+- Instead of relying on APPIMAGE_EXTRACT_AND_RUN propagating through the
+
+- full process chain (dart -> flutter_distributor -> appimagetool), extract
+
+- appimagetool to a native binary before setup.dart runs. setup.dart detects
+
+- the pre-installed binary and skips its own download; flutter_distributor
+
+- then calls the extracted AppRun which has no FUSE dependency.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- fix: set app_name=PSA in distribute_options for correct artifact filenames
+
+- flutter_distributor uses app_name as the artifact filename prefix.
+
+- 'Panorama Secure Access' produces filenames with spaces; PSA matches
+
+- the expected PSA-{version}-{platform}-{arch}.{ext} format used by
+
+- the in-app updater and release template.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- fix: add APPIMAGE_EXTRACT_AND_RUN=1 to bypass FUSE in CI
+
+- appimagetool is itself an AppImage and needs FUSE to run in GitHub
+
+- Actions containers. APPIMAGE_EXTRACT_AND_RUN=1 makes it extract and
+
+- run without mounting via FUSE.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- chore: rename repo references to panorama-secure-access
+
+- Also fix release_template.md artifact prefix PSG- -> PSA-
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- fix: replace submodule gitlinks with explicit HTTPS clones in CI
+
+- Submodules were never registered as gitlinks (fresh git init from zip).
+
+- Replace 'submodules: recursive' with manual shallow clones to fix
+
+- 'flutter pub get' failure for tray_manager and flutter_distributor.
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- chore: rename publisher to Panorama Scholarly Group
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- docs: rewrite README for Panorama Secure Access (PSG)
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- chore: bump version to 2.0.0+1
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
+- feat: rebrand to Panorama Secure Access (PSG)
+
+- - Rename app to Panorama Secure Access across all platforms
+
+- - Replace all logos with glassmorphism panorama/security design
+
+- - Update Windows binary name to PSA.exe
+
+- - Fix macOS podspec core binary reference (PSGCore)
+
+- - Update all platform manifests, configs, and packaging metadata
+
+- - Change TUN device default to PSA (Linux 15-char limit)
+
+- - Update download artifact URLs to PSA-version prefix
+
+- - Add PSG official branding to About page
+
+- Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+
 ## v0.8.93
 
 - Support custom overwrite
