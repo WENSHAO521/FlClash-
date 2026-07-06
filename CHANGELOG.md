@@ -1,3 +1,49 @@
+## v2.0.22
+
+- Bump version to 2.0.22
+
+- Fix invalid workflow file: v2.0.21's build.yaml used `secrets.X != ''`
+
+- directly inside step `if:` conditions, but the `secrets` context is
+
+- not a recognized named-value there (GitHub Actions rejected the whole
+
+- workflow file with "Unrecognized named-value: 'secrets'"), so neither
+
+- v2.0.21 tag push actually ran any jobs. Route the presence checks
+
+- through job-level env vars (HAS_TELEGRAM_TOKEN / HAS_SSH_DEPLOY_KEY)
+
+- instead, since `env` is valid inside `if:`.
+
+## v2.0.21
+
+- Bump version to 2.0.21
+
+- All platform builds (Test, Linux x2, Windows x2, macOS x2, Android)
+
+- succeeded on v2.0.20, confirming the earlier fixes. The "upload" job
+
+- still failed, though: the Telegram-bot-api service and its
+
+- TELEGRAM_API_ID/TELEGRAM_API_HASH/TELEGRAM_BOT_TOKEN secrets were
+
+- never configured in this repo, so "Push to telegram" errored with a
+
+- connection refused, which (with no `if` guard) blocked every
+
+- following step in that job -- including the actual "Release" step
+
+- that publishes the GitHub release.
+
+- Guard "Push to telegram" on TELEGRAM_BOT_TOKEN being set, and guard
+
+- "Push to fdroid repo" on SSH_DEPLOY_KEY being set, so these optional
+
+- integrations skip gracefully instead of blocking the release when
+
+- unconfigured.
+
 ## v2.0.20
 
 - Bump version to 2.0.20
