@@ -500,18 +500,27 @@ class CoreAction extends _$CoreAction {
 
   Future<bool> connectCore() async {
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
-    final result = await Future.wait([
-      coreController.preload(),
-      Future.delayed(const Duration(milliseconds: 300)),
-    ]);
-    final String message = result[0];
-    if (message.isNotEmpty) {
+    try {
+      final result = await Future.wait([
+        coreController.preload(),
+        Future.delayed(const Duration(milliseconds: 300)),
+      ]);
+      final String message = result[0];
+      if (message.isNotEmpty) {
+        ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
+        globalState.showNotifier(message);
+        return false;
+      }
+      ref.read(coreStatusProvider.notifier).value = CoreStatus.connected;
+      return true;
+    } catch (e) {
+      // Anything unexpected here (e.g. a platform call that hung and threw
+      // instead of returning a message) must not leave the UI stuck on
+      // "connecting" forever with no way out.
       ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
-      globalState.showNotifier(message);
+      globalState.showNotifier(e.toString());
       return false;
     }
-    ref.read(coreStatusProvider.notifier).value = CoreStatus.connected;
-    return true;
   }
 
   Future<void> restartCore([bool start = false]) async {
