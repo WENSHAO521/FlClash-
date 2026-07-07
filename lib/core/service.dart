@@ -93,8 +93,22 @@ class CoreService extends CoreHandlerInterface {
       return '';
     } catch (e) {
       final logs = byHelper ? await request.getHelperLogs() : '';
+      // The core process is spawned separately from this wait, so on
+      // timeout we don't yet know if it crashed, is still starting, or
+      // connected to the wrong pipe. Surfacing which path launched it and
+      // whether it already exited turns a bare timeout into something
+      // actionable instead of a dead end.
+      final exitCode = await _process?.exitCode.timeout(
+        Duration.zero,
+        onTimeout: () => -1,
+      );
+      final processState = byHelper
+          ? 'launched via Windows helper (SYSTEM)'
+          : exitCode == -1
+          ? 'core process still running'
+          : 'core process already exited with code $exitCode';
       final message = [
-        'Failed to connect core IPC: $e',
+        'Failed to connect core IPC: $e ($processState)',
         if (logs.isNotEmpty) logs,
       ].join('\n').trim();
       commonPrint.log(message, logLevel: LogLevel.error);
