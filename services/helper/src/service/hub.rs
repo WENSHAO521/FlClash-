@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::{BufRead, Error, Read};
 use std::process::{Command, Stdio};
 use std::sync::{Arc, Mutex};
+use std::time::SystemTime;
 use std::{io, thread};
 use warp::{Filter, Reply};
 
@@ -33,6 +34,31 @@ fn sha256_file(path: &str) -> Result<String, Error> {
     Ok(format!("{:x}", hasher.finalize()))
 }
 
+static SHA256_CACHE: Lazy<Mutex<Option<(String, SystemTime, String)>>> =
+    Lazy::new(|| Mutex::new(None));
+
+// Hashing the whole core binary on every /start call can take several
+// seconds (slow disk, antivirus scanning), which easily blows past the
+// caller's timeout even though the eventual result never changes for an
+// unmodified file. Cache it keyed by the file's mtime so only the first
+// call (or a call after the binary is replaced) pays that cost.
+fn cached_sha256_file(path: &str) -> Result<String, Error> {
+    let mtime = std::fs::metadata(path)?.modified()?;
+
+    if let Ok(mut cache) = SHA256_CACHE.lock() {
+        if let Some((cached_path, cached_mtime, cached_hash)) = cache.as_ref() {
+            if cached_path == path && *cached_mtime == mtime {
+                return Ok(cached_hash.clone());
+            }
+        }
+        let hash = sha256_file(path)?;
+        *cache = Some((path.to_string(), mtime, hash.clone()));
+        return Ok(hash);
+    }
+
+    sha256_file(path)
+}
+
 static LOGS: Lazy<Arc<Mutex<VecDeque<String>>>> =
     Lazy::new(|| Arc::new(Mutex::new(VecDeque::with_capacity(100))));
 static PROCESS: Lazy<Arc<Mutex<Option<std::process::Child>>>> =
@@ -40,7 +66,7 @@ static PROCESS: Lazy<Arc<Mutex<Option<std::process::Child>>>> =
 
 fn start(start_params: StartParams) -> impl Reply {
     if !cfg!(debug_assertions) {
-        let sha256 = sha256_file(start_params.path.as_str()).unwrap_or("".to_string());
+        let sha256 = cached_sha256_file(start_params.path.as_str()).unwrap_or("".to_string());
         if sha256 != env!("TOKEN") {
             return format!("The SHA256 hash of the program requesting execution is: {}. The helper program only allows execution of applications with the SHA256 hash: {}.", sha256,  env!("TOKEN"),);
         }

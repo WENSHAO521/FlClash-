@@ -187,7 +187,11 @@ class Request {
         data: json.encode({'path': appPath.corePath, 'arg': arg}),
         options: Options(responseType: ResponseType.plain),
       )
-          .timeout(const Duration(milliseconds: 2000));
+          // The helper SHA256-hashes the whole core binary synchronously
+          // before spawning it, which can take a few seconds on a slow
+          // disk or while antivirus is scanning the file, so this needs
+          // more headroom than the other, near-instant helper endpoints.
+          .timeout(const Duration(seconds: 8));
       if (response.statusCode != HttpStatus.ok) {
         return Result.error(
           'Helper start failed with status ${response.statusCode}',
