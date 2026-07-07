@@ -10,7 +10,22 @@ use std::time::SystemTime;
 use std::{io, thread};
 use warp::{Filter, Reply};
 
+#[cfg(windows)]
+use std::os::windows::process::CommandExt;
+#[cfg(windows)]
+use std::time::{Duration, Instant};
+
 const LISTEN_PORT: u16 = 47890;
+
+#[cfg(windows)]
+const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
+#[cfg(windows)]
+const CTRL_BREAK_EVENT: u32 = 1;
+
+#[cfg(windows)]
+extern "system" {
+    fn GenerateConsoleCtrlEvent(dw_ctrl_event: u32, dw_process_group_id: u32) -> i32;
+}
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct StartParams {
@@ -73,11 +88,14 @@ fn start(start_params: StartParams) -> impl Reply {
     }
     stop();
     let mut process = PROCESS.lock().unwrap();
-    match Command::new(&start_params.path)
-        .stderr(Stdio::piped())
-        .arg(&start_params.arg)
-        .spawn()
-    {
+    let mut command = Command::new(&start_params.path);
+    command.stderr(Stdio::piped()).arg(&start_params.arg);
+    // Puts the child in its own process group so stop() can later target
+    // just this process with a graceful console-control event instead of
+    // only ever being able to force-kill it.
+    #[cfg(windows)]
+    command.creation_flags(CREATE_NEW_PROCESS_GROUP);
+    match command.spawn() {
         Ok(child) => {
             *process = Some(child);
             if let Some(ref mut child) = *process {
@@ -108,8 +126,38 @@ fn start(start_params: StartParams) -> impl Reply {
 fn stop() -> impl Reply {
     let mut process = PROCESS.lock().unwrap();
     if let Some(mut child) = process.take() {
-        let _ = child.kill();
-        let _ = child.wait();
+        let mut exited = false;
+
+        // TerminateProcess (what child.kill() calls on Windows) gives the
+        // core no chance to run its own shutdown/cleanup, which leaves the
+        // wintun virtual network adapter it created behind in a broken,
+        // orphaned state - observed accumulating across repeated
+        // start/stop cycles. Ask it to exit gracefully first via a console
+        // control event and only fall back to a hard kill if it doesn't
+        // respond in time.
+        #[cfg(windows)]
+        {
+            let pid = child.id();
+            unsafe {
+                GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, pid);
+            }
+            let deadline = Instant::now() + Duration::from_secs(3);
+            while Instant::now() < deadline {
+                match child.try_wait() {
+                    Ok(Some(_)) => {
+                        exited = true;
+                        break;
+                    }
+                    Ok(None) => thread::sleep(Duration::from_millis(100)),
+                    Err(_) => break,
+                }
+            }
+        }
+
+        if !exited {
+            let _ = child.kill();
+            let _ = child.wait();
+        }
     }
     *process = None;
     "".to_string()
