@@ -1,3 +1,33 @@
+## v2.0.29
+
+- Bump version to 2.0.29
+
+- Attempt graceful core shutdown before force-killing on Windows
+
+- stop() always called child.kill() (TerminateProcess on Windows), which
+
+- gives the core zero opportunity to run its own cleanup - including
+
+- tearing down the wintun virtual network adapter it created for TUN
+
+- mode. Observed effect: every restart/stop cycle while TUN was enabled
+
+- left behind another orphaned "Wintun Userspace Tunnel" adapter stuck
+
+- in a broken state, accumulating across repeated connects.
+
+- stop() now puts the child in its own process group at spawn time and,
+
+- on Windows, sends it a CTRL_BREAK console control event first, waiting
+
+- up to 3s for it to exit on its own before falling back to the existing
+
+- hard kill. macOS/Linux are unaffected (cfg(windows)-gated), and if the
+
+- graceful signal has no effect there, behavior is identical to before
+
+- after the 3s wait.
+
 ## v2.0.28
 
 - Bump version to 2.0.28
