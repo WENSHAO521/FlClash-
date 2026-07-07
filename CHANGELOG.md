@@ -1,3 +1,57 @@
+## v2.0.26
+
+- Bump version to 2.0.26
+
+- Fix helper /start timing out every time on a slow disk/AV scan
+
+- The Windows helper hashes the entire core binary synchronously inside
+
+- the warp request handler on every /start call to verify it against the
+
+- embedded token, but the Dart client only waited 2 seconds for that
+
+- round trip. Hashing a few tens of MB can easily take longer than that
+
+- on a slow disk or while antivirus is scanning the freshly-written
+
+- binary, so this timed out essentially unconditionally rather than only
+
+- under load. Widened the client timeout to 8s and cached the hash on
+
+- the helper side (keyed by mtime) so repeat calls skip re-hashing an
+
+- unchanged file entirely.
+
+- Bump version to 2.0.25
+
+- Add diagnostics for core IPC connect timeout
+
+- The 8s wait for the core process to connect back over the named
+
+- pipe/socket only ever reported the bare TimeoutException, with no way
+
+- to tell whether the core process had crashed, was still starting, or
+
+- was launched via the Windows helper (running as SYSTEM) vs directly.
+
+- Surface the process exit code (when available) and which path started
+
+- it so a stuck connection is actionable instead of a dead end.
+
+- Fix release template: asset filenames didn't match actual build output
+
+- distribute_options.yaml sets app_name to PSA, so CI uploads assets like
+
+- PSA-2.0.23-windows-amd64-setup.exe, but the release template linked to
+
+- Panorama-Secure-Access-2.0.23-windows-amd64-setup.exe, which was never
+
+- uploaded under that name. Every download link in every past release was
+
+- a 404. Also added the Windows/Linux arm64 rows that CI has been
+
+- building but the template never listed.
+
 ## v2.0.24
 
 - Bump version to 2.0.24
