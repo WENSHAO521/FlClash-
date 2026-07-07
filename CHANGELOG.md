@@ -1,3 +1,61 @@
+## v2.0.24
+
+- Bump version to 2.0.24
+
+- Fix Windows TUN adapter failing silently
+
+- The Go core's TUN listener only logged failures internally and always
+
+- reported success back to the app, so a failed virtual adapter (missing
+
+- admin rights, wintun blocked, etc.) looked identical to a working one.
+
+- updateListeners now checks listener.GetTunConf().Enable after
+
+- ReCreateTun and returns an error when the adapter didn't actually come
+
+- up, which flows through the existing updateConfig/setupConfig message
+
+- path already wired up on the Dart side.
+
+- Also hardened the Windows helper service registration: a service stuck
+
+- in "marked for deletion" (stale handle from a crashed helper or AV
+
+- lock) could fail a single stop/delete/create cycle even though a retry
+
+- would succeed, so registerService now retries once, and captures the
+
+- sc.exe/taskkill output to a log file for real diagnostics instead of a
+
+- generic failure message.
+
+- Removed CoreAction.requestAdmin, a dead, uncalled duplicate of
+
+- SetupAction._requestAdmin that reused Result.error('') as a control-flow
+
+- signal rather than an actual error.
+
+## v2.0.23
+
+- Bump version to 2.0.23
+
+- Sync new logo across all platforms and drop text from wordmark
+
+- logo.svg keeps only the icon glyph (no baked-in text) and now uses a
+
+- square viewBox so it renders correctly at the small sizes used in the
+
+- title bar and about page. Regenerated every platform icon (macOS,
+
+- Windows, Linux, Android launcher/Play Store, tray status icons) from
+
+- this glyph so they all match, and refreshed the Android TV banner
+
+- which still had the pre-rebrand "FIClash" name baked into it. Removed
+
+- the unused, unrelated psg_logo.svg.
+
 ## v2.0.22
 
 - Bump version to 2.0.22
