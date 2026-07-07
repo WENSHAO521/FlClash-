@@ -1,3 +1,85 @@
+## v2.0.28
+
+- Bump version to 2.0.28
+
+- Fix uninstall entry showing the wrong icon
+
+- inno_setup.iss set SetupIconFile (used by the installer wizard and the
+
+- installed exe's own icon) but never set UninstallDisplayIcon, so
+
+- Windows fell back to the Inno Setup uninstaller stub's generic icon for
+
+- the Add/Remove Programs / Programs and Features entry instead of our
+
+- branded app_icon.ico - visible in third-party uninstallers like Geek
+
+- Uninstaller too, since they read the same registry DisplayIcon value.
+
+## v2.0.27
+
+- Bump version to 2.0.27
+
+- Revert Windows helper checkService/registerService to upstream logic
+
+- checkService() re-added an `sc qc` binary-path comparison that upstream
+
+- FlClash deliberately left disabled. Any false mismatch (case, path
+
+- normalization, etc.) made it skip the real sc query + pingHelper check
+
+- and report "presence" even when the helper was already running fine,
+
+- which forced a full stop/delete/create/start cycle with a UAC prompt on
+
+- every single connect - exactly the "stuck on connecting" symptom
+
+- reported. registerService() had also grown a 2-attempt outer retry
+
+- loop and a 45x1s inner retry (vs upstream's single attempt, 5x1s) plus
+
+- an install-log file capture, which turned any real registration
+
+- failure into a ~90s+ hang instead of a fast, visible error.
+
+- Reverted both to upstream's structure: checkService() only trusts
+
+- sc query + pingHelper, and registerService() is a single elevate/create
+
+- /start attempt with upstream's retry count. Kept the two things that
+
+- have no upstream equivalent because they're required by the rebrand:
+
+- the branded service name, and best-effort cleanup of the old
+
+- FlClashHelperService left behind on upgrades, which now just rides
+
+- along as extra commands in the same elevated batch instead of its own
+
+- retry/logging path.
+
+- Fix core connection getting stuck on "connecting" forever
+
+- checkService() ran sc.exe qc/query via Process.run with no timeout at
+
+- all. sc.exe can occasionally hang (e.g. SCM lock contention right after
+
+- the stop/delete/create/start cycle registerService() just ran), and
+
+- since this call sits directly in the CoreService.start() path awaited
+
+- by connectCore(), a single hung sc.exe call left the UI on "connecting"
+
+- indefinitely with no error and no way out - exactly what was reported.
+
+- Bounded those calls with a 10s timeout that degrades to "unknown"
+
+- instead of hanging, and added a catch-all in connectCore() so any other
+
+- unexpected exception in this path resets the status to disconnected
+
+- and surfaces a message instead of leaving the spinner stuck forever.
+
 ## v2.0.26
 
 - Bump version to 2.0.26
