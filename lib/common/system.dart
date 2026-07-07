@@ -230,13 +230,6 @@ class Windows {
     return normalize(a).toLowerCase() == normalize(b).toLowerCase();
   }
 
-  bool _isCurrentHelperPath(String? servicePath) {
-    if (servicePath == null || servicePath.isEmpty) {
-      return false;
-    }
-    return isSameWindowsPath(servicePath, appPath.helperPath);
-  }
-
   // Future<void> _killProcess(int port) async {
   //   final result = await Process.run('netstat', ['-ano']);
   //   final lines = result.stdout.toString().trim().split('\n');
@@ -273,19 +266,6 @@ class Windows {
   }
 
   Future<WindowsHelperServiceStatus> checkService() async {
-    final qcResult = await _runScCommand(['qc', appHelperService]);
-    if (qcResult == null || qcResult.exitCode != 0) {
-      return WindowsHelperServiceStatus.none;
-    }
-    final qcOutput = qcResult.stdout.toString();
-    if (!_isCurrentHelperPath(parseServiceBinaryPath(qcOutput))) {
-      commonPrint.log(
-        'Windows helper service path mismatch: $qcOutput',
-        logLevel: LogLevel.warning,
-      );
-      return WindowsHelperServiceStatus.presence;
-    }
-
     final result = await _runScCommand(['query', appHelperService]);
     if (result == null || result.exitCode != 0) {
       return WindowsHelperServiceStatus.none;
@@ -298,77 +278,63 @@ class Windows {
   }
 
   Future<bool> registerService() async {
-    final helperFile = File(appPath.helperPath);
-    if (!await helperFile.exists()) {
-      commonPrint.log(
-        'Windows helper executable does not exist: ${appPath.helperPath}',
-        logLevel: LogLevel.error,
-      );
-      return false;
-    }
+    final status = await checkService();
 
-    if (await checkService() == WindowsHelperServiceStatus.running) {
+    if (status == WindowsHelperServiceStatus.running) {
       return true;
     }
 
-    // A service stuck in "marked for deletion" (e.g. antivirus holding a
-    // handle to the previous helper process, or a crashed instance) can make
-    // a single stop/delete/create cycle fail even though it would succeed a
-    // moment later. Give it one extra attempt before giving up.
-    for (var attempt = 0; attempt < 2; attempt++) {
-      final result = await _tryRegisterService();
-      if (result.success) return true;
-      if (result.status != WindowsHelperServiceStatus.presence) break;
-      await Future.delayed(const Duration(seconds: 2));
-    }
-    return false;
-  }
-
-  Future<({bool success, WindowsHelperServiceStatus status})>
-  _tryRegisterService() async {
-    final status = await checkService();
-    final logPath =
-        '${Platform.environment['TEMP'] ?? Platform.environment['TMP'] ?? '.'}\\psg_helper_install.log';
-
-    final commands = [
+    final command = [
+      '/c',
       if (status == WindowsHelperServiceStatus.presence) ...[
-        'sc.exe stop $appHelperService',
-        'taskkill /F /IM $appHelperService.exe',
-        'sc.exe delete $appHelperService',
+        'taskkill',
+        '/F',
+        '/IM',
+        '$appHelperService.exe'
+            ' & '
+            'sc',
+        'delete',
+        appHelperService,
+        '&',
       ],
-      'sc.exe stop $legacyAppHelperService',
-      'taskkill /F /IM $legacyAppHelperService.exe',
-      'sc.exe delete $legacyAppHelperService',
-      'ping -n 3 127.0.0.1 >nul',
-      'sc.exe create $appHelperService binPath= "${appPath.helperPath}" start= auto',
-      'sc.exe start $appHelperService',
-    ];
-    final grouped = '(${commands.join(' & ')}) > "$logPath" 2>&1';
-    final command = ['/d', '/s', '/c', grouped].join(' ');
+      // Best-effort cleanup of the pre-rebrand service left behind on
+      // upgrades from the old FlClash-named build; harmless no-op if it
+      // isn't present, and only ever runs when we're already elevating
+      // to (re)install the current helper.
+      'taskkill',
+      '/F',
+      '/IM',
+      '$legacyAppHelperService.exe'
+          ' & '
+          'sc',
+      'stop',
+      legacyAppHelperService,
+      '&',
+      'sc',
+      'delete',
+      legacyAppHelperService,
+      '&',
+      'sc',
+      'create',
+      appHelperService,
+      'binPath= "${appPath.helperPath}"',
+      'start= auto',
+      '&&',
+      'sc',
+      'start',
+      appHelperService,
+    ].join(' ');
 
     final res = runas('cmd.exe', command);
 
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 300));
     final retryStatus = await retry(
       task: checkService,
-      maxAttempts: 45,
+      maxAttempts: 5,
       retryIf: (status) => status != WindowsHelperServiceStatus.running,
       delay: const Duration(seconds: 1),
     );
-    final success = res && retryStatus == WindowsHelperServiceStatus.running;
-    if (!success) {
-      String installLog = '';
-      try {
-        installLog = await File(logPath).readAsString();
-      } catch (_) {}
-      final logs = await request.getHelperLogs();
-      commonPrint.log(
-        'Failed to register Windows helper service. status: $retryStatus '
-        'installLog: $installLog logs: $logs',
-        logLevel: LogLevel.error,
-      );
-    }
-    return (success: success, status: retryStatus);
+    return res && retryStatus == WindowsHelperServiceStatus.running;
   }
 
   Future<bool> registerTask(String appName) async {
