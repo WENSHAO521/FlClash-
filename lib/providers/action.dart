@@ -514,26 +514,6 @@ class CoreAction extends _$CoreAction {
     return true;
   }
 
-  Future<Result<bool>> requestAdmin(bool enableTun) async {
-    final realTunEnable = ref.read(realTunEnableProvider);
-    if (enableTun != realTunEnable && realTunEnable == false) {
-      final code = await system.authorizeCore();
-      switch (code) {
-        case AuthorizeCode.success:
-          await restartCore();
-          return Result.error('');
-        case AuthorizeCode.none:
-          break;
-        case AuthorizeCode.error:
-          enableTun = false;
-          break;
-      }
-    }
-    ref.read(realTunEnableProvider.notifier).value = enableTun;
-    await ref.read(systemActionProvider.notifier).updateLocalIp();
-    return Result.success(enableTun);
-  }
-
   Future<void> restartCore([bool start = false]) async {
     final isDisconnected =
         ref.read(coreStatusProvider) == CoreStatus.disconnected;

@@ -287,11 +287,28 @@ class Windows {
       return false;
     }
 
-    final status = await checkService();
-
-    if (status == WindowsHelperServiceStatus.running) {
+    if (await checkService() == WindowsHelperServiceStatus.running) {
       return true;
     }
+
+    // A service stuck in "marked for deletion" (e.g. antivirus holding a
+    // handle to the previous helper process, or a crashed instance) can make
+    // a single stop/delete/create cycle fail even though it would succeed a
+    // moment later. Give it one extra attempt before giving up.
+    for (var attempt = 0; attempt < 2; attempt++) {
+      final result = await _tryRegisterService();
+      if (result.success) return true;
+      if (result.status != WindowsHelperServiceStatus.presence) break;
+      await Future.delayed(const Duration(seconds: 2));
+    }
+    return false;
+  }
+
+  Future<({bool success, WindowsHelperServiceStatus status})>
+  _tryRegisterService() async {
+    final status = await checkService();
+    final logPath =
+        '${Platform.environment['TEMP'] ?? Platform.environment['TMP'] ?? '.'}\\psg_helper_install.log';
 
     final commands = [
       if (status == WindowsHelperServiceStatus.presence) ...[
@@ -306,7 +323,8 @@ class Windows {
       'sc.exe create $appHelperService binPath= "${appPath.helperPath}" start= auto',
       'sc.exe start $appHelperService',
     ];
-    final command = ['/d', '/s', '/c', commands.join(' & ')].join(' ');
+    final grouped = '(${commands.join(' & ')}) > "$logPath" 2>&1';
+    final command = ['/d', '/s', '/c', grouped].join(' ');
 
     final res = runas('cmd.exe', command);
 
@@ -319,13 +337,18 @@ class Windows {
     );
     final success = res && retryStatus == WindowsHelperServiceStatus.running;
     if (!success) {
+      String installLog = '';
+      try {
+        installLog = await File(logPath).readAsString();
+      } catch (_) {}
       final logs = await request.getHelperLogs();
       commonPrint.log(
-        'Failed to register Windows helper service. status: $retryStatus logs: $logs',
+        'Failed to register Windows helper service. status: $retryStatus '
+        'installLog: $installLog logs: $logs',
         logLevel: LogLevel.error,
       );
     }
-    return success;
+    return (success: success, status: retryStatus);
   }
 
   Future<bool> registerTask(String appName) async {
