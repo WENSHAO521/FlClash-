@@ -285,7 +285,7 @@ class AppIcon extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Transform.translate(
         offset: const Offset(0, -1),
-        child: SvgPicture.asset('assets/images/logo.svg', width: 92, height: 23),
+        child: SvgPicture.asset('assets/images/logo.svg', width: 23, height: 23),
       ),
     );
   }

@@ -127,7 +127,7 @@ class AboutView extends StatelessWidget {
                         padding: const EdgeInsets.all(12),
                         child: SvgPicture.asset(
                           'assets/images/logo.svg',
-                          width: 220,
+                          width: 55,
                           height: 55,
                         ),
                       ),
