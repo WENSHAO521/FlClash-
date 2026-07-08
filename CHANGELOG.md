@@ -1,3 +1,53 @@
+## v2.0.31
+
+- Bump version to 2.0.31
+
+- Fix double backslash in UninstallDisplayIcon breaking the icon
+
+- UninstallDisplayIcon={app}\{{EXECUTABLE_NAME}} rendered as
+
+- C:\Program Files\PSA\PSA.exe (confirmed via the actual registry value)
+
+- - the doubled backslash before the exe name. [Icons]/[Files] entries in
+
+- this same template use \ inside quoted strings and tolerate it, but
+
+- this unquoted [Setup] directive doesn't: icon extraction failed on the
+
+- malformed path and fell back to a generic default icon in Explorer/
+
+- Programs & Features/third-party uninstallers, even across repeated
+
+- clean uninstall+reinstall cycles. Single backslash is correct here.
+
+- Give the TUN adapter its own short device name instead of appName
+
+- Tun.device defaulted to the full appName constant, which for this fork
+
+- is "Panorama Secure Access" (22 chars, two spaces) vs upstream's own
+
+- single-word app name. Confirmed side by side that upstream's working
+
+- TUN adapter is named after its (short) app name, while ours - using
+
+- the same "default device to appName" pattern - ends up with a much
+
+- longer, space-containing adapter name. Worth ruling out as a wintun
+
+- adapter creation quirk given every attempt observed on the affected
+
+- machine failed to bring the adapter up at all.
+
+- Added a dedicated tunDeviceName constant so the adapter name is short
+
+- and space-free without touching the app's actual display name used
+
+- everywhere else. Manually mirrored the change into the generated
+
+- freezed/json_serializable files since build_runner isn't available in
+
+- this environment to regenerate them.
+
 ## v2.0.30
 
 - Bump version to 2.0.30
