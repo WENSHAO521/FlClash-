@@ -10,6 +10,11 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter/material.dart';
 
 const appName = 'Panorama Secure Access';
+// TUN adapter friendly name. Upstream uses its own short, single-word app
+// name here (e.g. "FlClash"); ours defaulted to the full multi-word appName
+// with spaces, which is worth ruling out as a wintun adapter creation
+// quirk on some Windows setups.
+const tunDeviceName = 'PanoramaTun';
 const appHelperService = 'PSGHelperService';
 const legacyAppHelperService = 'FlClashHelperService';
 const coreName = 'clash.meta';
