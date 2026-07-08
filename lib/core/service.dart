@@ -86,10 +86,17 @@ class CoreService extends CoreHandlerInterface {
   }
 
   Future<String> _waitCoreConnected({bool byHelper = false}) async {
+    // Launching via the helper generally means TUN is being enabled, which
+    // can require Windows to install/register the wintun virtual adapter -
+    // slow (well past 8s) the first time, or on a loaded/AV-scanned system.
+    // Upstream has no timeout at all here; give this path a lot more
+    // headroom instead of matching upstream's unbounded wait, so a genuinely
+    // stuck connect still surfaces an error instead of hanging forever.
+    final timeout = byHelper
+        ? const Duration(seconds: 45)
+        : const Duration(seconds: 8);
     try {
-      await _transport.connectionCompleter.future.timeout(
-        const Duration(seconds: 8),
-      );
+      await _transport.connectionCompleter.future.timeout(timeout);
       return '';
     } catch (e) {
       final logs = byHelper ? await request.getHelperLogs() : '';
