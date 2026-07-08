@@ -1,3 +1,35 @@
+## v2.0.30
+
+- Bump version to 2.0.30
+
+- Give the helper-launch IPC connect wait much more headroom
+
+- _waitCoreConnected capped every connect attempt at 8s, but launching via
+
+- the Windows helper generally means TUN is being enabled, which can
+
+- require Windows to install/register the wintun virtual adapter - this
+
+- can easily take longer than 8s (slow disk, AV scanning the driver, or
+
+- just a loaded system), especially since a prior bug (now fixed) was
+
+- creating a fresh adapter instance on every attempt instead of reusing
+
+- one. Upstream has no timeout at all on this wait; confirmed side by
+
+- side that the same TUN toggle that fails here works with an unmodified
+
+- upstream build on the same machine, which pointed straight at this gap.
+
+- Widened the helper-launch path to 45s while leaving the direct-launch
+
+- path (no driver work involved) at 8s, so a genuinely stuck connect
+
+- still surfaces an error instead of hanging forever like the original
+
+- report, but a slow-but-succeeding TUN bring-up isn't killed prematurely.
+
 ## v2.0.29
 
 - Bump version to 2.0.29
