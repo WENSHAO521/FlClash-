@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"io"
 	"sync"
+	"time"
 )
 
 var (
@@ -66,9 +67,23 @@ func send(data []byte) {
 
 func startServer(arg string) {
 	var err error
-	conn, err = dial(arg)
-	if err != nil {
-		panic(err.Error())
+	// A client that connects to a named pipe and disconnects again without
+	// the server calling accept() in between leaves that pipe instance
+	// dead-on-arrival until the next accept() cleans it up. Right after a
+	// restart (e.g. toggling TUN, which tears down and relaunches this
+	// process against the same pipe) this process can start dialing before
+	// the server side has looped back around to accept() again, which
+	// surfaces here as an immediate i/o timeout. Retry for a few seconds
+	// instead of panicking on the first attempt.
+	for attempt := 0; ; attempt++ {
+		conn, err = dial(arg)
+		if err == nil {
+			break
+		}
+		if attempt >= 19 {
+			panic(err.Error())
+		}
+		time.Sleep(250 * time.Millisecond)
 	}
 
 	defer func(conn io.Closer) {
