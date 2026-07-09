@@ -172,6 +172,15 @@ Future<int> _package(
   if (platform != 'android') {
     descriptionArgs.addAll(['--description', arch]);
   }
+  // Rebrand the output artifact filename (e.g. dist/PanoramaSecureAccess-3.0.0-...)
+  // without touching distribute_options.yaml's app_name, which flutter_distributor
+  // also uses internally for the Linux .deb's installed binary path/symlink — that
+  // still has to match the actual compiled binary name (see windows/linux CMakeLists.txt).
+  const artifactNameTemplate =
+      'PanoramaSecureAccess-{{build_name}}-{{platform}}'
+      '{{#description}}-{{description}}{{/description}}'
+      '{{#is_installer}}-setup{{/is_installer}}'
+      '{{#ext}}.{{ext}}{{/ext}}';
 
   final depExit = await _ensureDependencies(platform, arch);
   if (depExit != 0) return depExit;
@@ -189,6 +198,7 @@ Future<int> _package(
         '--build-target-platform=${_androidFlutterTarget[androidArch]!}',
       if (flutterBuildArgs.isNotEmpty)
         '--flutter-build-args=${flutterBuildArgs.join(',')}',
+      '--artifact-name=$artifactNameTemplate',
       ...descriptionArgs,
     ],
     includeParentEnvironment: true,
