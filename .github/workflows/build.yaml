@@ -96,7 +96,13 @@ jobs:
             echo "KEYSTORE secret not set, skipping release signing (unsigned build)."
           fi
           if [ -n "$SERVICE_JSON" ]; then
-            echo "$SERVICE_JSON" | base64 --decode > android/app/google-services.json
+            # Accept either the raw google-services.json content or a base64
+            # encoding of it, since it's easy to paste the wrong one into the
+            # secret.
+            case "$SERVICE_JSON" in
+              '{'*) echo "$SERVICE_JSON" > android/app/google-services.json ;;
+              *) echo "$SERVICE_JSON" | base64 --decode > android/app/google-services.json ;;
+            esac
           else
             echo "SERVICE_JSON secret not set, keeping placeholder google-services.json."
           fi
