@@ -10,6 +10,7 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -95,7 +96,7 @@ class CommonAction extends _$CommonAction {
         cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
       );
       if (res == true) {
-        launchUrl(Uri.parse('https://github.com/$repository/releases/latest'));
+        await _downloadAndInstallUpdate(data);
       } else if (!isUser && res == false) {
         ref
             .read(appSettingProvider.notifier)
@@ -107,6 +108,24 @@ class CommonAction extends _$CommonAction {
         message: TextSpan(text: currentAppLocalizations.checkUpdateError),
       );
     }
+  }
+
+  Future<void> _downloadAndInstallUpdate(Map<String, dynamic> data) async {
+    final assets = data['assets'] as List<dynamic>? ?? [];
+    final asset = await Updater.pickAsset(assets);
+    if (asset == null) {
+      launchUrl(Uri.parse('https://github.com/$repository/releases/latest'));
+      return;
+    }
+    final file = await globalState.showCommonDialog<File>(
+      dismissible: false,
+      child: DownloadProgressDialog(asset: asset),
+    );
+    if (file == null) {
+      globalState.showNotifier(currentAppLocalizations.downloadUpdateFailed);
+      return;
+    }
+    await Updater.install(file);
   }
 }
 

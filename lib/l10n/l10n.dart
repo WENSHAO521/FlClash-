@@ -954,6 +954,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Downloading update...`
+  String get downloadingUpdate {
+    return Intl.message(
+      'Downloading update...',
+      name: 'downloadingUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download failed, please try again`
+  String get downloadUpdateFailed {
+    return Intl.message(
+      'Download failed, please try again',
+      name: 'downloadUpdateFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Unknown`
   String get unknown {
     return Intl.message('Unknown', name: 'unknown', desc: '', args: []);

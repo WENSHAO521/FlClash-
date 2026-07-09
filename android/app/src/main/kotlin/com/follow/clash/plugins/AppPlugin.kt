@@ -11,9 +11,11 @@ import android.net.VpnService
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.webkit.MimeTypeMap
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.FileProvider
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
@@ -172,6 +174,11 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 result.success(openAppSettings())
             }
 
+            "openFile" -> {
+                val path = call.argument<String>("path")
+                result.success(openFile(path))
+            }
+
             else -> {
                 result.notImplemented()
             }
@@ -233,6 +240,32 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         return try {
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                 data = "package:${GlobalState.application.packageName}".toUri()
+            }
+            activityRef?.get()?.startActivity(intent)
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun openFile(path: String?): Boolean {
+        if (path == null) return false
+        return try {
+            val file = File(path)
+            val mimeType = if (file.extension.equals("apk", ignoreCase = true)) {
+                "application/vnd.android.package-archive"
+            } else {
+                val extension = MimeTypeMap.getFileExtensionFromUrl(file.name)
+                MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "*/*"
+            }
+            val uri = FileProvider.getUriForFile(
+                GlobalState.application,
+                "${GlobalState.application.packageName}.fileprovider",
+                file,
+            )
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, mimeType)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             activityRef?.get()?.startActivity(intent)
             true

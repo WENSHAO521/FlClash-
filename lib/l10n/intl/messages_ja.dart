@@ -318,6 +318,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("グローバル"),
     "go": MessageLookupByLibrary.simpleMessage("移動"),
     "goDownload": MessageLookupByLibrary.simpleMessage("ダウンロードへ"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "更新をダウンロード中...",
+    ),
+    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "ダウンロードに失敗しました。もう一度お試しください",
+    ),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("スクリプト設定に移動"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("変更をキャッシュしますか？"),
     "hideFromList": MessageLookupByLibrary.simpleMessage("リストから隠す"),

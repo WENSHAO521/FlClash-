@@ -404,6 +404,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("Global"),
     "go": MessageLookupByLibrary.simpleMessage("Go"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Go to download"),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
+      "Downloading update...",
+    ),
+    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
+      "Download failed, please try again",
+    ),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage(
       "Go to configure script",
     ),

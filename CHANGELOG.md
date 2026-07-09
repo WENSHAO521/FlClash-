@@ -1,3 +1,14 @@
+## v3.1.0
+
+- Point in-app update checks at this fork's own releases instead of upstream FlClash
+
+- Update dialog now downloads the matching platform/arch release asset in the background with a progress
+  indicator, then hands it to the platform installer (Windows installer, macOS Finder/dmg, Linux
+  AppImage/deb/rpm via xdg-open, Android install intent) instead of just opening a browser link
+
+- README: added License & Credits section (GPL-3.0, attribution to original FlClash project), pointed
+  download/star-history links at this fork's repo
+
 ## v3.0.0
 
 - Rebrand to Panorama Secure Access (new name, logo, and app icons across all platforms)

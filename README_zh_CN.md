@@ -4,13 +4,12 @@
 
 </div>
 
-## FlClash
+## Panorama Secure Access
 
-[![Downloads](https://img.shields.io/github/downloads/chen08209/FlClash/total?style=flat-square&logo=github)](https://github.com/chen08209/FlClash/releases/)[![Last Version](https://img.shields.io/github/release/chen08209/FlClash/all.svg?style=flat-square)](https://github.com/chen08209/FlClash/releases/)[![License](https://img.shields.io/github/license/chen08209/FlClash?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/WENSHAO521/panorama-secure-access/total?style=flat-square&logo=github)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![Last Version](https://img.shields.io/github/release/WENSHAO521/panorama-secure-access/all.svg?style=flat-square)](https://github.com/WENSHAO521/panorama-secure-access/releases/)[![License](https://img.shields.io/github/license/WENSHAO521/panorama-secure-access?style=flat-square)](LICENSE)
 
-[![Channel](https://img.shields.io/badge/Telegram-Channel-blue?style=flat-square&logo=telegram)](https://t.me/FlClash)
-
-基于ClashMeta的多平台代理客户端，简单易用，开源无广告。
+基于ClashMeta的多平台代理客户端，简单易用，开源无广告。本项目为 [FlClash](https://github.com/chen08209/FlClash) 的重新品牌化分支，
+详见下方[许可证与鸣谢](#许可证与鸣谢)。
 
 ## 免责声明
 
@@ -63,7 +62,7 @@ on Mobile:
 
 ## Download
 
-<a href="https://chen08209.github.io/FlClash-fdroid-repo/repo?fingerprint=789D6D32668712EF7672F9E58DEEB15FBD6DCEEC5AE7A4371EA72F2AAE8A12FD"><img alt="Get it on F-Droid" src="snapshots/get-it-on-fdroid.svg" width="200px"/></a> <a href="https://github.com/chen08209/FlClash/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
+<a href="https://github.com/WENSHAO521/panorama-secure-access/releases"><img alt="Get it on GitHub" src="snapshots/get-it-on-github.svg" width="200px"/></a>
 
 ## Build
 
@@ -125,12 +124,19 @@ on Mobile:
            dart setup.dart macos
            ```
 
+## 许可证与鸣谢
+
+Panorama Secure Access 是 [FlClash](https://github.com/chen08209/FlClash)（作者 chen08209）的重新品牌化修改版分支，FlClash
+本身基于 [Clash.Meta / mihomo](https://github.com/MetaCubeX/mihomo) 构建。原项目与本分支均采用
+[GNU 通用公共许可证 v3.0](LICENSE) 授权；作为 GPL-3.0 代码的衍生作品，本分支继续沿用 GPL-3.0。本分支中的修改部分（品牌重塑、图标、
+默认主题、免责声明等）版权归 Panorama Scholarly Group 所有，同样以该许可证发布。
+
 ## Star
 
 支持开发者的最简单方式是点击页面顶部的星标（⭐）。
 
 <p style="text-align: center;">
-    <a href="https://api.star-history.com/svg?repos=chen08209/FlClash&Date">
-        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=chen08209/FlClash&Date"/>
+    <a href="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date">
+        <img alt="start" width=50% src="https://api.star-history.com/svg?repos=WENSHAO521/panorama-secure-access&Date"/>
     </a>
 </p>

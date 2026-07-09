@@ -122,6 +122,8 @@
   "discoverNewVersion": "Discover the new version",
   "checkUpdateError": "The current application is already the latest version",
   "goDownload": "Go to download",
+  "downloadingUpdate": "Downloading update...",
+  "downloadUpdateFailed": "Download failed, please try again",
   "unknown": "Unknown",
   "country": "Country",
   "search": "Search",

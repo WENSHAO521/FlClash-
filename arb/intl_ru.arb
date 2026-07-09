@@ -122,6 +122,8 @@
   "discoverNewVersion": "Обнаружена новая версия",
   "checkUpdateError": "Текущее приложение уже является последней версией",
   "goDownload": "Перейти к загрузке",
+  "downloadingUpdate": "Загрузка обновления...",
+  "downloadUpdateFailed": "Загрузка не удалась, попробуйте снова",
   "unknown": "Неизвестно",
   "country": "Страна",
   "search": "Поиск",

@@ -10,6 +10,7 @@ export 'dialog.dart';
 export 'disabled_mask.dart';
 export 'dismissible.dart';
 export 'donut_chart.dart';
+export 'download_progress_dialog.dart';
 export 'effect.dart';
 export 'fade_box.dart';
 export 'float_layout.dart';
