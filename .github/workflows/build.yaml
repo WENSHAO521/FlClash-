@@ -100,9 +100,19 @@ jobs:
             # encoding of it, since it's easy to paste the wrong one into the
             # secret.
             case "$SERVICE_JSON" in
-              '{'*) echo "$SERVICE_JSON" > android/app/google-services.json ;;
-              *) echo "$SERVICE_JSON" | base64 --decode > android/app/google-services.json ;;
+              '{'*) echo "$SERVICE_JSON" > /tmp/google-services.json ;;
+              *) echo "$SERVICE_JSON" | base64 --decode > /tmp/google-services.json ;;
             esac
+            # The Firebase project behind SERVICE_JSON has to actually have an
+            # Android app registered for this applicationId, or the Google
+            # Services Gradle plugin hard-fails the build with "No matching
+            # client found". Fall back to the placeholder instead of breaking
+            # the build when it doesn't match.
+            if grep -q '"com.follow.clash"' /tmp/google-services.json; then
+              mv /tmp/google-services.json android/app/google-services.json
+            else
+              echo "SERVICE_JSON has no client for com.follow.clash, keeping placeholder google-services.json."
+            fi
           else
             echo "SERVICE_JSON secret not set, keeping placeholder google-services.json."
           fi
