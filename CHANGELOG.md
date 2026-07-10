@@ -1,3 +1,9 @@
+## v3.1.1
+
+- Sync Android notification and quick-settings tile icons to the new logo (were still showing the old mark)
+- Update the Android TV banner to the new logo and brand name
+- Fix release page download links to point to this fork's releases
+
 ## v3.1.0
 
 - Point in-app update checks at this fork's own releases instead of upstream FlClash
