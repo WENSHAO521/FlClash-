@@ -1,3 +1,7 @@
+## v3.1.2
+
+- Change default test URL to speed.cloudflare.com; bump to v3.1.2
+
 ## v3.1.1
 
 - Sync Android notification and quick-settings tile icons to the new logo (were still showing the old mark)
