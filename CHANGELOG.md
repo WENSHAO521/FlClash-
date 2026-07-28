@@ -1,3 +1,28 @@
+## v3.2.0
+
+- Sync with upstream FlClash v0.8.94: macOS performance fix, custom global-ua support, updated core,
+  new l10n system, and various dependency/detail updates (graft-assisted merge onto this fork's own
+  history, keeping this fork's branding, monochrome theme, and release URLs)
+- Change default proxy delay/speed-test URL from gstatic generate_204 to speed.cloudflare.com (Dart
+  default and Go core fallback default)
+- Retry the core process's IPC pipe/socket dial instead of panicking on the first timeout right after
+  a restart
+- Fix the Windows uninstaller showing a generic icon instead of the branded one in Add/Remove Programs;
+  clean up a stale helper service before install
+- Give the TUN adapter its own short device name instead of a leftover unbranded literal, avoiding a
+  wintun adapter-creation issue tied to long/space-containing device names
+- Bound the core IPC connect wait instead of hanging forever (with more headroom when launched via the
+  Windows helper, since TUN bring-up can be slow), with diagnostics surfaced on timeout
+- Bound Windows helper sc.exe queries with a timeout and add a catch-all around core connect, so a
+  hung system call can no longer leave the UI stuck on "connecting" forever
+- Attempt a graceful shutdown of the core process on Windows before force-killing it, so the wintun
+  adapter it created gets torn down instead of leaking orphaned adapters across restarts
+- Cache the Windows helper's core-binary SHA256 check (keyed by file mtime) and widen the client
+  timeout, fixing helper /start timing out on a slow disk or during antivirus scanning
+- Propagate a real error when the TUN adapter fails to come up instead of silently reporting success
+- Stop the core restart flow before further init when the core failed to connect, instead of
+  continuing into steps that would just hang; remove a dead duplicate code path
+
 ## v3.1.2
 
 - Change default test URL to speed.cloudflare.com; bump to v3.1.2
