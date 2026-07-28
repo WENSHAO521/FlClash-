@@ -1,3 +1,13 @@
+## v3.2.1
+
+- Remove About page's Telegram link, which pointed at upstream FlClash's own community channel
+  instead of this fork's
+- Remove the Homebrew and F-Droid tap publish CI steps, which were hardcoded to push to upstream's
+  own repos (chen08209/homebrew-tap, chen08209/FlClash-fdroid-repo); the Homebrew one had no secret
+  guard and was failing the release build's upload job on every stable tag
+- Fix release notes generation comparing against upstream's latest release tag instead of this repo's
+  own, which caused release notes to re-include every prior release's changes
+
 ## v3.2.0
 
 - Sync with upstream FlClash v0.8.94: macOS performance fix, custom global-ua support, updated core,
