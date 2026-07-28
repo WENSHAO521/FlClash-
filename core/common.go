@@ -105,12 +105,12 @@ func sideUpdateExternalProvider(p cp.Provider, bytes []byte) error {
 	}
 }
 
-func updateListeners() {
+func updateListeners() error {
 	if !isRunning {
-		return
+		return nil
 	}
 	if currentConfig == nil {
-		return
+		return nil
 	}
 	listeners := currentConfig.Listeners
 	general := currentConfig.General
@@ -134,7 +134,15 @@ func updateListeners() {
 	listener.ReCreateTuic(general.TuicServer, tunnel.Tunnel)
 	if !features.Android {
 		listener.ReCreateTun(general.Tun, tunnel.Tunnel)
+		// ReCreateTun only logs internally and never returns an error, so the
+		// only way to notice a failed adapter (e.g. missing admin rights,
+		// wintun driver blocked/missing) is to check whether it left TUN
+		// disabled despite being asked to enable it.
+		if general.Tun.Enable && !listener.GetTunConf().Enable {
+			return errors.New("failed to start the TUN virtual network adapter; make sure the app/helper is running with administrator privileges and that the wintun driver isn't blocked by antivirus software")
+		}
 	}
+	return nil
 }
 
 func stopListeners() {
@@ -164,7 +172,7 @@ func patchSelectGroup(mapping map[string]string) {
 
 func defaultSetupParams() *SetupParams {
 	return &SetupParams{
-		TestURL:     "https://www.gstatic.com/generate_204",
+		TestURL:     "https://speed.cloudflare.com",
 		SelectedMap: map[string]string{},
 	}
 }
@@ -181,7 +189,7 @@ func readFile(path string) ([]byte, error) {
 	return data, err
 }
 
-func updateConfig(params *UpdateParams) {
+func updateConfig(params *UpdateParams) error {
 	runLock.Lock()
 	defer runLock.Unlock()
 	general := currentConfig.General
@@ -243,10 +251,11 @@ func updateConfig(params *UpdateParams) {
 		updater.SetGeoUpdateInterval(*params.GeoUpdateInterval)
 	}
 
-	updateListeners()
+	err := updateListeners()
 	if updater.GeoAutoUpdate() {
 		updater.RegisterGeoUpdaterWithCancel()
 	}
+	return err
 }
 
 func applyConfig(params *SetupParams) error {
@@ -261,7 +270,9 @@ func applyConfig(params *SetupParams) error {
 	}
 	hub.ApplyConfig(currentConfig)
 	patchSelectGroup(params.SelectedMap)
-	updateListeners()
+	if listenErr := updateListeners(); err == nil {
+		err = listenErr
+	}
 	if updater.GeoAutoUpdate() {
 		updater.RegisterGeoUpdaterWithCancel()
 	}

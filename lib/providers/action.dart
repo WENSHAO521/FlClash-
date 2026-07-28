@@ -516,38 +516,29 @@ class CoreAction extends _$CoreAction {
     }
   }
 
-  Future<void> connectCore() async {
+  Future<bool> connectCore() async {
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
-    final result = await Future.wait([
-      coreController.preload(),
-      Future.delayed(const Duration(milliseconds: 300)),
-    ]);
-    final String message = result[0];
-    if (message.isNotEmpty) {
-      ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
-      globalState.showNotifier(message);
-      return;
-    }
-    ref.read(coreStatusProvider.notifier).value = CoreStatus.connected;
-  }
-
-  Future<Result<bool>> requestAdmin(bool enableTun) async {
-    final realTunEnable = ref.read(realTunEnableProvider);
-    if (enableTun != realTunEnable && realTunEnable == false) {
-      final code = await system.authorizeCore();
-      switch (code) {
-        case AuthorizeCode.success:
-          await restartCore();
-          return Result.error('');
-        case AuthorizeCode.none:
-          break;
-        case AuthorizeCode.error:
-          enableTun = false;
-          break;
+    try {
+      final result = await Future.wait([
+        coreController.preload(),
+        Future.delayed(const Duration(milliseconds: 300)),
+      ]);
+      final String message = result[0];
+      if (message.isNotEmpty) {
+        ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
+        globalState.showNotifier(message);
+        return false;
       }
+      ref.read(coreStatusProvider.notifier).value = CoreStatus.connected;
+      return true;
+    } catch (e) {
+      // Anything unexpected here (e.g. a platform call that hung and threw
+      // instead of returning a message) must not leave the UI stuck on
+      // "connecting" forever with no way out.
+      ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
+      globalState.showNotifier(e.toString());
+      return false;
     }
-    ref.read(realTunEnableProvider.notifier).value = enableTun;
-    return Result.success(enableTun);
   }
 
   Future<void> restartCore([bool start = false]) async {
@@ -555,7 +546,14 @@ class CoreAction extends _$CoreAction {
         ref.read(coreStatusProvider) == CoreStatus.disconnected;
     ref.read(coreStatusProvider.notifier).value = CoreStatus.disconnected;
     await coreController.shutdown(!isDisconnected);
-    await connectCore();
+    final connected = await connectCore();
+    if (!connected) {
+      // Don't keep going into initCore()/applyProfile() when the core
+      // never actually connected - that just leaves the UI stuck waiting
+      // on state that will never arrive instead of surfacing the failure
+      // that connectCore() already reported.
+      return;
+    }
     await initCore();
     if (start || ref.read(isStartProvider)) {
       await ref

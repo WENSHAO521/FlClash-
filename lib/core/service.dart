@@ -85,6 +85,41 @@ class CoreService extends CoreHandlerInterface {
     );
   }
 
+  // Waiting on the connect completer with no timeout at all leaves the UI
+  // stuck on "connecting" forever if the core process never dials back
+  // (crash, wrong pipe, hung helper, etc). Launching via the Windows helper
+  // generally means TUN is being enabled, which can require Windows to
+  // install/register the wintun virtual adapter - this can easily take
+  // longer than a few seconds on a slow disk or with AV scanning the
+  // driver - so give that path a lot more headroom than the direct-launch
+  // path (no driver work involved).
+  Future<void> _waitCoreConnected({required bool byHelper}) async {
+    final timeout = byHelper
+        ? const Duration(seconds: 45)
+        : const Duration(seconds: 8);
+    try {
+      await _transport.connectionCompleter.future.timeout(timeout);
+    } catch (e) {
+      // The core process is spawned separately from this wait, so on
+      // timeout we don't yet know if it crashed, is still starting, or
+      // connected to the wrong pipe. Surfacing which path launched it and
+      // whether it already exited turns a bare timeout into something
+      // actionable instead of a dead end.
+      final exitCode = await _process?.exitCode.timeout(
+        Duration.zero,
+        onTimeout: () => -1,
+      );
+      final processState = byHelper
+          ? 'launched via Windows helper (SYSTEM)'
+          : exitCode == -1
+          ? 'core process still running'
+          : 'core process already exited with code $exitCode';
+      final message = 'Failed to connect core IPC: $e ($processState)';
+      commonPrint.log(message, logLevel: LogLevel.error);
+      throw Exception(message);
+    }
+  }
+
   Future<void> start() async {
     if (_process != null) {
       await shutdown(false);
@@ -92,7 +127,7 @@ class CoreService extends CoreHandlerInterface {
     if (system.isWindows && await system.checkIsAdmin()) {
       final isSuccess = await request.startCoreByHelper(_transport.address);
       if (isSuccess) {
-        await _transport.connectionCompleter.future;
+        await _waitCoreConnected(byHelper: true);
         return;
       }
     }
@@ -113,7 +148,7 @@ class CoreService extends CoreHandlerInterface {
         commonPrint.log(error, logLevel: LogLevel.warning);
       }
     });
-    await _transport.connectionCompleter.future;
+    await _waitCoreConnected(byHelper: false);
   }
 
   @override

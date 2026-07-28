@@ -218,14 +218,34 @@ class Windows {
   //   }
   // }
 
+  // sc.exe can occasionally hang (e.g. SCM lock contention right after a
+  // stop/delete/create/start cycle), and Process.run has no built-in
+  // timeout, which would otherwise leave callers awaiting this forever
+  // with no error and no way to fall back. Bound it so a stuck sc.exe
+  // degrades to "unknown" instead of hanging core startup indefinitely.
+  Future<ProcessResult?> _runScCommand(List<String> arguments) async {
+    try {
+      return await Process.run(
+        'sc',
+        arguments,
+      ).timeout(const Duration(seconds: 10));
+    } catch (e) {
+      commonPrint.log(
+        'sc.exe ${arguments.join(' ')} failed or timed out: $e',
+        logLevel: LogLevel.warning,
+      );
+      return null;
+    }
+  }
+
   Future<WindowsHelperServiceStatus> checkService() async {
     // final qcResult = await Process.run('sc', ['qc', appHelperService]);
     // final qcOutput = qcResult.stdout.toString();
     // if (qcResult.exitCode != 0 || !qcOutput.contains(appPath.helperPath)) {
     //   return WindowsHelperServiceStatus.none;
     // }
-    final result = await Process.run('sc', ['query', appHelperService]);
-    if (result.exitCode != 0) {
+    final result = await _runScCommand(['query', appHelperService]);
+    if (result == null || result.exitCode != 0) {
       return WindowsHelperServiceStatus.none;
     }
     final output = result.stdout.toString();

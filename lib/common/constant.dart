@@ -10,6 +10,11 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter/material.dart';
 
 const appName = 'Panorama Secure Access';
+// TUN adapter friendly name. Using the full multi-word appName (with
+// spaces) here has been observed to make wintun adapter creation fail on
+// some Windows setups; keep this short and space-free, matching upstream's
+// own move away from a full app-name-based device name.
+const tunDeviceName = 'PanoramaTun';
 const appHelperService = 'FlClashHelperService';
 const coreName = 'clash.meta';
 const browserUa =
