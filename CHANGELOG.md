@@ -1,3 +1,8 @@
+## v3.2.2
+
+- Change default proxy delay/speed-test URL from speed.cloudflare.com to cp.cloudflare.com (Dart
+  default and Go core fallback default)
+
 ## v3.2.1
 
 - Remove About page's Telegram link, which pointed at upstream FlClash's own community channel

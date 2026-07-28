@@ -172,7 +172,7 @@ func patchSelectGroup(mapping map[string]string) {
 
 func defaultSetupParams() *SetupParams {
 	return &SetupParams{
-		TestURL:     "https://speed.cloudflare.com",
+		TestURL:     "https://cp.cloudflare.com",
 		SelectedMap: map[string]string{},
 	}
 }
