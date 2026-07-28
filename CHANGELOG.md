@@ -1,3 +1,8 @@
+## v3.2.3
+
+- Change default proxy delay/speed-test URL back to gstatic generate_204 (Dart default and Go core
+  fallback default)
+
 ## v3.2.2
 
 - Change default proxy delay/speed-test URL from speed.cloudflare.com to cp.cloudflare.com (Dart
