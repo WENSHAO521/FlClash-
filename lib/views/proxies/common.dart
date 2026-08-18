@@ -74,13 +74,14 @@ Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
 }
 
 Future<void> delayTest(List<Proxy> proxies, [String? testUrl]) async {
-  final delayProxies = proxies.map<Future>((proxy) async {
-    await proxyDelayTest(proxy, testUrl);
-  }).toList();
-
-  final batchesDelayProxies = delayProxies.batch(100);
-  for (final batchDelayProxies in batchesDelayProxies) {
-    await Future.wait(batchDelayProxies);
+  // Batch the proxies themselves, not pre-created futures — batching
+  // futures that already started running defeats the point of batching,
+  // since every request would already be in flight before the first
+  // Future.wait. Capping actual dispatch at maxConcurrentDelayTests keeps
+  // us from flooding the Core's own delay-test queue.
+  final batches = proxies.batch(maxConcurrentDelayTests);
+  for (final batch in batches) {
+    await Future.wait(batch.map((proxy) => proxyDelayTest(proxy, testUrl)));
   }
   globalState.container.read(sortNumProvider.notifier).add();
 }
