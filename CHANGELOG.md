@@ -1,3 +1,133 @@
+## v3.3.0
+
+- Bump version to 3.3.0
+
+- Drop the ring from tray status icons, encode state by glyph color
+
+- The dashed status ring around the P mark read as visual noise at tray
+
+- size and wasn't wanted. status_1/2/3 are now just the P glyph itself,
+
+- larger and centered, colored by state instead of ring-bordered:
+
+- graphite gray (idle), violet gradient (running, system proxy), amber
+
+- (running, TUN) — same semantic mapping as before, carried by the
+
+- glyph's own color rather than a ring around it.
+
+- Frosted-glass visual system across the app shell
+
+- Adds a shared glass design system (lib/widgets/glass.dart):
+
+- - AmbientBackground: one gradient + soft color-blob layer painted once
+
+-   behind the whole app shell, derived from the active ColorScheme so
+
+-   it follows dynamic color / the user's chosen primary automatically.
+
+- - GlassSurface: translucent panel with an opt-in BackdropFilter blur.
+
+-   Blur is real only where a surface can only appear once on screen at
+
+-   a time (top bar, nav rail/bar, dialogs, settings groups); it's
+
+-   skipped in favor of flat tint for anything that can appear dozens of
+
+-   times at once (CommonCard, used in proxy grids/lists) since stacking
+
+-   that many backdrop filters is a real scroll-jank risk.
+
+- Wires it into the app shell: WindowHeader (desktop title bar),
+
+- CommonScaffold's AppBar, the desktop nav rail and mobile nav bar,
+
+- CommonCard/SettingsBlock, CommonDialog, and AdaptiveSheetScaffold's
+
+- bottom/side sheets. ThemeData.scaffoldBackgroundColor is now
+
+- transparent globally so every page reveals the ambient background
+
+- instead of each needing its own override.
+
+- Fix Windows whole-group delay-test flooding and a WebDAV ping race
+
+- Two bug fixes identified while diffing against upstream FlClash (this
+
+- fork's Linux silent-launch fix and the real 220-commit upstream
+
+- history are already merged in via the earlier upstream-sync work, so
+
+- just these two remain):
+
+- - delayTest() was batching already-created Futures instead of the
+
+-   proxy list itself - an async closure starts running up to its first
+
+-   await the moment it's created, so `.map().toList()` was firing every
+
+-   delay-test request immediately regardless of "batch" size. That's
+
+-   exactly what floods the Core's own delay-test queue and times out
+
+-   whole-group tests, especially noticeable on Windows. Now batches the
+
+-   proxies first, capped at the Core's own concurrency
+
+-   (maxConcurrentDelayTests = 50, matching mBatch in core/common.go).
+
+- - The backup/restore screen's WebDAV connectivity check was fired
+
+-   fire-and-forget from build(), so a slow ping for an old credential
+
+-   set could resolve after (and overwrite) a newer one. Adds
+
+-   DAVConnectionController, a small request-generation guard, and wires
+
+-   it into the settings page.
+
+- Rebrand: abstract P monogram logo and unified icon set
+
+- Replaces the shield-and-globe mark with a geometric P monogram (stem +
+
+- aperture bowl, an off-center counter hole standing in for "panorama"
+
+- and "secure access") in a new ink-to-violet palette (#14162B ->
+
+- #6D5EF7), replacing the old navy-to-cyan gradient this fork used
+
+- before the upstream sync.
+
+- Regenerates every platform's app icon from the same vector-equivalent
+
+- geometry so they're pixel-consistent: macOS iconset, Windows .ico
+
+- (app + installer + tray), Android adaptive icon (foreground now
+
+- per-density raster PNGs in this codebase rather than a vector
+
+- drawable, rescaled to the 66dp safe zone) plus legacy mipmap
+
+- webp/Play Store/TV banner, and the icon.png used by the
+
+- AppImage/deb/rpm packaging configs. Tray status icons keep their
+
+- existing gray/blue/amber ring (a functional state indicator, not
+
+- branding) and only swap the center glyph. The service module's
+
+- tile/notification icons (ic.png/ic_service.png, also per-density
+
+- raster here) get the same new glyph as flat white silhouettes,
+
+- matching how this codebase already treated them.
+
+- Also updates the app's default Material You seed color and preset
+
+- palette to the new violet (was upstream's default black/mixed
+
+- palette, unrelated to this fork's branding).
+
 ## v3.2.3
 
 - Change default proxy delay/speed-test URL back to gstatic generate_204 (Dart default and Go core
