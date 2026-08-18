@@ -6,6 +6,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/widgets/fade_box.dart';
+import 'package:fl_clash/widgets/glass.dart';
 import 'package:fl_clash/widgets/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -120,13 +121,13 @@ class StatusManagerState extends State<StatusManager> {
                                     onDismissed: (_) {
                                       _cancelMessage(messages.last.id);
                                     },
-                                    child: Card(
+                                    child: GlassSurface(
                                       shape: const RoundedSuperellipseBorder(
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(14),
                                         ),
                                       ),
-                                      elevation: 10,
+                                      boxShadow: kElevationToShadow[10],
                                       color: context
                                           .colorScheme
                                           .surfaceContainerHigh,

@@ -48,6 +48,14 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
   @override
   String? get barrierLabel => null;
 
+  // The route's own Scaffold background is transparent (see
+  // scaffoldBackgroundColor in application.dart), so it must not be treated
+  // as opaque — otherwise Flutter offstages whatever sits behind it once the
+  // push transition finishes, which for the mobile route below hides the
+  // AmbientBackground painted at the app shell root.
+  @override
+  bool get opaque => false;
+
   @override
   Widget buildPage(
     BuildContext context,
@@ -83,6 +91,14 @@ class CommonRoute<T> extends PageRoute<T> {
   @override
   String? get barrierLabel => null;
 
+  // Mobile has no per-tab nested Navigator (see _HomePageView), so pushing
+  // here goes on the root Navigator directly below HomePage. An opaque route
+  // gets Flutter to offstage whatever's below it once the transition ends —
+  // which here is HomePage itself, hiding the AmbientBackground it paints.
+  // This route's own Scaffold is transparent, so it must not claim opaque.
+  @override
+  bool get opaque => false;
+
   @override
   bool get maintainState => true;
 
@@ -100,7 +116,7 @@ class CommonRoute<T> extends PageRoute<T> {
         animation: animation,
         secondaryAnimation: secondaryAnimation,
         transitionType: SharedAxisTransitionType.horizontal,
-        fillColor: context.colorScheme.surface,
+        fillColor: Colors.transparent,
         child: result,
       ),
     );

@@ -345,19 +345,21 @@ class _ProxiesListViewState extends State<ProxiesListView> {
                         children: [
                           Positioned(
                             top: -headerState.offset,
-                            child: Container(
-                              width: container.maxWidth,
+                            child: GlassSurface(
                               color: context.colorScheme.surface,
-                              padding: const EdgeInsets.only(
-                                top: 16,
-                                left: 16,
-                                right: 16,
-                                bottom: 8,
-                              ),
-                              child: _buildHeader(
-                                ref,
-                                group: state.groups[index],
-                                currentUnfoldSet: state.currentUnfoldSet,
+                              child: Container(
+                                width: container.maxWidth,
+                                padding: const EdgeInsets.only(
+                                  top: 16,
+                                  left: 16,
+                                  right: 16,
+                                  bottom: 8,
+                                ),
+                                child: _buildHeader(
+                                  ref,
+                                  group: state.groups[index],
+                                  currentUnfoldSet: state.currentUnfoldSet,
+                                ),
                               ),
                             ),
                           ),

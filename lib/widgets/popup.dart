@@ -3,6 +3,7 @@ import 'package:fl_clash/models/common.dart';
 import 'package:flutter/material.dart';
 
 import 'animated_cross_slide.dart';
+import 'glass.dart';
 
 class CommonPopupRoute<T> extends PopupRoute<T> {
   final WidgetBuilder builder;
@@ -210,11 +211,10 @@ class CommonPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 12,
-      color: context.colorScheme.surfaceContainer,
-      clipBehavior: Clip.antiAlias,
+    return GlassSurface(
       shape: RoundedSuperellipseBorder(borderRadius: BorderRadius.circular(14)),
+      color: context.colorScheme.surfaceContainer,
+      boxShadow: kElevationToShadow[12],
       child: IntrinsicWidth(
         child: _CommonPopupMenuItems(
           items: items,

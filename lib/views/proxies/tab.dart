@@ -230,8 +230,10 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                   colors: [
-                    context.colorScheme.surface.opacity10,
-                    context.colorScheme.surface,
+                    context.colorScheme.surface.withValues(alpha: 0),
+                    context.colorScheme.surface.withValues(
+                      alpha: glassPanelOpacity,
+                    ),
                   ],
                   stops: const [0.0, 0.1],
                 ),
