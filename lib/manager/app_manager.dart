@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
@@ -6,6 +7,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/manager/window_manager.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -161,17 +163,30 @@ class AppSidebarContainer extends ConsumerWidget {
     required BuildContext context,
     required Widget child,
   }) {
-    return Material(color: context.colorScheme.surfaceContainer, child: child);
-    // if (!system.isMacOS) {
-    //   return Material(
-    //     color: context.colorScheme.surfaceContainer,
-    //     child: child,
-    //   );
-    // }
-    // return child;
-    // return TransparentMacOSSidebar(
-    //   child: Material(color: Colors.transparent, child: child),
-    // );
+    final colorScheme = context.colorScheme;
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: glassBlurSigma,
+          sigmaY: glassBlurSigma,
+        ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainer.withValues(
+              alpha: glassPanelOpacity,
+            ),
+            border: Border(
+              right: BorderSide(
+                color: colorScheme.outlineVariant.withValues(
+                  alpha: glassBorderOpacity,
+                ),
+              ),
+            ),
+          ),
+          child: Material(color: Colors.transparent, child: child),
+        ),
+      ),
+    );
   }
 
   void _updateSideBarWidth(WidgetRef ref, double contentWidth) {

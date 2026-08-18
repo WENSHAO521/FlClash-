@@ -14,6 +14,7 @@ export 'download_progress_dialog.dart';
 export 'effect.dart';
 export 'fade_box.dart';
 export 'float_layout.dart';
+export 'glass.dart';
 export 'grid.dart';
 export 'icon.dart';
 export 'inherited.dart';

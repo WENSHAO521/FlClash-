@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_ext/window_ext.dart';
@@ -254,10 +256,20 @@ class _WindowHeaderState extends State<WindowHeader> {
               onDoubleTap: () {
                 _updateMaximized();
               },
-              child: Container(
-                color: context.colorScheme.secondary.opacity15,
-                alignment: Alignment.centerLeft,
-                height: kHeaderHeight,
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(
+                    sigmaX: glassBlurSigma,
+                    sigmaY: glassBlurSigma,
+                  ),
+                  child: Container(
+                    color: context.colorScheme.surface.withValues(
+                      alpha: glassPanelOpacity,
+                    ),
+                    alignment: Alignment.centerLeft,
+                    height: kHeaderHeight,
+                  ),
+                ),
               ),
             ),
           ),

@@ -1,8 +1,11 @@
 import 'dart:math';
 
+import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'glass.dart';
 
 class CommonDialog extends ConsumerWidget {
   final String title;
@@ -29,7 +32,12 @@ class CommonDialog extends ConsumerWidget {
       title: Text(title),
       actions: actions,
       contentPadding: padding,
-      backgroundColor: backgroundColor,
+      backgroundColor:
+          backgroundColor ??
+          context.colorScheme.surfaceContainerHigh.withValues(
+            alpha: glassPanelOpacity,
+          ),
+      surfaceTintColor: Colors.transparent,
       content: Container(
         constraints: BoxConstraints(
           maxHeight: min(size.height - 40, 500),

@@ -164,6 +164,10 @@ class ApplicationState extends ConsumerState<Application> {
           theme: ThemeData(
             useMaterial3: true,
             pageTransitionsTheme: _pageTransitionsTheme,
+            // Transparent so every Scaffold reveals the AmbientBackground
+            // painted once behind the app shell (see HomePage) instead of
+            // painting its own opaque surface color over it.
+            scaffoldBackgroundColor: Colors.transparent,
             colorScheme: _getAppColorScheme(
               brightness: Brightness.light,
               primaryColor: themeProps.primaryColor,
@@ -172,6 +176,7 @@ class ApplicationState extends ConsumerState<Application> {
           darkTheme: ThemeData(
             useMaterial3: true,
             pageTransitionsTheme: _pageTransitionsTheme,
+            scaffoldBackgroundColor: Colors.transparent,
             colorScheme: _getAppColorScheme(
               brightness: Brightness.dark,
               primaryColor: themeProps.primaryColor,

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import 'chip.dart';
+import 'glass.dart';
 import 'inherited.dart';
 
 typedef OnKeywordsUpdateCallback = void Function(List<String> keywords);
@@ -276,6 +279,25 @@ class CommonScaffoldState extends State<CommonScaffold> {
                           : true,
                       animateColor: true,
                       centerTitle: widget.centerTitle ?? false,
+                      backgroundColor: Colors.transparent,
+                      surfaceTintColor: Colors.transparent,
+                      elevation: 0,
+                      scrolledUnderElevation: 0,
+                      flexibleSpace: ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: glassBlurSigma,
+                            sigmaY: glassBlurSigma,
+                          ),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: context.colorScheme.surface.withValues(
+                                alpha: glassPanelOpacity,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       leading: _buildLeading(backAction),
                       title: _buildTitle(state.searchState),
                       actions: _buildActions(

@@ -6,6 +6,7 @@ import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'glass.dart';
 import 'scaffold.dart';
 import 'side_sheet.dart';
 
@@ -51,6 +52,11 @@ Future<T?> showSheet<T>({
   SheetProps props = const SheetProps(),
 }) {
   final isMobile = globalState.container.read(isMobileViewProvider);
+  final glassBackgroundColor =
+      props.backgroundColor ??
+      context.colorScheme.surfaceContainerLow.withValues(
+        alpha: glassPanelOpacity,
+      );
   return switch (isMobile) {
     true => showModalBottomSheet<T>(
       context: context,
@@ -61,7 +67,7 @@ Future<T?> showSheet<T>({
           child: builder(context),
         );
       },
-      backgroundColor: props.backgroundColor,
+      backgroundColor: glassBackgroundColor,
       showDragHandle: false,
       useSafeArea: props.useSafeArea,
     ),
@@ -69,7 +75,7 @@ Future<T?> showSheet<T>({
       useSafeArea: props.useSafeArea,
       isScrollControlled: props.isScrollControlled,
       context: context,
-      backgroundColor: props.backgroundColor,
+      backgroundColor: glassBackgroundColor,
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
       builder: (_) {
@@ -96,6 +102,9 @@ Future<T?> showExtend<T>(
     false => showModalSideSheet<T>(
       useSafeArea: props.useSafeArea,
       context: context,
+      backgroundColor: context.colorScheme.surface.withValues(
+        alpha: glassPanelOpacity,
+      ),
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
       builder: (context) {
@@ -167,9 +176,11 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
     final nestedNavigatorPop = sheetProvider?.nestedNavigatorPop;
     final ModalRoute<dynamic>? route = ModalRoute.of(context);
     final type = sheetProvider?.type ?? SheetType.page;
-    final backgroundColor = type == SheetType.bottomSheet
-        ? context.colorScheme.surfaceContainerLow
-        : context.colorScheme.surface;
+    final backgroundColor =
+        (type == SheetType.bottomSheet
+                ? context.colorScheme.surfaceContainerLow
+                : context.colorScheme.surface)
+            .withValues(alpha: glassPanelOpacity);
     final useCloseIcon =
         type != SheetType.page &&
         (nestedNavigatorPop != null && route?.impliesAppBarDismissal == false ||

@@ -4,6 +4,7 @@ import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
 
 import 'fade_box.dart';
+import 'glass.dart';
 import 'text.dart';
 
 class Info {
@@ -222,6 +223,12 @@ class CommonCard extends StatelessWidget {
       childWidget = Stack(children: children);
     }
 
+    final cardShape =
+        shape ??
+        RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(radius ?? 14),
+        );
+
     final card = switch (type == CommonCardType.filled) {
       true => FilledButton(
         onLongPress: onLongPress,
@@ -229,19 +236,15 @@ class CommonCard extends StatelessWidget {
         style:
             FilledButton.styleFrom(
               padding: padding ?? EdgeInsets.zero,
-              shape:
-                  shape ??
-                  RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(radius ?? 14),
-                  ),
+              shape: cardShape,
               iconSize: 20,
               iconColor: _buildIconColor(context),
               foregroundColor: _buildForegroundColor(context),
               side: BorderSide.none,
               elevation: 0,
             ).copyWith(
-              backgroundColor: WidgetStatePropertyAll(
-                _buildBackgroundColor(context),
+              backgroundColor: const WidgetStatePropertyAll(
+                Colors.transparent,
               ),
               side: WidgetStateProperty.resolveWith(
                 (states) => _buildBorderSide(context, states),
@@ -256,14 +259,10 @@ class CommonCard extends StatelessWidget {
         style:
             OutlinedButton.styleFrom(
               padding: padding ?? EdgeInsets.zero,
-              shape:
-                  shape ??
-                  RoundedSuperellipseBorder(
-                    borderRadius: BorderRadius.circular(radius ?? 14),
-                  ),
+              shape: cardShape,
               iconSize: 20,
               iconColor: _buildIconColor(context),
-              backgroundColor: _buildBackgroundColor(context),
+              backgroundColor: Colors.transparent,
               foregroundColor: _buildForegroundColor(context),
               elevation: 0,
             ).copyWith(
@@ -276,9 +275,20 @@ class CommonCard extends StatelessWidget {
       ),
     };
 
+    // No BackdropFilter here on purpose: CommonCard can appear dozens of
+    // times at once (proxy grids, provider lists), and stacking that many
+    // backdrop filters is a real scroll-jank risk. A flat tint over the
+    // AmbientBackground still reads as glass without the blur cost.
+    final glassCard = GlassSurface(
+      shape: cardShape,
+      color: _buildBackgroundColor(context),
+      blurSigma: 0,
+      child: card,
+    );
+
     return switch (enterAnimated) {
-      true => FadeScaleEnterBox(child: card),
-      false => card,
+      true => FadeScaleEnterBox(child: glassCard),
+      false => glassCard,
     };
   }
 }
@@ -312,7 +322,10 @@ class SettingsBlock extends StatelessWidget {
       child: Column(
         children: [
           InfoHeader(info: Info(label: title)),
-          Card(
+          GlassSurface(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             color: context.colorScheme.surfaceContainer,
             child: Column(children: settings),
           ),
