@@ -42,6 +42,11 @@ const watchExecution = false;
 final defaultTextScaleFactor =
     WidgetsBinding.instance.platformDispatcher.textScaleFactor;
 const httpTimeoutDuration = Duration(milliseconds: 5000);
+
+/// Keep at or below the Core's delay-test concurrency (`mBatch` in
+/// core/common.go). Surplus requests queue inside the Core behind a full wave
+/// of 5s timeouts, which no RPC timeout can cover.
+const maxConcurrentDelayTests = 50;
 const moreDuration = Duration(milliseconds: 100);
 const animateDuration = Duration(milliseconds: 100);
 const midDuration = Duration(milliseconds: 200);
@@ -107,7 +112,8 @@ const proxiesListStoreKey = PageStorageKey<String>('proxies_list');
 const toolsStoreKey = PageStorageKey<String>('tools');
 const profilesStoreKey = PageStorageKey<String>('profiles');
 
-const defaultPrimaryColor = 0xFF000000;
+// PSG brand violet.
+const defaultPrimaryColor = 0xFF6D5EF7;
 
 double getWidgetHeight(num lines) {
   final space = 14.mAp;
@@ -121,13 +127,13 @@ const mainIsolate = 'FlClashMainIsolate';
 const serviceIsolate = 'FlClashServiceIsolate';
 
 const defaultPrimaryColors = [
-  0xFF795548,
-  0xFF03A9F4,
-  0xFFFFFF00,
-  0XFFBBC9CC,
-  0XFFABD397,
   defaultPrimaryColor,
-  0XFF665390,
+  0xFF4F46E5,
+  0xFF14162B,
+  0xFF6B6E85,
+  0xFF03A9F4,
+  0XFFABD397,
+  0xFF795548,
 ];
 
 const scriptTemplate = '''
