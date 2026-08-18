@@ -1,3 +1,57 @@
+## v3.3.2
+
+- Bump version to 3.3.2
+
+- Fix unused import left over from the opaque-route fix
+
+- Making CommonRoute/CommonDesktopRoute's transparent fillColor a
+
+- literal Colors.transparent (instead of context.colorScheme.surface)
+
+- removed the last use of common/common.dart in this file, which
+
+- flutter analyze correctly flagged as a warning and failed the v3.3.1
+
+- CI build at the Analyze step before it ever reached the actual builds.
+
+## v3.3.1
+
+- Bump version to 3.3.1
+
+- Extend the glass system to popups, toasts, and full-page pushes
+
+- - CommonPopupMenu (right-click/dropdown menus) and StatusManager's
+
+-   floating toast card now use GlassSurface instead of an opaque Card.
+
+- - The proxy list's sticky group header, and the group-tab-bar's
+
+-   fade-to-background gradient, were still painting/fading to an
+
+-   opaque colorScheme.surface — now glass/translucent to match the
+
+-   AmbientBackground actually behind them.
+
+- - The real fix for "nothing past the Tools list looks changed":
+
+-   CommonRoute and CommonDesktopRoute (lib/common/navigator.dart) are
+
+-   PageRoute subclasses and default to opaque=true. Once their push
+
+-   transition finished, Flutter was offstaging whatever sat below them
+
+-   in the same Navigator — on mobile, where each tab has no nested
+
+-   Navigator of its own, that's HomePage itself, taking the
+
+-   AmbientBackground down with it. Every full-page push (any
+
+-   ListItem.open, which is most of Settings/Tools) was rendering on
+
+-   nothing behind its own transparent Scaffold. Both routes now
+
+-   override opaque to false.
+
 ## v3.3.0
 
 - Bump version to 3.3.0
