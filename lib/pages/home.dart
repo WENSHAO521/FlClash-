@@ -40,8 +40,8 @@ class HomePage extends StatelessWidget {
                   final bottomNavigationBar = ClipRect(
                     child: BackdropFilter(
                       filter: ImageFilter.blur(
-                        sigmaX: glassBlurSigma,
-                        sigmaY: glassBlurSigma,
+                        sigmaX: GlassTokens.blurChrome,
+                        sigmaY: GlassTokens.blurChrome,
                       ),
                       child: NavigationBarTheme(
                         data: _NavigationBarDefaultsM3(context),

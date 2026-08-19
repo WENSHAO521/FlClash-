@@ -376,7 +376,11 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       forceMaterialTransparency: true,
-      leading: popButton,
+      // suffixPop: a side sheet with no caller-supplied actions and a
+      // closeable (not back-navigable) state moves the close button into
+      // the trailing slot instead of leading, matching the bottom-sheet
+      // header's placement below.
+      leading: suffixPop ? null : popButton,
       automaticallyImplyLeading: type == SheetType.page,
       // A page pushed full-screen (SheetType.page) centres its title only
       // when there's no leading back button contending for the same space;
@@ -385,7 +389,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       centerTitle: type != SheetType.page,
       titleSpacing: 16,
       title: Text(widget.title, overflow: TextOverflow.ellipsis),
-      actions: genActions(actions),
+      actions: genActions(!suffixPop ? actions : [?popButton]),
       flexibleSpace: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(

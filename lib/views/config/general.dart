@@ -823,8 +823,8 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                   onFieldSubmitted: (_) {
                     _handleUpdate();
                   },
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
+                  decoration: glassInputDecoration(
+                    context,
                     labelText: appLocalizations.mixedPort,
                   ),
                   validator: (value) {
@@ -868,8 +868,8 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                     onFieldSubmitted: (_) {
                       _handleUpdate();
                     },
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
+                    decoration: glassInputDecoration(
+                      context,
                       labelText: appLocalizations.port,
                     ),
                     validator: (value) {
@@ -911,8 +911,8 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                     onFieldSubmitted: (_) {
                       _handleUpdate();
                     },
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
+                    decoration: glassInputDecoration(
+                      context,
                       labelText: appLocalizations.socksPort,
                     ),
                     validator: (value) {
@@ -958,8 +958,8 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                     onFieldSubmitted: (_) {
                       _handleUpdate();
                     },
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
+                    decoration: glassInputDecoration(
+                      context,
                       labelText: appLocalizations.redirPort,
                     ),
                     validator: (value) {
@@ -1005,8 +1005,8 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
                     onFieldSubmitted: (_) {
                       _handleUpdate();
                     },
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
+                    decoration: glassInputDecoration(
+                      context,
                       labelText: appLocalizations.tproxyPort,
                     ),
                     validator: (value) {

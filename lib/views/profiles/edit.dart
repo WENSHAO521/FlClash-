@@ -232,8 +232,8 @@ class _EditProfileViewState extends State<EditProfileView> {
           textInputAction: TextInputAction.next,
           controller: _labelController,
           inputFormatters: TextInputLimits.limit(TextInputLimits.name),
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
+          decoration: glassInputDecoration(
+            context,
             labelText: appLocalizations.name,
           ),
           validator: (String? value) {
@@ -253,8 +253,8 @@ class _EditProfileViewState extends State<EditProfileView> {
             inputFormatters: TextInputLimits.limit(TextInputLimits.url),
             minLines: 3,
             maxLines: 6,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+            decoration: glassInputDecoration(
+              context,
               labelText: appLocalizations.url,
               alignLabelWithHint: true,
               contentPadding: const EdgeInsets.symmetric(
@@ -288,8 +288,8 @@ class _EditProfileViewState extends State<EditProfileView> {
               inputFormatters: TextInputLimits.digitsOnly(
                 TextInputLimits.interval,
               ),
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
+              decoration: glassInputDecoration(
+                context,
                 labelText: appLocalizations.autoUpdateInterval,
               ),
               validator: (String? value) {

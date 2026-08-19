@@ -259,8 +259,8 @@ class _WindowHeaderState extends State<WindowHeader> {
               child: ClipRect(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(
-                    sigmaX: glassBlurSigma,
-                    sigmaY: glassBlurSigma,
+                    sigmaX: GlassTokens.blurChrome,
+                    sigmaY: GlassTokens.blurChrome,
                   ),
                   child: Container(
                     color: context.colorScheme.surface.withValues(

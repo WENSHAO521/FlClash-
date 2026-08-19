@@ -288,9 +288,16 @@ class CommonCard extends StatelessWidget {
     // repeated child anywhere near panel-level opacity compounds with its
     // parent into a near-opaque block instead of reading as "glass inside
     // glass".
+    //
+    // showBorder: false — the OutlinedButton/FilledButton above already owns
+    // the border via _buildBorderSide (its `side:` on the same cardShape).
+    // Leaving GlassSurface's own default border on top double-paints the
+    // identical outlineVariant stroke, compositing to roughly double the
+    // intended alpha on every idle card.
     final glassCard = GlassSurface.repeated(
       shape: cardShape,
       color: _buildBackgroundColor(context),
+      showBorder: false,
       child: card,
     );
 

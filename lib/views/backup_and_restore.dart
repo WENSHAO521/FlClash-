@@ -11,6 +11,7 @@ import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/fade_box.dart';
+import 'package:fl_clash/widgets/glass.dart';
 import 'package:fl_clash/widgets/input.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
@@ -454,9 +455,9 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
               inputFormatters: TextInputLimits.limit(TextInputLimits.uri),
               maxLines: 5,
               minLines: 1,
-              decoration: InputDecoration(
+              decoration: glassInputDecoration(
+                context,
                 prefixIcon: const Icon(Icons.link),
-                border: const OutlineInputBorder(),
                 labelText: appLocalizations.address,
                 helperText: appLocalizations.addressHelp,
               ),
@@ -470,9 +471,9 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
             TextFormField(
               controller: _userController,
               inputFormatters: TextInputLimits.limit(TextInputLimits.userName),
-              decoration: InputDecoration(
+              decoration: glassInputDecoration(
+                context,
                 prefixIcon: const Icon(Icons.account_circle),
-                border: const OutlineInputBorder(),
                 labelText: appLocalizations.account,
               ),
               validator: (String? value) {
@@ -491,9 +492,9 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
                     TextInputLimits.password,
                   ),
                   obscureText: obscure,
-                  decoration: InputDecoration(
+                  decoration: glassInputDecoration(
+                    context,
                     prefixIcon: const Icon(Icons.password),
-                    border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       icon: Icon(
                         obscure ? Icons.visibility : Icons.visibility_off,

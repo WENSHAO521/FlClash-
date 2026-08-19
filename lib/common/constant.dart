@@ -35,7 +35,12 @@ final listHeaderPadding = EdgeInsets.only(
   top: 24.mAp,
   bottom: 8.mAp,
 );
-const sheetAppBarHeight = 68.0;
+// Must match _AdaptiveSheetScaffoldState._buildSheetHeader's actual
+// rendered height (lib/widgets/sheet.dart): drag handle padding (6 top + 6
+// bottom) + handle (4) + title row (48) + trailing gap (6) = 70. Used as
+// sheetTopPadding for SheetType.bottomSheet so scrollable content under a
+// floating (sheetTransparentToolBar: true) header starts clear of it.
+const sheetAppBarHeight = 70.0;
 
 /// Height of HomePage's mobile bottom NavigationBar (see
 /// `_NavigationBarDefaultsM3` in lib/pages/home.dart). Pages pushed as

@@ -4,6 +4,7 @@ import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/dialog.dart';
+import 'package:fl_clash/widgets/glass.dart';
 import 'package:fl_clash/widgets/inherited.dart';
 import 'package:fl_clash/widgets/null_status.dart';
 import 'package:fl_clash/widgets/pop_scope.dart';
@@ -203,8 +204,8 @@ class _InputDialogState extends State<InputDialog> {
               onFieldSubmitted: (_) {
                 _handleUpdate();
               },
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
+              decoration: glassInputDecoration(
+                context,
                 suffixText: suffixText,
                 hintText: widget.hintText,
                 labelText: widget.labelText,
@@ -790,8 +791,8 @@ class _AddDialogState extends State<AddDialog> {
                     ? null
                     : TextInputLimits.limit(widget.keyMaxLength!),
                 controller: _keyController,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
+                decoration: glassInputDecoration(
+                  context,
                   labelText: keyField!.label,
                 ),
                 validator: (String? value) {
@@ -816,8 +817,8 @@ class _AddDialogState extends State<AddDialog> {
                   : TextInputLimits.limit(widget.valueMaxLength!),
               keyboardType: TextInputType.text,
               controller: _valueController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
+              decoration: glassInputDecoration(
+                context,
                 labelText: valueField.label,
               ),
               onFieldSubmitted: (_) {

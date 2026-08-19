@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 /// repeats a hundred times down a list. [GlassSurfaceType] classifies a
 /// physical surface by that role, and [GlassTokens] holds the calibrated
 /// values per role/brightness so nobody has to guess a number by hand.
-const double glassBlurSigma = 20.0;
 
 /// The role a physical glass surface plays. Pick the one that matches what
 /// the surface *is*, not how it happens to look — the tokens follow from
@@ -120,13 +119,16 @@ abstract final class GlassTokens {
       brightness == Brightness.dark
       ? darkModalBarrierOpacity
       : lightModalBarrierOpacity;
-}
 
-/// Deprecated alias kept only so any straggling reference resolves during
-/// the migration to [GlassTokens]; prefer `GlassTokens.opacityFor(...)`.
-@Deprecated('Use GlassTokens.opacityFor(GlassSurfaceType.panel, brightness)')
-double glassPanelOpacityFor(Brightness brightness) =>
-    GlassTokens.opacityFor(GlassSurfaceType.panel, brightness);
+  /// The subtle outlineVariant stroke shared by every glass surface's
+  /// default border and by [glassInputDecoration] — one formula, so the two
+  /// can't drift out of sync.
+  static BorderSide borderSideFor(ColorScheme colorScheme) => BorderSide(
+    color: colorScheme.outlineVariant.withValues(
+      alpha: borderOpacityFor(colorScheme.brightness),
+    ),
+  );
+}
 
 /// A translucent surface that optionally blurs whatever sits behind it.
 ///
@@ -238,13 +240,7 @@ class GlassSurface extends StatelessWidget {
         : (blurSigma ?? GlassTokens.blurFor(type));
     final resolvedBorderSide =
         borderSide ??
-        (showBorder
-            ? BorderSide(
-                color: colorScheme.outlineVariant.withValues(
-                  alpha: GlassTokens.borderOpacityFor(brightness),
-                ),
-              )
-            : BorderSide.none);
+        (showBorder ? GlassTokens.borderSideFor(colorScheme) : BorderSide.none);
     final tintedShape = shape.copyWith(side: resolvedBorderSide);
     final surface = DecoratedBox(
       decoration: ShapeDecoration(
@@ -279,26 +275,26 @@ InputDecoration glassInputDecoration(
   BuildContext context, {
   String? labelText,
   String? hintText,
+  String? helperText,
   String? suffixText,
   Widget? suffixIcon,
   Widget? prefixIcon,
   EdgeInsetsGeometry? contentPadding,
+  bool alignLabelWithHint = false,
 }) {
   final colorScheme = context.colorScheme;
   final brightness = colorScheme.brightness;
   final borderRadius = BorderRadius.circular(GlassTokens.radiusMedium);
-  final borderSide = BorderSide(
-    color: colorScheme.outlineVariant.withValues(
-      alpha: GlassTokens.borderOpacityFor(brightness),
-    ),
-  );
+  final borderSide = GlassTokens.borderSideFor(colorScheme);
   return InputDecoration(
     labelText: labelText,
     hintText: hintText,
+    helperText: helperText,
     suffixText: suffixText,
     suffixIcon: suffixIcon,
     prefixIcon: prefixIcon,
     contentPadding: contentPadding,
+    alignLabelWithHint: alignLabelWithHint,
     filled: true,
     fillColor: colorScheme.surfaceContainer.withValues(
       alpha: GlassTokens.opacityFor(GlassSurfaceType.panel, brightness),

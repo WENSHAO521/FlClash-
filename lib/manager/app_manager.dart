@@ -167,8 +167,8 @@ class AppSidebarContainer extends ConsumerWidget {
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: glassBlurSigma,
-          sigmaY: glassBlurSigma,
+          sigmaX: GlassTokens.blurChrome,
+          sigmaY: GlassTokens.blurChrome,
         ),
         child: DecoratedBox(
           decoration: BoxDecoration(
