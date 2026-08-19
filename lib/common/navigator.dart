@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/glass.dart';
 import 'package:flutter/material.dart';
 
 class BaseNavigator {
@@ -48,12 +49,12 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
   String? get barrierLabel => null;
 
   // The route's own Scaffold background is transparent (see
-  // scaffoldBackgroundColor in application.dart), so it must not be treated
-  // as opaque — otherwise Flutter offstages whatever sits behind it once the
-  // push transition finishes, which for the mobile route below hides the
-  // AmbientBackground painted at the app shell root.
+  // scaffoldBackgroundColor in application.dart) so its glass surfaces read
+  // against an ambient backdrop — but buildPage below now paints that
+  // backdrop itself, so this route is fully opaque and Flutter can safely
+  // offstage whatever sits behind it once the push transition finishes.
   @override
-  bool get opaque => false;
+  bool get opaque => true;
 
   @override
   Widget buildPage(
@@ -61,7 +62,17 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    final Widget result = builder(context);
+    // Each pushed page gets its own AmbientBackground rather than relying on
+    // the one painted at the app shell root (see HomePage) showing through —
+    // with a transparent Scaffold and a non-opaque route, gaps between glass
+    // surfaces used to expose whatever page was mounted underneath instead
+    // of just the ambient gradient.
+    final Widget result = Stack(
+      children: [
+        const Positioned.fill(child: AmbientBackground()),
+        builder(context),
+      ],
+    );
     return Semantics(
       scopesRoute: true,
       explicitChildNodes: true,
@@ -91,12 +102,12 @@ class CommonRoute<T> extends PageRoute<T> {
   String? get barrierLabel => null;
 
   // Mobile has no per-tab nested Navigator (see _HomePageView), so pushing
-  // here goes on the root Navigator directly below HomePage. An opaque route
-  // gets Flutter to offstage whatever's below it once the transition ends —
-  // which here is HomePage itself, hiding the AmbientBackground it paints.
-  // This route's own Scaffold is transparent, so it must not claim opaque.
+  // here goes on the root Navigator directly below HomePage. buildPage below
+  // paints its own AmbientBackground rather than relying on HomePage's
+  // showing through, so this route is fully opaque and Flutter can safely
+  // offstage HomePage once the push transition finishes.
   @override
-  bool get opaque => false;
+  bool get opaque => true;
 
   @override
   bool get maintainState => true;
@@ -107,7 +118,17 @@ class CommonRoute<T> extends PageRoute<T> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    final Widget result = builder(context);
+    // See CommonDesktopRoute.buildPage: without its own AmbientBackground, a
+    // transparent Scaffold on a non-opaque route let gaps between glass
+    // surfaces expose whatever page was mounted underneath — here, HomePage
+    // itself (proxy list, nav bar, etc.) — instead of just the ambient
+    // gradient.
+    final Widget result = Stack(
+      children: [
+        const Positioned.fill(child: AmbientBackground()),
+        builder(context),
+      ],
+    );
     return Semantics(
       scopesRoute: true,
       explicitChildNodes: true,
