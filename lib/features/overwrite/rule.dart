@@ -1,6 +1,5 @@
 library;
 
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/clash_config.dart';
@@ -38,15 +37,9 @@ class RuleItem extends StatelessWidget {
     if (rule.ruleAction != RuleAction.SUB_RULE) {
       final ruleTarget = rule.ruleTarget ?? '';
       if (ruleTarget.toUpperCase() == 'DIRECT') {
-        return VM2(
-          false,
-          Colors.green.harmonizeWith(context.colorScheme.primary),
-        );
+        return VM2(false, context.colorScheme.statusConnected);
       } else if (ruleTarget.toUpperCase() == 'REJECT') {
-        return VM2(
-          false,
-          Colors.orange.harmonizeWith(context.colorScheme.primary),
-        );
+        return VM2(false, context.colorScheme.statusWarning);
       } else if (hasMatch && ruleTarget.toUpperCase() == 'MATCH') {
         return VM2(false, context.colorScheme.tertiary);
       }

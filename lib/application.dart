@@ -10,6 +10,7 @@ import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,6 +42,58 @@ class ApplicationState extends ConsumerState<Application> {
     int? primaryColor,
   }) {
     return ref.read(genColorSchemeProvider(brightness));
+  }
+
+  // Fills in ThemeData sub-themes (inputs, chips, dialogs, sheets) that
+  // Flutter otherwise defaults to opaque Material colors, so they read as
+  // part of the glass shell instead of standing out against it.
+  ThemeData _buildThemeData(ColorScheme colorScheme) {
+    final borderRadius = BorderRadius.circular(14);
+    final borderSide = BorderSide(
+      color: colorScheme.outlineVariant.withValues(alpha: glassBorderOpacity),
+    );
+    return ThemeData(
+      useMaterial3: true,
+      pageTransitionsTheme: _pageTransitionsTheme,
+      // Transparent so every Scaffold reveals the AmbientBackground
+      // painted once behind the app shell (see HomePage) instead of
+      // painting its own opaque surface color over it.
+      scaffoldBackgroundColor: Colors.transparent,
+      colorScheme: colorScheme,
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colorScheme.surfaceContainer.withValues(
+          alpha: glassPanelOpacity,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide: borderSide,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide: borderSide,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: borderRadius,
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.2),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.42,
+        ),
+        selectedColor: colorScheme.primary.withValues(alpha: 0.16),
+        side: borderSide,
+      ),
+      dialogTheme: const DialogThemeData(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+      ),
+    );
   }
 
   @override
@@ -161,23 +214,14 @@ class ApplicationState extends ConsumerState<Application> {
           locale: utils.getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
           themeMode: themeProps.themeMode,
-          theme: ThemeData(
-            useMaterial3: true,
-            pageTransitionsTheme: _pageTransitionsTheme,
-            // Transparent so every Scaffold reveals the AmbientBackground
-            // painted once behind the app shell (see HomePage) instead of
-            // painting its own opaque surface color over it.
-            scaffoldBackgroundColor: Colors.transparent,
-            colorScheme: _getAppColorScheme(
+          theme: _buildThemeData(
+            _getAppColorScheme(
               brightness: Brightness.light,
               primaryColor: themeProps.primaryColor,
             ),
           ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            pageTransitionsTheme: _pageTransitionsTheme,
-            scaffoldBackgroundColor: Colors.transparent,
-            colorScheme: _getAppColorScheme(
+          darkTheme: _buildThemeData(
+            _getAppColorScheme(
               brightness: Brightness.dark,
               primaryColor: themeProps.primaryColor,
             ).toPureBlack(themeProps.pureBlack),

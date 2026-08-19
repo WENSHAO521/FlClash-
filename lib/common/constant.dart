@@ -134,6 +134,8 @@ const defaultPrimaryColors = [
   0xFF03A9F4,
   0XFFABD397,
   0xFF795548,
+  0xFF5688F7, // Midnight Blue accent
+  0xFF46C9D5, // Aurora teal accent
 ];
 
 const scriptTemplate = '''

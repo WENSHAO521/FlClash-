@@ -111,7 +111,7 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                       ? Text(
                           'Timeout',
                           style: context.textTheme.bodyMedium
-                              ?.copyWith(color: Colors.red)
+                              ?.copyWith(color: context.colorScheme.error)
                               .adjustSize(1),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

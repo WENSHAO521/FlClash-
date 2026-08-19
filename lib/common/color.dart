@@ -119,4 +119,20 @@ extension ColorSchemeExtension on ColorScheme {
           surfaceContainer: surfaceContainer.darken(5),
         )
       : this;
+
+  /// Connected / success state. Deliberately a fixed color, not harmonized
+  /// with the seed color: "connected" needs to read as a stable green no
+  /// matter what primary color the user picks (including red or purple).
+  Color get statusConnected => switch (brightness) {
+    Brightness.dark => const Color(0xFF4FD19A),
+    Brightness.light => const Color(0xFF16875E),
+  };
+
+  /// Warning / caution state (e.g. a "reject" rule action). Fixed for the
+  /// same reason as [statusConnected]. Use [ColorScheme.error] directly for
+  /// failure states.
+  Color get statusWarning => switch (brightness) {
+    Brightness.dark => const Color(0xFFF4BF63),
+    Brightness.light => const Color(0xFFC57A00),
+  };
 }

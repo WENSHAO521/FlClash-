@@ -28,23 +28,46 @@ class CommonDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final size = ref.watch(viewSizeProvider);
-    return AlertDialog(
-      title: Text(title),
-      actions: actions,
-      contentPadding: padding,
-      backgroundColor:
-          backgroundColor ??
-          context.colorScheme.surfaceContainerHigh.withValues(
-            alpha: glassPanelOpacity,
-          ),
+    final content = Container(
+      constraints: BoxConstraints(
+        maxHeight: min(size.height - 40, 500),
+        maxWidth: 300,
+      ),
+      width: size.width - 40,
+      padding: padding ?? const EdgeInsets.fromLTRB(24, 20, 24, 24),
+      child: !overrideScroll ? SingleChildScrollView(child: child) : child,
+    );
+    return Dialog(
+      backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
-      content: Container(
-        constraints: BoxConstraints(
-          maxHeight: min(size.height - 40, 500),
-          maxWidth: 300,
+      elevation: 0,
+      // Real BackdropFilter blur here (via GlassSurface), unlike the old
+      // AlertDialog which only tinted a flat color — matches the AppBar,
+      // NavigationBar, and CommonPopupMenu, which all blur for real.
+      child: GlassSurface(
+        shape: RoundedSuperellipseBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
-        width: size.width - 40,
-        child: !overrideScroll ? SingleChildScrollView(child: child) : child,
+        color: backgroundColor ?? context.colorScheme.surfaceContainerHigh,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+              child: Text(title, style: context.textTheme.headlineSmall),
+            ),
+            Flexible(child: content),
+            if (actions != null && actions!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: actions!.separated(const SizedBox(width: 8)).toList(),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
