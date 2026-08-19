@@ -1,3 +1,25 @@
+## v3.3.3
+
+- Bump version to 3.3.3
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Give dialogs real backdrop blur and unify status colors
+
+- CommonDialog now wraps GlassSurface instead of AlertDialog's flat tint,
+
+- matching the AppBar/NavBar/popup menu blur. Status colors (connected/
+
+- warning) are now fixed semantic colors instead of ad hoc/inconsistent
+
+- green-orange-red literals scattered across dashboard, backup/restore,
+
+- groups, and rule views, and inputs/chips pick up glass-consistent
+
+- theming globally.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.2
 
 - Bump version to 3.3.2
