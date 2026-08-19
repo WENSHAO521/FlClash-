@@ -1,3 +1,35 @@
+## v3.3.4
+
+- Bump version to 3.3.4
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix nested opaque row backgrounds on Settings/Tools list
+
+- ListItem.open's container-transform (package:animations) painted an
+
+- opaque colorScheme.surface Material behind every row at rest, on top
+
+- of the transparent AmbientBackground shell, which is what actually
+
+- produced the near-solid white rows. Rows are now transparent, and each
+
+- Tools/Settings section renders as a single glass panel (one
+
+- BackdropFilter per group via a new generateGlassSection helper)
+
+- instead of a flat divided list.
+
+- Also makes glassPanelOpacity brightness-aware (0.36 light / 0.50 dark,
+
+- down from a flat 0.62) and gives Dividers a low-alpha outlineVariant
+
+- theme, so groups read as frosted glass instead of a stack of
+
+- near-opaque cards.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.3
 
 - Bump version to 3.3.3
