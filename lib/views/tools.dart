@@ -44,21 +44,8 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     );
   }
 
-  Widget _buildNavigationMenu(List<NavigationItem> navigationItems) {
-    return Column(
-      children: [
-        for (final navigationItem in navigationItems) ...[
-          _buildNavigationMenuItem(navigationItem),
-          navigationItems.last != navigationItem
-              ? const Divider(height: 0)
-              : Container(),
-        ],
-      ],
-    );
-  }
-
-  List<Widget> _getOtherList(bool enableDeveloperMode) {
-    return generateSection(
+  Widget _getOtherList(bool enableDeveloperMode) {
+    return generateGlassSection(
       title: context.appLocalizations.other,
       items: [
         const _DisclaimerItem(),
@@ -68,8 +55,8 @@ class _ToolViewState extends ConsumerState<ToolsView> {
     );
   }
 
-  List<Widget> _getSettingList() {
-    return generateSection(
+  Widget _getSettingList() {
+    return generateGlassSection(
       title: context.appLocalizations.settings,
       items: [
         const _LocaleItem(),
@@ -97,18 +84,16 @@ class _ToolViewState extends ConsumerState<ToolsView> {
         builder: (_, ref, _) {
           final state = ref.watch(moreToolsSelectorStateProvider);
           if (state.navigationItems.isEmpty) {
-            return Container();
+            return const SizedBox.shrink();
           }
-          return Column(
-            children: [
-              ListHeader(title: context.appLocalizations.more),
-              _buildNavigationMenu(state.navigationItems),
-            ],
+          return generateGlassSection(
+            title: context.appLocalizations.more,
+            items: state.navigationItems.map(_buildNavigationMenuItem),
           );
         },
       ),
-      ..._getSettingList(),
-      ..._getOtherList(vm2.b),
+      _getSettingList(),
+      _getOtherList(vm2.b),
     ];
     return CommonScaffold(
       title: context.appLocalizations.tools,

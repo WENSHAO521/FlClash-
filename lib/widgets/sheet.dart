@@ -55,7 +55,7 @@ Future<T?> showSheet<T>({
   final glassBackgroundColor =
       props.backgroundColor ??
       context.colorScheme.surfaceContainerLow.withValues(
-        alpha: glassPanelOpacity,
+        alpha: glassPanelOpacityFor(context.colorScheme.brightness),
       );
   return switch (isMobile) {
     true => showModalBottomSheet<T>(
@@ -103,7 +103,7 @@ Future<T?> showExtend<T>(
       useSafeArea: props.useSafeArea,
       context: context,
       backgroundColor: context.colorScheme.surface.withValues(
-        alpha: glassPanelOpacity,
+        alpha: glassPanelOpacityFor(context.colorScheme.brightness),
       ),
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
@@ -180,7 +180,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
         (type == SheetType.bottomSheet
                 ? context.colorScheme.surfaceContainerLow
                 : context.colorScheme.surface)
-            .withValues(alpha: glassPanelOpacity);
+            .withValues(alpha: glassPanelOpacityFor(context.colorScheme.brightness));
     final useCloseIcon =
         type != SheetType.page &&
         (nestedNavigatorPop != null && route?.impliesAppBarDismissal == false ||

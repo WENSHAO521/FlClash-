@@ -10,8 +10,16 @@ import 'package:flutter/material.dart';
 /// top of it as translucent, blurred [GlassSurface]s instead of opaque
 /// Material colors, so the gradient reads through the whole app.
 const glassBlurSigma = 24.0;
-const glassPanelOpacity = 0.62;
+const glassPanelOpacityLight = 0.36;
+const glassPanelOpacityDark = 0.50;
 const glassBorderOpacity = 0.10;
+const glassDividerOpacity = 0.24;
+
+/// Light mode reads muddier at high opacity (the tint dominates a bright
+/// background), so it sits lower than dark mode to keep the same "frosted"
+/// feel in both themes.
+double glassPanelOpacityFor(Brightness brightness) =>
+    brightness == Brightness.dark ? glassPanelOpacityDark : glassPanelOpacityLight;
 
 /// A translucent surface that optionally blurs whatever sits behind it.
 ///
@@ -25,7 +33,7 @@ class GlassSurface extends StatelessWidget {
   final Widget child;
   final OutlinedBorder shape;
   final Color? color;
-  final double opacity;
+  final double? opacity;
   final double blurSigma;
   final BorderSide? borderSide;
   final List<BoxShadow>? boxShadow;
@@ -35,7 +43,7 @@ class GlassSurface extends StatelessWidget {
     required this.child,
     this.shape = const RoundedRectangleBorder(),
     this.color,
-    this.opacity = glassPanelOpacity,
+    this.opacity,
     this.blurSigma = glassBlurSigma,
     this.borderSide,
     this.boxShadow,
@@ -45,13 +53,14 @@ class GlassSurface extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     final baseColor = color ?? colorScheme.surfaceContainer;
+    final resolvedOpacity = opacity ?? glassPanelOpacityFor(colorScheme.brightness);
     final tintedShape = borderSide != null
         ? shape.copyWith(side: borderSide)
         : shape;
     final surface = DecoratedBox(
       decoration: ShapeDecoration(
         shape: tintedShape,
-        color: baseColor.withValues(alpha: opacity),
+        color: baseColor.withValues(alpha: resolvedOpacity),
         shadows: boxShadow,
       ),
       child: child,

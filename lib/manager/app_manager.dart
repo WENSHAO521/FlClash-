@@ -173,7 +173,7 @@ class AppSidebarContainer extends ConsumerWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainer.withValues(
-              alpha: glassPanelOpacity,
+              alpha: glassPanelOpacityFor(colorScheme.brightness),
             ),
             border: Border(
               right: BorderSide(

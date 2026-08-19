@@ -292,7 +292,9 @@ class CommonScaffoldState extends State<CommonScaffold> {
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                               color: context.colorScheme.surface.withValues(
-                                alpha: glassPanelOpacity,
+                                alpha: glassPanelOpacityFor(
+                                  context.colorScheme.brightness,
+                                ),
                               ),
                             ),
                           ),

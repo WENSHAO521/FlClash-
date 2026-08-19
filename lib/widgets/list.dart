@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'card.dart';
+import 'glass.dart';
 import 'input.dart';
 import 'scaffold.dart';
 import 'sheet.dart';
@@ -303,7 +304,12 @@ class ListItem<T> extends StatelessWidget {
       final child = openDelegate.widget;
       final onChanged = openDelegate.onChanged;
       return OpenContainer<T>(
-        closedColor: context.colorScheme.surface,
+        // Transparent so the row reads through to whatever sits behind it
+        // (the settings-group glass panel, or AmbientBackground directly)
+        // instead of the container-transform package painting its own
+        // opaque Material behind every row at rest. Only the destination
+        // page (openColor) needs to be a real solid surface.
+        closedColor: Colors.transparent,
         openColor: context.colorScheme.surface,
         closedElevation: 0,
         openElevation: 0,
@@ -525,6 +531,46 @@ List<Widget> generateSection({
       ),
     ...genItems,
   ];
+}
+
+/// A settings section rendered as one frosted-glass block: the header sits
+/// outside (no background of its own), and every row inside shares a single
+/// [GlassSurface] — one [BackdropFilter] for the whole group instead of one
+/// per row. Rows must paint fully transparent backgrounds themselves (plain
+/// [ListItem]s already do) so only the group's glass shows through.
+Widget generateGlassSection({
+  String? title,
+  required Iterable<Widget> items,
+  List<Widget>? actions,
+  bool isFirst = false,
+  bool separated = true,
+}) {
+  if (items.isEmpty) return const SizedBox.shrink();
+  final genItems = separated
+      ? items.separated(const Divider(height: 0))
+      : items;
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (title != null)
+          ListHeader(
+            title: title,
+            actions: actions,
+            padding: isFirst
+                ? listHeaderPadding.copyWith(top: 8.ap)
+                : listHeaderPadding,
+          ),
+        GlassSurface(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(children: [...genItems]),
+        ),
+      ],
+    ),
+  );
 }
 
 Widget generateSectionV2({

@@ -234,8 +234,9 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
   late final TextTheme _textTheme = Theme.of(context).textTheme;
 
   @override
-  Color? get backgroundColor =>
-      _colors.surfaceContainer.withValues(alpha: glassPanelOpacity);
+  Color? get backgroundColor => _colors.surfaceContainer.withValues(
+    alpha: glassPanelOpacityFor(_colors.brightness),
+  );
 
   @override
   Color? get shadowColor => Colors.transparent;

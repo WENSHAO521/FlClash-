@@ -63,7 +63,7 @@ class ApplicationState extends ConsumerState<Application> {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colorScheme.surfaceContainer.withValues(
-          alpha: glassPanelOpacity,
+          alpha: glassPanelOpacityFor(colorScheme.brightness),
         ),
         border: OutlineInputBorder(
           borderRadius: borderRadius,
@@ -92,6 +92,9 @@ class ApplicationState extends ConsumerState<Application> {
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+      ),
+      dividerTheme: DividerThemeData(
+        color: colorScheme.outlineVariant.withValues(alpha: glassDividerOpacity),
       ),
     );
   }
