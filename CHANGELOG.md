@@ -1,3 +1,117 @@
+## v3.3.6
+
+- Bump version to 3.3.6
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix double-borders, dead-code input styling, and a sheet header regression
+
+- An 8-agent review pass over the v3.3.5 glass token diff found and this
+
+- fixes:
+
+- - CommonCard painted its own border (_buildBorderSide) and GlassSurface's
+
+-   new default border on the same outline, compositing to roughly double
+
+-   the intended alpha on every idle proxy/provider card. GlassSurface.repeated
+
+-   now gets showBorder: false so the button's own side: is the only source.
+
+- - glassInputDecoration() was built as the opt-in replacement for the
+
+-   removed global InputDecorationTheme but was never actually called,
+
+-   leaving the profile editor, code editor find bar, general config's
+
+-   port fields, backup/WebDAV fields, and InputDialog/AddDialog rendering
+
+-   as bare unfilled outlines. Wired it into all of them.
+
+- - The AdaptiveSheetScaffold rewrite's suffixPop positioning (move the
+
+-   close button to the trailing slot when there are no other actions)
+
+-   only survived in the bottom-sheet branch; the AppBar used for
+
+-   SheetType.page/sideSheet ignored it, silently moving the close button
+
+-   from trailing back to leading. Applied the same rule there.
+
+- - sheetAppBarHeight (reserved top padding under a floating sheet header)
+
+-   was stale against the new header's actual rendered height, clipping
+
+-   a couple pixels of scrolled content at rest.
+
+- Also removes a couple of now-dead symbols this same diff introduced
+
+- (a deprecated alias with zero callers, a blur constant hand-synced with
+
+- GlassTokens.blurChrome instead of just reading it).
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+## v3.3.5
+
+- Bump version to 3.3.5
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Introduce a formal glass token system and fix the config editor regression
+
+- The previous glass pass used a single flat opacity for every physical
+
+- surface, which was wrong: a settings panel, a modal BottomSheet, and a
+
+- repeated proxy card all need different opacity/blur. Replaces the ad-hoc
+
+- glassPanelOpacity with GlassSurfaceType (chrome/panel/modal/floating/
+
+- repeated) and GlassTokens, and migrates AppBar, NavigationBar, sidebar,
+
+- title bar, dialogs, popups, toasts, and both sheet paths onto it.
+
+- Fixes the config/profile editor regression the previous global
+
+- InputDecorationTheme caused: removed the app-wide filled/fillColor/border
+
+- forcing (every field already defines its own decoration), added an
+
+- opt-in glassInputDecoration() helper, pulled the URL field out of a
+
+- ListTile (which was silently capping it at one-line height), and fixed
+
+- the Save FAB overlapping the still-visible HomePage bottom NavigationBar
+
+- on pages pushed as non-opaque routes.
+
+- Rebuilds the BottomSheet's glass hierarchy: the physical sheet previously
+
+- had no BackdropFilter at all (only a flat, unblurred tint), so anything
+
+- behind it — including the bottom NavigationBar — stayed sharply readable.
+
+- Now wraps the whole sheet in one GlassSurface.modal, fixes the default
+
+- modal barrier (Colors.black54 was excessively dark), rebuilds the header
+
+- as a deterministic Row with reserved slot widths instead of AppBar's
+
+- centring math, and drops CommonCard/strategy-button opacity to a
+
+- repeated-tier value so it no longer reads as nested glass inside the
+
+- sheet's own glass.
+
+- Also fixes a dead/misleading opaque Colors.white/grey[900] override on
+
+- the search-mode AppBar, and a raw Card badge and popup-menu rows that
+
+- painted opaque backgrounds over their glass parents.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.4
 
 - Bump version to 3.3.4
