@@ -264,7 +264,10 @@ class _WindowHeaderState extends State<WindowHeader> {
                   ),
                   child: Container(
                     color: context.colorScheme.surface.withValues(
-                      alpha: glassPanelOpacityFor(context.colorScheme.brightness),
+                      alpha: GlassTokens.opacityFor(
+                        GlassSurfaceType.chrome,
+                        context.colorScheme.brightness,
+                      ),
                     ),
                     alignment: Alignment.centerLeft,
                     height: kHeaderHeight,

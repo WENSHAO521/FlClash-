@@ -949,9 +949,11 @@ class _NumberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
+    // A count badge trailing a row that's usually already a glass surface
+    // itself — a plain Card would paint its own opaque fill on top of it.
+    return GlassSurface.repeated(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      color: context.colorScheme.surfaceContainerHighest,
       child: Container(
         constraints: const BoxConstraints(minWidth: 32),
         alignment: Alignment.center,

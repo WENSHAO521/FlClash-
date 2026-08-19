@@ -41,10 +41,12 @@ class CommonDialog extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
-      // Real BackdropFilter blur here (via GlassSurface), unlike the old
-      // AlertDialog which only tinted a flat color — matches the AppBar,
-      // NavigationBar, and CommonPopupMenu, which all blur for real.
-      child: GlassSurface(
+      // Real BackdropFilter blur here (via GlassSurface.modal), unlike the
+      // old AlertDialog which only tinted a flat color — matches the
+      // AppBar, NavigationBar, and CommonPopupMenu, which all blur for
+      // real. Modal-level opacity so the dialog reads as clearly in front
+      // of whatever's behind it, not just tinted.
+      child: GlassSurface.modal(
         shape: RoundedSuperellipseBorder(
           borderRadius: BorderRadius.circular(24),
         ),
@@ -63,7 +65,9 @@ class CommonDialog extends ConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: actions!.separated(const SizedBox(width: 8)).toList(),
+                  children: actions!
+                      .separated(const SizedBox(width: 8))
+                      .toList(),
                 ),
               ),
           ],

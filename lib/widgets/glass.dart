@@ -9,54 +9,243 @@ import 'package:flutter/material.dart';
 /// surfaces (top bar, nav rail/bar, dialogs, settings groups) then sit on
 /// top of it as translucent, blurred [GlassSurface]s instead of opaque
 /// Material colors, so the gradient reads through the whole app.
-const glassBlurSigma = 24.0;
-const glassPanelOpacityLight = 0.36;
-const glassPanelOpacityDark = 0.50;
-const glassBorderOpacity = 0.10;
-const glassDividerOpacity = 0.24;
+///
+/// Not every glass surface wants the same opacity or blur: a modal that
+/// must obscure the page behind it needs to read very differently from a
+/// settings panel, which in turn needs to differ from a proxy card that
+/// repeats a hundred times down a list. [GlassSurfaceType] classifies a
+/// physical surface by that role, and [GlassTokens] holds the calibrated
+/// values per role/brightness so nobody has to guess a number by hand.
+const double glassBlurSigma = 20.0;
 
-/// Light mode reads muddier at high opacity (the tint dominates a bright
-/// background), so it sits lower than dark mode to keep the same "frosted"
-/// feel in both themes.
+/// The role a physical glass surface plays. Pick the one that matches what
+/// the surface *is*, not how it happens to look — the tokens follow from
+/// the role.
+enum GlassSurfaceType {
+  /// App-level structural chrome that's on screen exactly once at a time:
+  /// AppBar, NavigationBar/NavigationRail, title bar.
+  chrome,
+
+  /// A non-modal content group sitting on the ambient background: a
+  /// settings block, a low-count card group. Rows inside stay transparent.
+  panel,
+
+  /// A modal surface that must read as clearly in front of — and must
+  /// meaningfully obscure — whatever is behind it: Dialog, BottomSheet,
+  /// side sheet.
+  modal,
+
+  /// A transient overlay that isn't modal but still floats above content:
+  /// popup menus, toasts.
+  floating,
+
+  /// A surface that repeats many times in one scroll view (proxy cards,
+  /// settings text chips). Always blur = 0 — stacking dozens of
+  /// [BackdropFilter]s is a real scroll-jank risk — and a low, mostly-tint
+  /// opacity so nesting one inside a panel/modal doesn't compound into a
+  /// near-opaque block.
+  repeated,
+}
+
+/// Calibrated glass values per [GlassSurfaceType] and [Brightness]. Read
+/// through [GlassTokens.blurFor]/[GlassTokens.opacityFor] rather than the
+/// raw fields when resolving a surface's look.
+abstract final class GlassTokens {
+  static const double blurChrome = 20;
+  static const double blurPanel = 20;
+  static const double blurModal = 24;
+  static const double blurFloating = 22;
+  static const double blurRepeated = 0;
+
+  static const double lightChromeOpacity = 0.38;
+  static const double darkChromeOpacity = 0.52;
+
+  static const double lightPanelOpacity = 0.36;
+  static const double darkPanelOpacity = 0.50;
+
+  static const double lightModalOpacity = 0.66;
+  static const double darkModalOpacity = 0.58;
+
+  static const double lightFloatingOpacity = 0.52;
+  static const double darkFloatingOpacity = 0.54;
+
+  static const double lightRepeatedOpacity = 0.18;
+  static const double darkRepeatedOpacity = 0.14;
+
+  static const double lightBorderOpacity = 0.28;
+  static const double darkBorderOpacity = 0.12;
+
+  static const double lightDividerOpacity = 0.30;
+  static const double darkDividerOpacity = 0.22;
+
+  /// Scrim behind a modal (BottomSheet/side sheet) barrier — kept low so
+  /// the page behind stays recognizable instead of going grey/dark.
+  static const double lightModalBarrierOpacity = 0.16;
+  static const double darkModalBarrierOpacity = 0.28;
+
+  static const double radiusSmall = 12;
+  static const double radiusMedium = 16;
+  static const double radiusLarge = 22;
+  static const double radiusModal = 26;
+
+  static double blurFor(GlassSurfaceType type) => switch (type) {
+    GlassSurfaceType.chrome => blurChrome,
+    GlassSurfaceType.panel => blurPanel,
+    GlassSurfaceType.modal => blurModal,
+    GlassSurfaceType.floating => blurFloating,
+    GlassSurfaceType.repeated => blurRepeated,
+  };
+
+  static double opacityFor(GlassSurfaceType type, Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    return switch (type) {
+      GlassSurfaceType.chrome =>
+        isDark ? darkChromeOpacity : lightChromeOpacity,
+      GlassSurfaceType.panel => isDark ? darkPanelOpacity : lightPanelOpacity,
+      GlassSurfaceType.modal => isDark ? darkModalOpacity : lightModalOpacity,
+      GlassSurfaceType.floating =>
+        isDark ? darkFloatingOpacity : lightFloatingOpacity,
+      GlassSurfaceType.repeated =>
+        isDark ? darkRepeatedOpacity : lightRepeatedOpacity,
+    };
+  }
+
+  static double borderOpacityFor(Brightness brightness) =>
+      brightness == Brightness.dark ? darkBorderOpacity : lightBorderOpacity;
+
+  static double dividerOpacityFor(Brightness brightness) =>
+      brightness == Brightness.dark ? darkDividerOpacity : lightDividerOpacity;
+
+  static double modalBarrierOpacityFor(Brightness brightness) =>
+      brightness == Brightness.dark
+      ? darkModalBarrierOpacity
+      : lightModalBarrierOpacity;
+}
+
+/// Deprecated alias kept only so any straggling reference resolves during
+/// the migration to [GlassTokens]; prefer `GlassTokens.opacityFor(...)`.
+@Deprecated('Use GlassTokens.opacityFor(GlassSurfaceType.panel, brightness)')
 double glassPanelOpacityFor(Brightness brightness) =>
-    brightness == Brightness.dark ? glassPanelOpacityDark : glassPanelOpacityLight;
+    GlassTokens.opacityFor(GlassSurfaceType.panel, brightness);
 
 /// A translucent surface that optionally blurs whatever sits behind it.
 ///
+/// [type] drives the default blur/opacity/border via [GlassTokens] — pass
+/// `color`/`opacity`/`blurSigma` only to override a specific surface's look,
+/// not as the normal way to configure one. Prefer the named constructors
+/// ([GlassSurface.chrome], [.panel], [.modal], [.floating], [.repeated])
+/// over the generic constructor so the role is obvious at the call site.
+///
 /// Blur is real (a [BackdropFilter]) for surfaces that only ever appear once
 /// on screen at a time — the top bar, the nav rail/bar, dialogs, settings
-/// groups. It's deliberately skipped (translucency only, `blurSigma: 0`) for
-/// anything that can appear dozens of times at once, like proxy cards in a
-/// list — stacking that many backdrop filters is a real scroll-jank risk,
+/// groups. It's deliberately skipped (`blurSigma: 0`, [GlassSurfaceType.repeated])
+/// for anything that can appear dozens of times at once, like proxy cards in
+/// a list — stacking that many backdrop filters is a real scroll-jank risk,
 /// and a flat tint over the ambient gradient still reads as "glass" there.
 class GlassSurface extends StatelessWidget {
   final Widget child;
   final OutlinedBorder shape;
+  final GlassSurfaceType type;
   final Color? color;
   final double? opacity;
-  final double blurSigma;
+  final double? blurSigma;
   final BorderSide? borderSide;
+  final bool showBorder;
   final List<BoxShadow>? boxShadow;
 
   const GlassSurface({
     super.key,
     required this.child,
+    this.type = GlassSurfaceType.panel,
     this.shape = const RoundedRectangleBorder(),
     this.color,
     this.opacity,
-    this.blurSigma = glassBlurSigma,
+    this.blurSigma,
     this.borderSide,
+    this.showBorder = true,
     this.boxShadow,
   });
+
+  const GlassSurface.chrome({
+    super.key,
+    required this.child,
+    this.shape = const RoundedRectangleBorder(),
+    this.color,
+    this.opacity,
+    this.blurSigma,
+    this.borderSide,
+    this.showBorder = true,
+    this.boxShadow,
+  }) : type = GlassSurfaceType.chrome;
+
+  const GlassSurface.panel({
+    super.key,
+    required this.child,
+    this.shape = const RoundedRectangleBorder(),
+    this.color,
+    this.opacity,
+    this.blurSigma,
+    this.borderSide,
+    this.showBorder = true,
+    this.boxShadow,
+  }) : type = GlassSurfaceType.panel;
+
+  const GlassSurface.modal({
+    super.key,
+    required this.child,
+    this.shape = const RoundedRectangleBorder(),
+    this.color,
+    this.opacity,
+    this.blurSigma,
+    this.borderSide,
+    this.showBorder = true,
+    this.boxShadow,
+  }) : type = GlassSurfaceType.modal;
+
+  const GlassSurface.floating({
+    super.key,
+    required this.child,
+    this.shape = const RoundedRectangleBorder(),
+    this.color,
+    this.opacity,
+    this.blurSigma,
+    this.borderSide,
+    this.showBorder = true,
+    this.boxShadow,
+  }) : type = GlassSurfaceType.floating;
+
+  /// Always blur = 0 regardless of [blurSigma] — see the class doc.
+  const GlassSurface.repeated({
+    super.key,
+    required this.child,
+    this.shape = const RoundedRectangleBorder(),
+    this.color,
+    this.opacity,
+    this.borderSide,
+    this.showBorder = true,
+    this.boxShadow,
+  }) : type = GlassSurfaceType.repeated,
+       blurSigma = 0;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
+    final brightness = colorScheme.brightness;
     final baseColor = color ?? colorScheme.surfaceContainer;
-    final resolvedOpacity = opacity ?? glassPanelOpacityFor(colorScheme.brightness);
-    final tintedShape = borderSide != null
-        ? shape.copyWith(side: borderSide)
-        : shape;
+    final resolvedOpacity = opacity ?? GlassTokens.opacityFor(type, brightness);
+    final resolvedBlur = (type == GlassSurfaceType.repeated)
+        ? 0.0
+        : (blurSigma ?? GlassTokens.blurFor(type));
+    final resolvedBorderSide =
+        borderSide ??
+        (showBorder
+            ? BorderSide(
+                color: colorScheme.outlineVariant.withValues(
+                  alpha: GlassTokens.borderOpacityFor(brightness),
+                ),
+              )
+            : BorderSide.none);
+    final tintedShape = shape.copyWith(side: resolvedBorderSide);
     final surface = DecoratedBox(
       decoration: ShapeDecoration(
         shape: tintedShape,
@@ -65,7 +254,7 @@ class GlassSurface extends StatelessWidget {
       ),
       child: child,
     );
-    if (blurSigma <= 0) {
+    if (resolvedBlur <= 0) {
       return ClipPath(
         clipper: ShapeBorderClipper(shape: shape),
         child: surface,
@@ -74,11 +263,59 @@ class GlassSurface extends StatelessWidget {
     return ClipPath(
       clipper: ShapeBorderClipper(shape: shape),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+        filter: ImageFilter.blur(sigmaX: resolvedBlur, sigmaY: resolvedBlur),
         child: surface,
       ),
     );
   }
+}
+
+/// Opt-in glass styling for a [TextField]/[TextFormField] that's meant to
+/// float directly on AmbientBackground/GlassSurface. Most inputs in this
+/// app already define their own [InputDecoration] (border, fill, padding)
+/// and must NOT pick this up implicitly — apply it explicitly per field,
+/// never through a global [InputDecorationTheme].
+InputDecoration glassInputDecoration(
+  BuildContext context, {
+  String? labelText,
+  String? hintText,
+  String? suffixText,
+  Widget? suffixIcon,
+  Widget? prefixIcon,
+  EdgeInsetsGeometry? contentPadding,
+}) {
+  final colorScheme = context.colorScheme;
+  final brightness = colorScheme.brightness;
+  final borderRadius = BorderRadius.circular(GlassTokens.radiusMedium);
+  final borderSide = BorderSide(
+    color: colorScheme.outlineVariant.withValues(
+      alpha: GlassTokens.borderOpacityFor(brightness),
+    ),
+  );
+  return InputDecoration(
+    labelText: labelText,
+    hintText: hintText,
+    suffixText: suffixText,
+    suffixIcon: suffixIcon,
+    prefixIcon: prefixIcon,
+    contentPadding: contentPadding,
+    filled: true,
+    fillColor: colorScheme.surfaceContainer.withValues(
+      alpha: GlassTokens.opacityFor(GlassSurfaceType.panel, brightness),
+    ),
+    border: OutlineInputBorder(
+      borderRadius: borderRadius,
+      borderSide: borderSide,
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: borderRadius,
+      borderSide: borderSide,
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: borderRadius,
+      borderSide: BorderSide(color: colorScheme.primary, width: 1.2),
+    ),
+  );
 }
 
 /// The ambient gradient + soft color blobs painted once behind the whole app
@@ -92,17 +329,21 @@ class AmbientBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     final isDark = colorScheme.brightness == Brightness.dark;
-    final tintStrength = isDark ? 0.30 : 0.12;
-    final blobStrength = isDark ? 0.26 : 0.16;
+    // A flat white/black backdrop leaves nothing for the glass surfaces to
+    // pick up, so the base itself carries a subtle gradient plus dynamic
+    // color glows derived from the active ColorScheme (Material You/HCT).
+    final baseColors = isDark
+        ? const [Color(0xFF0F1118), Color(0xFF151824), Color(0xFF191B2A)]
+        : const [Color(0xFFF7F9FD), Color(0xFFF0F3FA), Color(0xFFE8EDF7)];
+    final primaryGlow = isDark ? 0.23 : 0.16;
+    final secondaryGlow = isDark ? 0.13 : 0.10;
+    final tertiaryGlow = isDark ? 0.19 : 0.12;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            colorScheme.surface,
-            Color.lerp(colorScheme.surface, colorScheme.primary, tintStrength)!,
-          ],
+          colors: baseColors,
         ),
       ),
       child: Stack(
@@ -110,15 +351,24 @@ class AmbientBackground extends StatelessWidget {
           Positioned(
             top: -140,
             right: -100,
-            child: _GlassBlob(color: colorScheme.primary, opacity: blobStrength),
+            child: _GlassBlob(color: colorScheme.primary, opacity: primaryGlow),
           ),
           Positioned(
             bottom: -180,
             left: -120,
             child: _GlassBlob(
               color: colorScheme.tertiary,
-              opacity: blobStrength * 0.85,
+              opacity: tertiaryGlow,
               size: 460,
+            ),
+          ),
+          Positioned(
+            top: 160,
+            left: -80,
+            child: _GlassBlob(
+              color: colorScheme.secondary,
+              opacity: secondaryGlow,
+              size: 320,
             ),
           ),
         ],
@@ -132,7 +382,11 @@ class _GlassBlob extends StatelessWidget {
   final double opacity;
   final double size;
 
-  const _GlassBlob({required this.color, required this.opacity, this.size = 380});
+  const _GlassBlob({
+    required this.color,
+    required this.opacity,
+    this.size = 380,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +397,10 @@ class _GlassBlob extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: RadialGradient(
-            colors: [color.withValues(alpha: opacity), color.withValues(alpha: 0)],
+            colors: [
+              color.withValues(alpha: opacity),
+              color.withValues(alpha: 0),
+            ],
           ),
         ),
       ),

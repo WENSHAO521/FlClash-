@@ -121,7 +121,7 @@ class StatusManagerState extends State<StatusManager> {
                                     onDismissed: (_) {
                                       _cancelMessage(messages.last.id);
                                     },
-                                    child: GlassSurface(
+                                    child: GlassSurface.floating(
                                       shape: const RoundedSuperellipseBorder(
                                         borderRadius: BorderRadius.all(
                                           Radius.circular(14),

@@ -100,17 +100,13 @@ class HomePage extends StatelessWidget {
                       navigationItems: navigationItems,
                       pageBuilder: (_, index) {
                         final navigationItem = navigationItems[index];
-                        final navigationView = navigationItem.builder(
-                          context,
-                        );
+                        final navigationView = navigationItem.builder(context);
                         final view = KeepScope(
                           keep: navigationItem.keep,
                           child: isMobile
                               ? navigationView
                               : Navigator(
-                                  pages: [
-                                    MaterialPage(child: navigationView),
-                                  ],
+                                  pages: [MaterialPage(child: navigationView)],
                                   onDidRemovePage: (_) {},
                                 ),
                         );
@@ -224,7 +220,7 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
 class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
   _NavigationBarDefaultsM3(this.context)
     : super(
-        height: 80.0,
+        height: kHomeNavigationBarHeight,
         elevation: 3.0,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       );
@@ -235,7 +231,7 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
 
   @override
   Color? get backgroundColor => _colors.surfaceContainer.withValues(
-    alpha: glassPanelOpacityFor(_colors.brightness),
+    alpha: GlassTokens.opacityFor(GlassSurfaceType.chrome, _colors.brightness),
   );
 
   @override

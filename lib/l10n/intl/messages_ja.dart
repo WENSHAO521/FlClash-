@@ -341,9 +341,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("グローバル"),
     "go": MessageLookupByLibrary.simpleMessage("移動"),
     "goDownload": MessageLookupByLibrary.simpleMessage("ダウンロードへ"),
-    "downloadingUpdate": MessageLookupByLibrary.simpleMessage(
-      "更新をダウンロード中...",
-    ),
+    "downloadingUpdate": MessageLookupByLibrary.simpleMessage("更新をダウンロード中..."),
     "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
       "ダウンロードに失敗しました。もう一度お試しください",
     ),

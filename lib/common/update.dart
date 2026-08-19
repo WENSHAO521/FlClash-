@@ -81,7 +81,8 @@ class Updater {
       final preferredExts = ['.AppImage', '.deb', '.rpm'];
       for (final ext in preferredExts) {
         final match = items.where(
-          (asset) => asset.name.contains('-linux-$arch') && asset.name.endsWith(ext),
+          (asset) =>
+              asset.name.contains('-linux-$arch') && asset.name.endsWith(ext),
         );
         if (match.isNotEmpty) return match.first;
       }

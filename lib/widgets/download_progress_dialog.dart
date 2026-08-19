@@ -10,8 +10,7 @@ class DownloadProgressDialog extends StatefulWidget {
   const DownloadProgressDialog({super.key, required this.asset});
 
   @override
-  State<DownloadProgressDialog> createState() =>
-      _DownloadProgressDialogState();
+  State<DownloadProgressDialog> createState() => _DownloadProgressDialogState();
 }
 
 class _DownloadProgressDialogState extends State<DownloadProgressDialog> {

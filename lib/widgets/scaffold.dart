@@ -88,16 +88,22 @@ class CommonScaffoldState extends State<CommonScaffold> {
     _updateSearchState((state) => state?.copyWith(query: ''));
   }
 
+  // Search mode must keep the same glass AppBar shell as everything else —
+  // it only swaps typography/icons/input styling, never the surface itself.
+  // (The AppBar widget already hardcodes backgroundColor: Colors.transparent
+  // at the widget level, which always wins over an AppBarTheme override, but
+  // this used to also set an opaque Colors.white/grey[900] background here
+  // that contradicted it — dead in practice, misleading to read, and wrong
+  // the moment anything stops pinning backgroundColor explicitly.)
   Widget _buildSearchingAppBarTheme(Widget child) {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
     return Theme(
       data: theme.copyWith(
         appBarTheme: theme.appBarTheme.copyWith(
-          backgroundColor: colorScheme.brightness == Brightness.dark
-              ? Colors.grey[900]
-              : Colors.white,
-          iconTheme: theme.primaryIconTheme.copyWith(color: Colors.grey),
+          iconTheme: theme.primaryIconTheme.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
           titleTextStyle: theme.textTheme.titleLarge,
           toolbarTextStyle: theme.textTheme.bodyMedium,
         ),
@@ -292,7 +298,8 @@ class CommonScaffoldState extends State<CommonScaffold> {
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                               color: context.colorScheme.surface.withValues(
-                                alpha: glassPanelOpacityFor(
+                                alpha: GlassTokens.opacityFor(
+                                  GlassSurfaceType.chrome,
                                   context.colorScheme.brightness,
                                 ),
                               ),

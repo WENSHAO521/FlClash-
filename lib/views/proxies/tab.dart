@@ -232,7 +232,10 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
                   colors: [
                     context.colorScheme.surface.withValues(alpha: 0),
                     context.colorScheme.surface.withValues(
-                      alpha: glassPanelOpacityFor(context.colorScheme.brightness),
+                      alpha: GlassTokens.opacityFor(
+                        GlassSurfaceType.chrome,
+                        context.colorScheme.brightness,
+                      ),
                     ),
                   ],
                   stops: const [0.0, 0.1],

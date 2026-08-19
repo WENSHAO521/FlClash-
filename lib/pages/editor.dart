@@ -195,6 +195,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
             enabled: widget.titleEditable,
             controller: _titleController,
             decoration: InputDecoration(
+              filled: false,
               border: const NoInputBorder(),
               counter: const SizedBox(),
               hintText: appLocalizations.unnamed,

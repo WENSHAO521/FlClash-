@@ -46,24 +46,18 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
   }
 
   void _handleRealRemove() {
-    debouncer.call(
-      'EditProxyProvidersViewState_handleRealRemove',
-      () {
-        if (!ref.context.mounted) {
-          return;
-        }
-        final dismissItems = ref.read(itemsProvider(key));
-        ref.read(proxyGroupProvider.notifier).update((state) {
-          final newProxyProviders = List<String>.from(state.use ?? []);
-          newProxyProviders.removeWhere(
-            (state) => dismissItems.contains(state),
-          );
-          return state.copyWith(use: newProxyProviders);
-        });
-        ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
-      },
-      duration: const Duration(milliseconds: 450),
-    );
+    debouncer.call('EditProxyProvidersViewState_handleRealRemove', () {
+      if (!ref.context.mounted) {
+        return;
+      }
+      final dismissItems = ref.read(itemsProvider(key));
+      ref.read(proxyGroupProvider.notifier).update((state) {
+        final newProxyProviders = List<String>.from(state.use ?? []);
+        newProxyProviders.removeWhere((state) => dismissItems.contains(state));
+        return state.copyWith(use: newProxyProviders);
+      });
+      ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
+    }, duration: const Duration(milliseconds: 450));
   }
 
   Widget _buildItem({
@@ -324,20 +318,16 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
   }
 
   void _handleRealAdd() {
-    debouncer.call(
-      'AddProxyProvidersViewState_handleRealAdd',
-      () {
-        if (!ref.context.mounted) {
-          return;
-        }
-        final dismissItems = ref.read(itemsProvider(key));
-        ref.read(proxyGroupProvider.notifier).update((state) {
-          return state.copyWith(use: [...state.use ?? [], ...dismissItems]);
-        });
-        ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
-      },
-      duration: const Duration(milliseconds: 350),
-    );
+    debouncer.call('AddProxyProvidersViewState_handleRealAdd', () {
+      if (!ref.context.mounted) {
+        return;
+      }
+      final dismissItems = ref.read(itemsProvider(key));
+      ref.read(proxyGroupProvider.notifier).update((state) {
+        return state.copyWith(use: [...state.use ?? [], ...dismissItems]);
+      });
+      ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
+    }, duration: const Duration(milliseconds: 350));
   }
 
   Widget _buildItem({

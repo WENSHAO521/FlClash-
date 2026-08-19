@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/app.dart';
@@ -52,12 +54,13 @@ Future<T?> showSheet<T>({
   SheetProps props = const SheetProps(),
 }) {
   final isMobile = globalState.container.read(isMobileViewProvider);
-  final glassBackgroundColor =
-      props.backgroundColor ??
-      context.colorScheme.surfaceContainerLow.withValues(
-        alpha: glassPanelOpacityFor(context.colorScheme.brightness),
-      );
   return switch (isMobile) {
+    // The physical sheet (drag handle + header + body) paints its own real
+    // blur via GlassSurface.modal in AdaptiveSheetScaffold — this route's
+    // own backgroundColor must stay transparent, or the sheet would carry a
+    // second, unblurred flat-color layer that lets whatever is behind it
+    // (the BottomNavigationBar included) stay sharply readable underneath
+    // the "glass".
     true => showModalBottomSheet<T>(
       context: context,
       isScrollControlled: props.isScrollControlled,
@@ -67,7 +70,7 @@ Future<T?> showSheet<T>({
           child: builder(context),
         );
       },
-      backgroundColor: glassBackgroundColor,
+      backgroundColor: Colors.transparent,
       showDragHandle: false,
       useSafeArea: props.useSafeArea,
     ),
@@ -75,7 +78,14 @@ Future<T?> showSheet<T>({
       useSafeArea: props.useSafeArea,
       isScrollControlled: props.isScrollControlled,
       context: context,
-      backgroundColor: glassBackgroundColor,
+      backgroundColor:
+          props.backgroundColor ??
+          context.colorScheme.surfaceContainerLow.withValues(
+            alpha: GlassTokens.opacityFor(
+              GlassSurfaceType.modal,
+              context.colorScheme.brightness,
+            ),
+          ),
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
       builder: (_) {
@@ -103,7 +113,10 @@ Future<T?> showExtend<T>(
       useSafeArea: props.useSafeArea,
       context: context,
       backgroundColor: context.colorScheme.surface.withValues(
-        alpha: glassPanelOpacityFor(context.colorScheme.brightness),
+        alpha: GlassTokens.opacityFor(
+          GlassSurfaceType.modal,
+          context.colorScheme.brightness,
+        ),
       ),
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
@@ -170,33 +183,9 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final sheetProvider = SheetProvider.of(context);
-    final nestedNavigatorPop = sheetProvider?.nestedNavigatorPop;
-    final ModalRoute<dynamic>? route = ModalRoute.of(context);
-    final type = sheetProvider?.type ?? SheetType.page;
-    final backgroundColor =
-        (type == SheetType.bottomSheet
-                ? context.colorScheme.surfaceContainerLow
-                : context.colorScheme.surface)
-            .withValues(alpha: glassPanelOpacityFor(context.colorScheme.brightness));
-    final useCloseIcon =
-        type != SheetType.page &&
-        (nestedNavigatorPop != null && route?.impliesAppBarDismissal == false ||
-            nestedNavigatorPop == null);
-    Widget buildIconButton(IconButtonData data) {
-      if (type == SheetType.bottomSheet) {
-        return IconButton.filledTonal(
-          onPressed: data.onPressed,
-          style: IconButton.styleFrom(
-            visualDensity: VisualDensity.standard,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          icon: Icon(data.icon),
-        );
-      }
-      return IconButton(
+  Widget _buildIconButton(SheetType type, IconButtonData data) {
+    if (type == SheetType.bottomSheet) {
+      return IconButton.filledTonal(
         onPressed: data.onPressed,
         style: IconButton.styleFrom(
           visualDensity: VisualDensity.standard,
@@ -205,18 +194,106 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
         icon: Icon(data.icon),
       );
     }
+    return IconButton(
+      onPressed: data.onPressed,
+      style: IconButton.styleFrom(
+        visualDensity: VisualDensity.standard,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      icon: Icon(data.icon),
+    );
+  }
 
-    final actions = widget.actions.map(buildIconButton).toList();
+  /// A deterministic bottom-sheet header: drag handle above, then a title
+  /// row where the leading and trailing slots reserve their own width
+  /// (rather than relying on AppBar's leading/actions centring math), so a
+  /// long title or an extra action can never collide with the close button.
+  Widget _buildSheetHeader({
+    required Widget? leading,
+    required List<Widget> actions,
+  }) {
+    const handleSize = Size(28, 4);
+    const slotWidth = 48.0;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 6, bottom: 6),
+          child: Container(
+            alignment: Alignment.center,
+            height: handleSize.height,
+            width: handleSize.width,
+            decoration: ShapeDecoration(
+              color: context.colorScheme.onSurfaceVariant,
+              shape: RoundedSuperellipseBorder(
+                borderRadius: BorderRadius.circular(handleSize.height / 2),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 48,
+          child: Row(
+            children: [
+              SizedBox(
+                width: slotWidth,
+                child: leading != null ? Center(child: leading) : null,
+              ),
+              Expanded(
+                child: Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textTheme.titleLarge?.adjustSize(-4),
+                ),
+              ),
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: slotWidth),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [...genActions(actions)],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 6),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final sheetProvider = SheetProvider.of(context);
+    final nestedNavigatorPop = sheetProvider?.nestedNavigatorPop;
+    final ModalRoute<dynamic>? route = ModalRoute.of(context);
+    final type = sheetProvider?.type ?? SheetType.page;
+    final colorScheme = context.colorScheme;
+    final glassColor = type == SheetType.bottomSheet
+        ? colorScheme.surfaceContainerLow
+        : colorScheme.surface;
+    final useCloseIcon =
+        type != SheetType.page &&
+        (nestedNavigatorPop != null && route?.impliesAppBarDismissal == false ||
+            nestedNavigatorPop == null);
+
+    final actions = widget.actions
+        .map((data) => _buildIconButton(type, data))
+        .toList();
 
     final popButton = type != SheetType.page
         ? (useCloseIcon
-              ? buildIconButton(
+              ? _buildIconButton(
+                  type,
                   IconButtonData(
                     icon: Icons.close,
                     onPressed: context.safeNestedPop,
                   ),
                 )
-              : buildIconButton(
+              : _buildIconButton(
+                  type,
                   IconButtonData(
                     icon: backIconData,
                     onPressed:
@@ -229,102 +306,105 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
         : null;
 
     final suffixPop = type != SheetType.page && actions.isEmpty && useCloseIcon;
-    final appBar = AppBar(
-      backgroundColor: backgroundColor,
-      forceMaterialTransparency: type == SheetType.bottomSheet ? true : false,
-      leading: suffixPop ? null : popButton,
-      automaticallyImplyLeading: type == SheetType.page ? true : false,
-      centerTitle: true,
-      toolbarHeight: type == SheetType.bottomSheet ? 48 : null,
-      title: Text(widget.title),
-      titleTextStyle: type == SheetType.bottomSheet
-          ? context.textTheme.titleLarge?.adjustSize(-4)
-          : null,
-      actions: !suffixPop ? genActions(actions) : genActions([?popButton]),
-    );
+
     if (type == SheetType.bottomSheet) {
-      const handleSize = Size(28, 4);
-      final sheetAppBar = Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 6),
-            child: Container(
-              alignment: Alignment.center,
-              height: handleSize.height,
-              width: handleSize.width,
-              decoration: ShapeDecoration(
-                color: context.colorScheme.onSurfaceVariant,
-                shape: RoundedSuperellipseBorder(
-                  borderRadius: BorderRadius.circular(handleSize.height / 2),
+      final header = _buildSheetHeader(
+        leading: suffixPop ? null : popButton,
+        actions: !suffixPop ? actions : [?popButton],
+      );
+      // Exactly one physical blur for the whole sheet (header + body). The
+      // scroll-driven "solidify" effect below only shifts the header's own
+      // tint on top of this shared glass — it must NOT add a second
+      // BackdropFilter, or the sheet would double-blur its own header.
+      return GlassSurface.modal(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        color: glassColor,
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!widget.sheetTransparentToolBar) ...[
+                header,
+                Flexible(child: widget.body),
+              ] else ...[
+                Flexible(
+                  child: Stack(
+                    children: [
+                      NotificationListener<ScrollNotification>(
+                        child: widget.body,
+                        onNotification: (notification) {
+                          if (notification is ScrollUpdateNotification) {
+                            final pixels = notification.metrics.pixels;
+                            _isScrolledController.value = pixels > 6;
+                          }
+                          return false;
+                        },
+                      ),
+                      Positioned(
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        child: ValueListenableBuilder(
+                          valueListenable: _isScrolledController,
+                          builder: (_, isScrolled, child) {
+                            return ColoredBox(
+                              color: isScrolled
+                                  ? glassColor.opacity60
+                                  : Colors.transparent,
+                              child: child,
+                            );
+                          },
+                          child: header,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final appBar = AppBar(
+      backgroundColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      elevation: 0,
+      forceMaterialTransparency: true,
+      leading: popButton,
+      automaticallyImplyLeading: type == SheetType.page,
+      // A page pushed full-screen (SheetType.page) centres its title only
+      // when there's no leading back button contending for the same space;
+      // a long localized title otherwise gets squeezed from both sides.
+      // Left-aligned next to the back arrow can never collide.
+      centerTitle: type != SheetType.page,
+      titleSpacing: 16,
+      title: Text(widget.title, overflow: TextOverflow.ellipsis),
+      actions: genActions(actions),
+      flexibleSpace: ClipRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: GlassTokens.blurChrome,
+            sigmaY: GlassTokens.blurChrome,
+          ),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: glassColor.withValues(
+                alpha: GlassTokens.opacityFor(
+                  GlassSurfaceType.chrome,
+                  colorScheme.brightness,
                 ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: appBar,
-          ),
-          const SizedBox(height: 6),
-        ],
-      );
-      return ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (!widget.sheetTransparentToolBar) ...[
-              sheetAppBar,
-              Flexible(child: widget.body),
-            ] else ...[
-              Flexible(
-                child: Stack(
-                  children: [
-                    NotificationListener<ScrollNotification>(
-                      child: widget.body,
-                      onNotification: (notification) {
-                        if (notification is ScrollUpdateNotification) {
-                          final pixels = notification.metrics.pixels;
-                          _isScrolledController.value = pixels > 6;
-                        }
-                        return false;
-                      },
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: ValueListenableBuilder(
-                        valueListenable: _isScrolledController,
-                        builder: (_, isScrolled, child) {
-                          return ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(28),
-                            ),
-                            child: BackdropFilter(
-                              filter: commonFilter,
-                              child: ColoredBox(
-                                color: isScrolled
-                                    ? backgroundColor.opacity60
-                                    : backgroundColor,
-                                child: child!,
-                              ),
-                            ),
-                          );
-                        },
-                        child: sheetAppBar,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
-            SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
-          ],
         ),
-      );
-    }
+      ),
+    );
     return CommonScaffold(appBar: appBar, body: widget.body);
   }
 }

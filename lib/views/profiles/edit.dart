@@ -212,12 +212,23 @@ class _EditProfileViewState extends State<EditProfileView> {
     globalState.container.read(setupActionProvider.notifier).autoApplyProfile();
   }
 
+  // Plain padding instead of hosting the field in a ListItem/ListTile:
+  // ListTile lays out its title in a fixed one/two/three-line tile height,
+  // which silently clips a multiline TextFormField (the long URL field in
+  // particular) instead of letting it grow to its minLines/maxLines.
+  Widget _buildFieldItem(Widget field) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: field,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
     final items = [
-      ListItem(
-        title: TextFormField(
+      _buildFieldItem(
+        TextFormField(
           textInputAction: TextInputAction.next,
           controller: _labelController,
           inputFormatters: TextInputLimits.limit(TextInputLimits.name),
@@ -234,17 +245,22 @@ class _EditProfileViewState extends State<EditProfileView> {
         ),
       ),
       if (widget.profile.type == ProfileType.url) ...[
-        ListItem(
-          title: TextFormField(
+        _buildFieldItem(
+          TextFormField(
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.url,
             controller: _urlController,
             inputFormatters: TextInputLimits.limit(TextInputLimits.url),
-            maxLines: 5,
-            minLines: 1,
+            minLines: 3,
+            maxLines: 6,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
               labelText: appLocalizations.url,
+              alignLabelWithHint: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 16,
+              ),
             ),
             validator: (String? value) {
               if (value == null || value.isEmpty) {
@@ -265,8 +281,8 @@ class _EditProfileViewState extends State<EditProfileView> {
           ),
         ),
         if (_autoUpdate)
-          ListItem(
-            title: TextFormField(
+          _buildFieldItem(
+            TextFormField(
               textInputAction: TextInputAction.next,
               controller: _autoUpdateDurationController,
               inputFormatters: TextInputLimits.digitsOnly(

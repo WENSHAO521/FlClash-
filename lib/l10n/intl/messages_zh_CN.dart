@@ -304,9 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "go": MessageLookupByLibrary.simpleMessage("前往"),
     "goDownload": MessageLookupByLibrary.simpleMessage("前往下载"),
     "downloadingUpdate": MessageLookupByLibrary.simpleMessage("正在下载更新..."),
-    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage(
-      "下载失败，请重试",
-    ),
+    "downloadUpdateFailed": MessageLookupByLibrary.simpleMessage("下载失败，请重试"),
     "goToConfigureScript": MessageLookupByLibrary.simpleMessage("前往配置脚本"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage("是否缓存修改"),
     "hideFromList": MessageLookupByLibrary.simpleMessage("从列表中隐藏"),

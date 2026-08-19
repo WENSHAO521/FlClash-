@@ -146,7 +146,14 @@ class CommonCard extends StatelessWidget {
     return BorderSide(
       color: isSelected
           ? colorScheme.primary
-          : colorScheme.surfaceContainerHighest,
+          // Subtle outlineVariant instead of a solid neutral tone — this
+          // card's own low-alpha GlassSurface.repeated fill is meant to
+          // read as a lightweight control, not a mini glass panel with its
+          // own bright border competing with whatever it's nested inside
+          // (e.g. the strategy buttons in a BottomSheet group picker).
+          : colorScheme.outlineVariant.withValues(
+              alpha: GlassTokens.borderOpacityFor(colorScheme.brightness),
+            ),
     );
   }
 
@@ -243,9 +250,7 @@ class CommonCard extends StatelessWidget {
               side: BorderSide.none,
               elevation: 0,
             ).copyWith(
-              backgroundColor: const WidgetStatePropertyAll(
-                Colors.transparent,
-              ),
+              backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
               side: WidgetStateProperty.resolveWith(
                 (states) => _buildBorderSide(context, states),
               ),
@@ -275,14 +280,17 @@ class CommonCard extends StatelessWidget {
       ),
     };
 
-    // No BackdropFilter here on purpose: CommonCard can appear dozens of
+    // GlassSurfaceType.repeated on purpose: CommonCard can appear dozens of
     // times at once (proxy grids, provider lists), and stacking that many
-    // backdrop filters is a real scroll-jank risk. A flat tint over the
-    // AmbientBackground still reads as glass without the blur cost.
-    final glassCard = GlassSurface(
+    // backdrop filters is a real scroll-jank risk, so this never blurs. Its
+    // opacity is also deliberately low — CommonCard nests inside panel/modal
+    // GlassSurfaces (settings groups, bottom sheets) constantly, and a
+    // repeated child anywhere near panel-level opacity compounds with its
+    // parent into a near-opaque block instead of reading as "glass inside
+    // glass".
+    final glassCard = GlassSurface.repeated(
       shape: cardShape,
       color: _buildBackgroundColor(context),
-      blurSigma: 0,
       child: card,
     );
 
@@ -322,7 +330,7 @@ class SettingsBlock extends StatelessWidget {
       child: Column(
         children: [
           InfoHeader(info: Info(label: title)),
-          GlassSurface(
+          GlassSurface.panel(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

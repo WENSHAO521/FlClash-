@@ -44,13 +44,23 @@ class ApplicationState extends ConsumerState<Application> {
     return ref.read(genColorSchemeProvider(brightness));
   }
 
-  // Fills in ThemeData sub-themes (inputs, chips, dialogs, sheets) that
-  // Flutter otherwise defaults to opaque Material colors, so they read as
-  // part of the glass shell instead of standing out against it.
+  // Fills in ThemeData sub-themes (chips, dialogs, sheets) that Flutter
+  // otherwise defaults to opaque Material colors, so they read as part of
+  // the glass shell instead of standing out against it.
+  //
+  // Deliberately NOT included: InputDecorationTheme. Every TextField in
+  // this app already defines its own decoration (border, fill, padding) —
+  // a global filled/fillColor/OutlineInputBorder here would paint a second,
+  // differently-shaped border/fill underneath each field's own, producing
+  // double borders and broken sizing (see the config/profile editor
+  // regression). Glass-styled inputs are opt-in via `glassInputDecoration()`
+  // (lib/widgets/glass.dart), applied per field, never globally.
   ThemeData _buildThemeData(ColorScheme colorScheme) {
-    final borderRadius = BorderRadius.circular(14);
+    final brightness = colorScheme.brightness;
     final borderSide = BorderSide(
-      color: colorScheme.outlineVariant.withValues(alpha: glassBorderOpacity),
+      color: colorScheme.outlineVariant.withValues(
+        alpha: GlassTokens.borderOpacityFor(brightness),
+      ),
     );
     return ThemeData(
       useMaterial3: true,
@@ -60,27 +70,12 @@ class ApplicationState extends ConsumerState<Application> {
       // painting its own opaque surface color over it.
       scaffoldBackgroundColor: Colors.transparent,
       colorScheme: colorScheme,
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: colorScheme.surfaceContainer.withValues(
-          alpha: glassPanelOpacityFor(colorScheme.brightness),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: borderRadius,
-          borderSide: borderSide,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: borderRadius,
-          borderSide: borderSide,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: borderRadius,
-          borderSide: BorderSide(color: colorScheme.primary, width: 1.2),
-        ),
-      ),
       chipTheme: ChipThemeData(
+        // Chips are lightweight, often-repeated controls, not mini glass
+        // panels — a low tint (same family as GlassSurfaceType.repeated)
+        // instead of a near-opaque fill.
         backgroundColor: colorScheme.surfaceContainerHighest.withValues(
-          alpha: 0.42,
+          alpha: GlassTokens.opacityFor(GlassSurfaceType.repeated, brightness),
         ),
         selectedColor: colorScheme.primary.withValues(alpha: 0.16),
         side: borderSide,
@@ -89,12 +84,21 @@ class ApplicationState extends ConsumerState<Application> {
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
+      bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        // Both showModalBottomSheet and our ModalSideSheetRoute fall back to
+        // this when no explicit barrierColor is passed. Flutter's own
+        // default (Colors.black54) reads as an excessively grey/dark scrim;
+        // low, brightness-aware alpha keeps the page behind recognizable.
+        modalBarrierColor: Colors.black.withValues(
+          alpha: GlassTokens.modalBarrierOpacityFor(brightness),
+        ),
       ),
       dividerTheme: DividerThemeData(
-        color: colorScheme.outlineVariant.withValues(alpha: glassDividerOpacity),
+        color: colorScheme.outlineVariant.withValues(
+          alpha: GlassTokens.dividerOpacityFor(brightness),
+        ),
       ),
     );
   }

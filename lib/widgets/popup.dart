@@ -211,7 +211,7 @@ class CommonPopupMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GlassSurface(
+    return GlassSurface.floating(
       shape: RoundedSuperellipseBorder(borderRadius: BorderRadius.circular(14)),
       color: context.colorScheme.surfaceContainer,
       boxShadow: kElevationToShadow[12],
@@ -264,13 +264,16 @@ class _CommonPopupMenuItemsState extends State<_CommonPopupMenuItems> {
           }
         : item.onPressed;
     final disabled = onPressed == null;
+    // Rows stay transparent/low-alpha so the popup's own GlassSurface.floating
+    // remains the one physical surface — an opaque surfaceContainer/error
+    // fill per row would paint over and hide that glass parent entirely.
     final color = item.danger
-        ? context.colorScheme.onError
+        ? context.colorScheme.error
         : context.colorScheme.onSurface;
     final foregroundColor = disabled ? color.opacity30 : color;
     final backgroundColor = item.danger
-        ? context.colorScheme.error
-        : context.colorScheme.surfaceContainer;
+        ? context.colorScheme.error.withValues(alpha: 0.12)
+        : Colors.transparent;
     return TextButton(
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,

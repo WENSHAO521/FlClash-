@@ -37,6 +37,12 @@ final listHeaderPadding = EdgeInsets.only(
 );
 const sheetAppBarHeight = 68.0;
 
+/// Height of HomePage's mobile bottom NavigationBar (see
+/// `_NavigationBarDefaultsM3` in lib/pages/home.dart). Pages pushed as
+/// non-opaque routes on top of HomePage need this to keep their own
+/// floating UI from overlapping the still-visible nav bar underneath.
+const kHomeNavigationBarHeight = 80.0;
+
 const watchExecution = false;
 
 final defaultTextScaleFactor =
