@@ -1,3 +1,63 @@
+## v3.3.10
+
+- Bump version to 3.3.10
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix desktop dialog width regression from the AlertDialog -> Dialog + GlassSurface migration
+
+- CommonDialog capped its content area at maxWidth: 300 while the outer
+
+- Column used CrossAxisAlignment.start, so a wide title or actions row
+
+- could stretch the GlassSurface past 300px while content (text fields,
+
+- message text) stayed pinned at 300px, left-aligned, with dead space on
+
+- the right. Affected every CommonDialog/InputDialog call site, not just
+
+- the URL import dialog.
+
+- Central fix in lib/widgets/dialog.dart: a responsive max width (560px
+
+- default, 640px via a new opt-in isLarge flag, both clamped to the
+
+- window size on desktop; screen width minus a safe inset on mobile) via
+
+- ConstrainedBox, plus CrossAxisAlignment.stretch so title/content/
+
+- actions always share that width instead of each shrink-wrapping
+
+- independently. Public API is additive only (isLarge defaults false).
+
+- Audited every CommonDialog/InputDialog call site: removed two
+
+- now-redundant width: 300 hacks that would have fought the central fix
+
+- (showMessage in state.dart, and dead code in profiles/add.dart's
+
+- unused URLFormDialog); wrapped the palette and hotkey-recorder dialogs'
+
+- genuinely-narrow content in Center so it doesn't end up left-aligned
+
+- in the wider surface; marked the rule add/edit dialog isLarge (dropdown
+
+- + field + dropdown + chips is the one genuinely content-heavy case).
+
+- Everything else needed no changes since Wrap already passes a bounded
+
+- max-width to its children.
+
+- Added test/widgets/dialog_test.dart covering the 560/640 caps, the
+
+- mobile inset, the stretch behavior, a long title no longer widening
+
+- the surface past the cap, long text still scrolling within a capped
+
+- height, and no overflow across devicePixelRatio 1.0-3.0.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.9
 
 - Bump version to 3.3.9
