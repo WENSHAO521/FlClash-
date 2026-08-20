@@ -1,3 +1,83 @@
+## v3.3.9
+
+- Bump version to 3.3.9
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Regenerate core/go.sum after the golang.org/x/* version bumps
+
+- The previous commit only bumped go.mod version constraints without
+
+- go.sum, since no Go toolchain was available at the time — that broke
+
+- every platform build in CI with "missing go.sum entry" errors (v3.3.8
+
+- build run 32278684532).
+
+- Ran `go mod tidy` in core/ for real this time, which also pulled in a
+
+- few more transitive bumps (x/mod, x/sys, x/term, x/text, x/tools,
+
+- x/sync) and raised the go directive to 1.25.0 to satisfy them — still
+
+- well under CI's Go 1.26.4. Verified `go build ./...` succeeds locally.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+## v3.3.8
+
+- Bump version to 3.3.8
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Bump vulnerable golang.org/x/* deps in core/go.mod
+
+- Addresses 20 open Dependabot alerts (7 critical) against
+
+- golang.org/x/crypto, golang.org/x/net, and golang.org/x/oauth2 —
+
+- all transitively pulled into core/go.mod at versions below their
+
+- patched releases.
+
+- go.sum is NOT regenerated here (no Go toolchain in this environment).
+
+- Run `go mod tidy` inside core/ before building so the checksums and
+
+- any further transitive bumps get resolved.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Bump version to 3.3.7
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix sub-pages leaking the previous page's content through glass gaps
+
+- CommonRoute/CommonDesktopRoute were deliberately non-opaque so a
+
+- transparent Scaffold could reveal the single AmbientBackground painted
+
+- at the app shell root. That kept whatever page was underneath fully
+
+- mounted and painted, so gaps between glass panels on a pushed page
+
+- showed the actual content of the page behind it, not just the ambient
+
+- gradient.
+
+- Each pushed page now paints its own AmbientBackground and the routes
+
+- are opaque again, so Flutter properly offstages the page underneath
+
+- once the transition ends. Also drops the FloatLayout bottom-nav-bar
+
+- avoidance hack in profiles/edit's floating save button, since the nav
+
+- bar is no longer visible behind pushed pages.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.6
 
 - Bump version to 3.3.6
