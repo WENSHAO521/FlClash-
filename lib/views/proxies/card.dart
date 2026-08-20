@@ -79,7 +79,7 @@ class ProxyCard extends StatelessWidget {
           proxy.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodyMedium,
+          style: context.textTheme.bodyMedium?.toSoftBold,
         ),
       );
     } else {
@@ -89,7 +89,7 @@ class ProxyCard extends StatelessWidget {
           proxy.name,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodyMedium,
+          style: context.textTheme.bodyMedium?.toSoftBold,
         ),
       );
     }

@@ -1,8 +1,126 @@
 import 'package:emoji_regex/emoji_regex.dart';
+import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/material.dart';
 
 import '../state.dart';
+
+/// Page/dialog heading. Always start-aligned — titles are never prose and
+/// must never be justified.
+class AppTitle extends StatelessWidget {
+  final String text;
+  final TextStyle? style;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
+  const AppTitle(
+    this.text, {
+    super.key,
+    this.style,
+    this.maxLines,
+    this.overflow,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedStyle = style ?? context.textTheme.headlineSmall;
+    return Text(
+      text,
+      textAlign: TextAlign.start,
+      style: resolvedStyle,
+      maxLines: maxLines,
+      overflow: overflow,
+    );
+  }
+}
+
+/// Normal UI body/label text: settings rows, list titles, short
+/// descriptions, technical values. Always start-aligned.
+class AppBody extends StatelessWidget {
+  final String text;
+  final TextStyle? style;
+  final int? maxLines;
+  final TextOverflow? overflow;
+
+  const AppBody(
+    this.text, {
+    super.key,
+    this.style,
+    this.maxLines,
+    this.overflow,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedStyle = style ?? context.textTheme.bodyMedium;
+    return Text(
+      text,
+      textAlign: TextAlign.start,
+      style: resolvedStyle,
+      maxLines: maxLines,
+      overflow: overflow,
+    );
+  }
+}
+
+/// Long-form prose: disclaimers, agreements, help/documentation content.
+/// Justifies on comfortably wide layouts and falls back to start alignment
+/// on narrow ones, where CJK justification would stretch characters
+/// unnaturally (small phones, narrow dialogs, split-screen windows).
+class AppParagraph extends StatelessWidget {
+  final String text;
+  final TextStyle? style;
+  final bool selectable;
+  final int? maxLines;
+
+  /// Escape hatch for paragraphs that read worse justified — most often
+  /// CJK prose carrying a long, unbreakable Latin run (a brand name, a
+  /// product name) where justify's gap distribution lands unevenly next
+  /// to it. Set false to keep AppParagraph's line height/selectable
+  /// behavior while pinning alignment to start regardless of width.
+  final bool allowJustify;
+
+  static const double _justifyMinWidth = 280;
+
+  const AppParagraph(
+    this.text, {
+    super.key,
+    this.style,
+    this.selectable = false,
+    this.maxLines,
+    this.allowJustify = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedStyle =
+        style ?? context.textTheme.bodyMedium?.copyWith(height: 1.55);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final align = allowJustify && constraints.maxWidth >= _justifyMinWidth
+            ? TextAlign.justify
+            : TextAlign.start;
+
+        if (selectable) {
+          return SelectableText(
+            text,
+            textAlign: align,
+            style: resolvedStyle,
+            maxLines: maxLines,
+          );
+        }
+
+        return Text(
+          text,
+          textAlign: align,
+          style: resolvedStyle,
+          maxLines: maxLines,
+        );
+      },
+    );
+  }
+}
 
 class TooltipText extends StatelessWidget {
   final Text text;

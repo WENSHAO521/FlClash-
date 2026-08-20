@@ -6,6 +6,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/theme.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/list.dart';
+import 'package:fl_clash/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -167,6 +168,11 @@ class GlobalState {
     }
   }
 
+  /// [longForm] opts a single call site into document-quality paragraph
+  /// typography (responsive justify + 1.55 line height) for genuinely
+  /// long, multi-sentence dialog bodies. Defaults to false so every other
+  /// caller of this shared helper (confirmations, short prompts, technical
+  /// messages) keeps its current start-aligned rendering unchanged.
   Future<bool?> showMessage({
     required InlineSpan message,
     BuildContext? context,
@@ -175,6 +181,7 @@ class GlobalState {
     String? cancelText,
     bool cancelable = true,
     bool? dismissible,
+    bool longForm = false,
   }) async {
     return showCommonDialog<bool>(
       context: context,
@@ -202,13 +209,20 @@ class GlobalState {
             child: Container(
               constraints: const BoxConstraints(maxHeight: 200),
               child: SingleChildScrollView(
-                child: SelectableText.rich(
-                  TextSpan(
-                    style: Theme.of(context).textTheme.labelLarge,
-                    children: [message],
-                  ),
-                  style: const TextStyle(overflow: TextOverflow.visible),
-                ),
+                child: longForm
+                    ? AppParagraph(
+                        message.toPlainText(),
+                        selectable: true,
+                        style: Theme.of(context).textTheme.labelLarge
+                            ?.copyWith(height: 1.55),
+                      )
+                    : SelectableText.rich(
+                        TextSpan(
+                          style: Theme.of(context).textTheme.labelLarge,
+                          children: [message],
+                        ),
+                        style: const TextStyle(overflow: TextOverflow.visible),
+                      ),
               ),
             ),
           );
@@ -362,7 +376,7 @@ class GlobalState {
                 child: Text(currentAppLocalizations.agree),
               ),
             ],
-            child: Text(currentAppLocalizations.disclaimerDesc),
+            child: AppParagraph(currentAppLocalizations.disclaimerDesc),
           ),
         ) ??
         false;
@@ -378,6 +392,7 @@ class GlobalState {
     await showMessage(
       title: currentAppLocalizations.dataCollectionTip,
       cancelable: false,
+      longForm: true,
       message: TextSpan(text: currentAppLocalizations.dataCollectionContent),
     );
     container

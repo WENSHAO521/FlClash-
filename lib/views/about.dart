@@ -6,6 +6,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
+import 'package:fl_clash/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -164,10 +165,11 @@ class AboutView extends StatelessWidget {
                   color: Theme.of(context).colorScheme.outlineVariant,
                 ),
               ),
-              child: Text(
+              child: AppParagraph(
                 appLocalizations.disclaimerDesc,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  height: 1.55,
                 ),
               ),
             ),

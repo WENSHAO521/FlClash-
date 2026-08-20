@@ -65,15 +65,37 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
     await delayTest(currentState?.currentProxies ?? [], currentState?.testUrl);
   }
 
-  Widget _buildMoreButton() {
+  Widget _buildGroupSelectorButton() {
     return Consumer(
-      builder: (_, ref, _) {
+      builder: (context, ref, _) {
         final isMobileView = ref.watch(isMobileViewProvider);
+        final colorScheme = context.colorScheme;
         return IconButton(
+          tooltip: context.appLocalizations.proxyGroup,
           onPressed: _showMoreMenu,
-          icon: isMobileView
-              ? const Icon(Icons.expand_more)
-              : const Icon(Icons.chevron_right),
+          icon: Icon(
+            isMobileView
+                ? Icons.expand_more_rounded
+                : Icons.chevron_right_rounded,
+          ),
+          style: IconButton.styleFrom(
+            minimumSize: const Size(44, 44),
+            foregroundColor: colorScheme.onSurfaceVariant,
+            backgroundColor: Colors.transparent,
+          ).copyWith(
+            overlayColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.pressed)) {
+                return colorScheme.primary.withValues(alpha: 0.08);
+              }
+              if (states.contains(WidgetState.hovered)) {
+                return colorScheme.onSurface.withValues(alpha: 0.05);
+              }
+              if (states.contains(WidgetState.focused)) {
+                return colorScheme.primary.withValues(alpha: 0.06);
+              }
+              return Colors.transparent;
+            }),
+          ),
         );
       },
     );
@@ -190,59 +212,105 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
           },
           child: ValueListenableBuilder(
             valueListenable: _hasMoreButtonNotifier,
-            builder: (_, value, child) {
-              return Stack(
-                alignment: AlignmentDirectional.centerStart,
+            builder: (_, hasMore, _) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TabBar(
-                    controller: _tabController,
-                    padding: EdgeInsets.only(
-                      left: 16,
-                      right: 16 + (value ? 16 : 0),
-                    ),
-                    dividerColor: Colors.transparent,
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.start,
-                    overlayColor: const WidgetStatePropertyAll(
-                      Colors.transparent,
-                    ),
-                    tabs: [
-                      for (final group in groups)
-                        Tab(
-                          child: Builder(
-                            builder: (context) {
-                              return EmojiText(
-                                group.name,
-                                style: DefaultTextStyle.of(context).style,
-                              );
-                            },
+                  Expanded(
+                    child: Stack(
+                      alignment: AlignmentDirectional.centerEnd,
+                      children: [
+                        TabBar(
+                          controller: _tabController,
+                          padding: EdgeInsets.only(
+                            left: 16,
+                            right: hasMore ? 28 : 8,
                           ),
+                          dividerColor: Colors.transparent,
+                          isScrollable: true,
+                          tabAlignment: TabAlignment.start,
+                          indicatorSize: TabBarIndicatorSize.label,
+                          indicator: UnderlineTabIndicator(
+                            borderRadius: BorderRadius.circular(99),
+                            borderSide: BorderSide(
+                              width: 3,
+                              color: context.colorScheme.primary,
+                            ),
+                          ),
+                          labelColor: context.colorScheme.primary,
+                          labelStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          unselectedLabelColor:
+                              context.colorScheme.onSurfaceVariant,
+                          unselectedLabelStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          labelPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                          ),
+                          overlayColor: WidgetStateProperty.resolveWith((
+                            states,
+                          ) {
+                            if (states.contains(WidgetState.pressed)) {
+                              return context.colorScheme.primary.withValues(
+                                alpha: 0.06,
+                              );
+                            }
+                            return Colors.transparent;
+                          }),
+                          tabs: [
+                            for (final group in groups)
+                              Tab(
+                                child: Builder(
+                                  builder: (context) {
+                                    return EmojiText(
+                                      group.name,
+                                      style: DefaultTextStyle.of(context).style,
+                                    );
+                                  },
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
+                        if (hasMore)
+                          IgnorePointer(
+                            child: Container(
+                              width: 28,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  colors: [
+                                    context.colorScheme.surface.withValues(
+                                      alpha: 0,
+                                    ),
+                                    context.colorScheme.surface.withValues(
+                                      alpha:
+                                          GlassTokens.opacityFor(
+                                            GlassSurfaceType.chrome,
+                                            context.colorScheme.brightness,
+                                          ) *
+                                          0.6,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                  if (value) Positioned(right: 0, child: child!),
+                  if (hasMore)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, right: 8),
+                      child: _buildGroupSelectorButton(),
+                    ),
                 ],
               );
             },
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    context.colorScheme.surface.withValues(alpha: 0),
-                    context.colorScheme.surface.withValues(
-                      alpha: GlassTokens.opacityFor(
-                        GlassSurfaceType.chrome,
-                        context.colorScheme.brightness,
-                      ),
-                    ),
-                  ],
-                  stops: const [0.0, 0.1],
-                ),
-              ),
-              child: _buildMoreButton(),
-            ),
           ),
         ),
         Expanded(
