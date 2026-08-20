@@ -1,3 +1,95 @@
+## v3.3.11
+
+- Bump version to 3.3.11
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Fix Windows installer branding, Publisher metadata, and install path
+
+- Runner.rc's VERSIONINFO still carried legacy CompanyName=com.follow,
+
+- InternalName=clash, and ProductName=clash; rebranded these plus
+
+- LegalCopyright to Panorama Secure Access / Panorama Scholarly Group.
+
+- OriginalFilename intentionally kept as FlClash.exe: it's a claim about the
+
+- real on-disk filename (matches BINARY_NAME in windows/CMakeLists.txt), and
+
+- AV/EDR tooling treats a mismatch there as a tamper signal.
+
+- Found and fixed a real (not cosmetic) bug while auditing the Inno Setup
+
+- packaging config: windows/packaging/exe/make_config.yaml used a `publisher`
+
+- key, but the flutter_distributor fork's MakeExeConfig.fromJson only reads
+
+- `publisher_name` — so the Add/Remove Programs "Publisher" column has been
+
+- rendering blank regardless of its value. Renamed to the key the loader
+
+- actually reads and set it to Panorama Scholarly Group.
+
+- Also added install_dir_name pointing fresh installs at
+
+- "Program Files\Panorama Secure Access" instead of the legacy "...\FlClash".
+
+- This only seeds Inno Setup's DefaultDirName for a first-time install --
+
+- upgrades are matched by AppId (unchanged), and Inno Setup reads the
+
+- previously installed path back out of the existing uninstall registry key,
+
+- so an existing FlClash-directory install keeps upgrading in place with no
+
+- automatic rename/migration attempted.
+
+- The full app-icon reference chain (Runner.rc -> app_icon.ico -> Inno
+
+- Setup's SetupIconFile/UninstallDisplayIcon -> Start Menu/desktop shortcuts)
+
+- was independently verified correct via the fork's actual source; none of
+
+- it needed to change.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Redesign proxy strategy-group navigation and add semantic paragraph typography
+
+- The strategy-group bar's trailing "open all groups" control rendered as an
+
+- opaque near-solid rectangle (a right-edge fade whose gradient reached full
+
+- opacity within 10% of its width). Replaced it with Row(Expanded(scrollable
+
+- tabs), fixed selector button): a transparent 44x44 IconButton with real
+
+- hover/press/focus overlay states, expand_more_rounded/chevron_right_rounded
+
+- icon, and a genuinely subtle right-edge fade capped well below full chrome
+
+- opacity. Selected tab now uses primary text plus a single rounded underline
+
+- indicator (TabBarIndicatorSize.label) instead of any background/pill.
+
+- Added AppTitle/AppBody/AppParagraph reusable text widgets. AppParagraph
+
+- justifies long-form prose responsively (TextAlign.justify at >=280px,
+
+- TextAlign.start below that, to avoid excessive CJK letter-spacing on narrow
+
+- screens) and exposes an allowJustify escape hatch for paragraphs that read
+
+- worse justified. Applied to the disclaimer dialog and About-page disclaimer
+
+- card, and wired showMessage() with an opt-in longForm parameter (default
+
+- false, zero behavior change for its other ~50 call sites) so the Crashlytics
+
+- data-collection dialog also gets paragraph-quality typography.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.10
 
 - Bump version to 3.3.10
