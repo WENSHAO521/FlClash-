@@ -200,7 +200,6 @@ class GlobalState {
               ),
             ],
             child: Container(
-              width: 300,
               constraints: const BoxConstraints(maxHeight: 200),
               child: SingleChildScrollView(
                 child: SelectableText.rich(

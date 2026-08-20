@@ -206,26 +206,33 @@ class _HotKeyRecorderState extends ConsumerState<HotKeyRecorder> {
           builder: (_, hotKeyAction, _) {
             final key = hotKeyAction.key;
             final modifiers = hotKeyAction.modifiers;
-            return SizedBox(
-              width: dialogCommonWidth,
-              child: key != null
-                  ? Wrap(
-                      spacing: 8,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        for (final modifier in modifiers)
-                          KeyboardKeyBox(
-                            keyboardKey: modifier.physicalKeys.first,
-                          ),
-                        if (modifiers.isNotEmpty)
-                          Text('+', style: context.textTheme.titleMedium),
-                        KeyboardKeyBox(keyboardKey: PhysicalKeyboardKey(key)),
-                      ],
-                    )
-                  : Text(
-                      appLocalizations.pressKeyboard,
-                      style: context.textTheme.titleMedium,
-                    ),
+            // Centered rather than left-aligned: the dialog itself now
+            // stretches to the shared responsive width, but this compact
+            // key display has no reason to stretch with it.
+            return Center(
+              child: SizedBox(
+                width: dialogCommonWidth,
+                child: key != null
+                    ? Wrap(
+                        spacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          for (final modifier in modifiers)
+                            KeyboardKeyBox(
+                              keyboardKey: modifier.physicalKeys.first,
+                            ),
+                          if (modifiers.isNotEmpty)
+                            Text('+', style: context.textTheme.titleMedium),
+                          KeyboardKeyBox(keyboardKey: PhysicalKeyboardKey(key)),
+                        ],
+                      )
+                    : Text(
+                        appLocalizations.pressKeyboard,
+                        textAlign: TextAlign.center,
+                        style: context.textTheme.titleMedium,
+                      ),
+              ),
             );
           },
         ),

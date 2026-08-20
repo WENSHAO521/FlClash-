@@ -561,11 +561,11 @@ class _PaletteDialogState extends State<_PaletteDialog> {
           child: Text(appLocalizations.confirm),
         ),
       ],
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(width: 300, child: Palette(controller: _controller)),
-        ],
+      // Centered rather than left-aligned: the dialog itself now stretches
+      // to the shared responsive width, but the color palette grid has a
+      // fixed preferred size and has no reason to stretch with it.
+      child: Center(
+        child: SizedBox(width: 300, child: Palette(controller: _controller)),
       ),
     );
   }

@@ -123,28 +123,25 @@ class _URLFormDialogState extends State<URLFormDialog> {
           child: Text(appLocalizations.submit),
         ),
       ],
-      child: SizedBox(
-        width: 300,
-        child: Wrap(
-          runSpacing: 16,
-          children: [
-            TextField(
-              keyboardType: TextInputType.url,
-              minLines: 1,
-              maxLines: 5,
-              inputFormatters: TextInputLimits.limit(TextInputLimits.url),
-              onSubmitted: (_) {
-                _handleAddProfileFormURL();
-              },
-              onEditingComplete: _handleAddProfileFormURL,
-              controller: _urlController,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: appLocalizations.url,
-              ),
+      child: Wrap(
+        runSpacing: 16,
+        children: [
+          TextField(
+            keyboardType: TextInputType.url,
+            minLines: 1,
+            maxLines: 5,
+            inputFormatters: TextInputLimits.limit(TextInputLimits.url),
+            onSubmitted: (_) {
+              _handleAddProfileFormURL();
+            },
+            onEditingComplete: _handleAddProfileFormURL,
+            controller: _urlController,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: appLocalizations.url,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

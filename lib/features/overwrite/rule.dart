@@ -261,6 +261,9 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
       title: widget.rule != null
           ? appLocalizations.editRule
           : appLocalizations.addRule,
+      // Action dropdown + content field + target dropdown + param chips —
+      // cramped at the ~560px default.
+      isLarge: true,
       actions: [
         TextButton(
           onPressed: _handleSubmit,
