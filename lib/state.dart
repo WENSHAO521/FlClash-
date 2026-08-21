@@ -213,8 +213,9 @@ class GlobalState {
                     ? AppParagraph(
                         message.toPlainText(),
                         selectable: true,
-                        style: Theme.of(context).textTheme.labelLarge
-                            ?.copyWith(height: 1.55),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.labelLarge?.copyWith(height: 1.55),
                       )
                     : SelectableText.rich(
                         TextSpan(

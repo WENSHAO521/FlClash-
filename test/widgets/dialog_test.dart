@@ -20,9 +20,7 @@ void main() {
   }) async {
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          viewSizeProvider.overrideWithBuild((_, _) => viewSize),
-        ],
+        overrides: [viewSizeProvider.overrideWithBuild((_, _) => viewSize)],
         child: MaterialApp(
           home: CommonDialog(
             title: title,
@@ -93,13 +91,11 @@ void main() {
                 (_, _) => const Size(1280, 800),
               ),
             ],
-            child: MaterialApp(
-              home: const CommonDialog(
+            child: const MaterialApp(
+              home: CommonDialog(
                 title: 'Title',
                 actions: [TextButton(onPressed: null, child: Text('OK'))],
-                child: TextField(
-                  decoration: InputDecoration(labelText: 'URL'),
-                ),
+                child: TextField(decoration: InputDecoration(labelText: 'URL')),
               ),
             ),
           ),

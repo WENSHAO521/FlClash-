@@ -78,24 +78,25 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
                 ? Icons.expand_more_rounded
                 : Icons.chevron_right_rounded,
           ),
-          style: IconButton.styleFrom(
-            minimumSize: const Size(44, 44),
-            foregroundColor: colorScheme.onSurfaceVariant,
-            backgroundColor: Colors.transparent,
-          ).copyWith(
-            overlayColor: WidgetStateProperty.resolveWith((states) {
-              if (states.contains(WidgetState.pressed)) {
-                return colorScheme.primary.withValues(alpha: 0.08);
-              }
-              if (states.contains(WidgetState.hovered)) {
-                return colorScheme.onSurface.withValues(alpha: 0.05);
-              }
-              if (states.contains(WidgetState.focused)) {
-                return colorScheme.primary.withValues(alpha: 0.06);
-              }
-              return Colors.transparent;
-            }),
-          ),
+          style:
+              IconButton.styleFrom(
+                minimumSize: const Size(44, 44),
+                foregroundColor: colorScheme.onSurfaceVariant,
+                backgroundColor: Colors.transparent,
+              ).copyWith(
+                overlayColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.pressed)) {
+                    return colorScheme.primary.withValues(alpha: 0.08);
+                  }
+                  if (states.contains(WidgetState.hovered)) {
+                    return colorScheme.onSurface.withValues(alpha: 0.05);
+                  }
+                  if (states.contains(WidgetState.focused)) {
+                    return colorScheme.primary.withValues(alpha: 0.06);
+                  }
+                  return Colors.transparent;
+                }),
+              ),
         );
       },
     );
