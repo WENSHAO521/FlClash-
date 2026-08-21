@@ -1,3 +1,33 @@
+## v3.3.12
+
+- Bump version to 3.3.12
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Replace deprecated withOpacity with withValues and fix const lint
+
+- Resolves deprecated_member_use warnings in SliderDefaultsM3 by
+
+- switching Color.withOpacity to Color.withValues(alpha:), and fixes
+
+- a prefer_const_constructors warning in dialog_test.dart. Also
+
+- includes dart format's reflow of lib/state.dart and
+
+- lib/views/proxies/tab.dart.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+- Redesign Dashboard connection-status control as compact glass badge
+
+- Replaces the flat solid-green success circle with an AppBar-scale
+
+- tinted status control (connected/connecting/disconnected) matching
+
+- the app's glass chrome, sized to sit naturally beside the edit action.
+
+- Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
 ## v3.3.11
 
 - Bump version to 3.3.11
