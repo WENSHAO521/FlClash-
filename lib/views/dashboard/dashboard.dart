@@ -57,94 +57,14 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   }
 
   List<Widget> _buildActions(bool isEdit) {
-    final appLocalizations = context.appLocalizations;
     return [
       if (!isEdit)
         Consumer(
           builder: (_, ref, _) {
             final coreStatus = ref.watch(coreStatusProvider);
-            return Tooltip(
-              message: appLocalizations.coreStatus,
-              child: FadeScaleBox(
-                alignment: Alignment.centerRight,
-                child: coreStatus == CoreStatus.connected
-                    ? IconButton.filled(
-                        visualDensity: VisualDensity.compact,
-                        iconSize: 20,
-                        padding: EdgeInsets.zero,
-                        style: IconButton.styleFrom(
-                          backgroundColor: context.colorScheme.statusConnected,
-                          foregroundColor: switch (Theme.brightnessOf(
-                            context,
-                          )) {
-                            Brightness.light =>
-                              context.colorScheme.onSurfaceVariant,
-                            Brightness.dark =>
-                              context.colorScheme.onPrimaryFixedVariant,
-                          },
-                        ),
-                        onPressed: _handleConnection,
-                        icon: const Icon(
-                          Icons.check,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      )
-                    : FilledButton.icon(
-                        key: ValueKey(coreStatus),
-                        onPressed: _handleConnection,
-                        style: FilledButton.styleFrom(
-                          visualDensity: VisualDensity.compact,
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          backgroundColor: switch (coreStatus) {
-                            CoreStatus.connecting => null,
-                            CoreStatus.connected =>
-                              context.colorScheme.statusConnected,
-                            CoreStatus.disconnected =>
-                              context.colorScheme.error,
-                          },
-                          foregroundColor: switch (coreStatus) {
-                            CoreStatus.connecting => null,
-                            CoreStatus.connected => switch (Theme.brightnessOf(
-                              context,
-                            )) {
-                              Brightness.light =>
-                                context.colorScheme.onSurfaceVariant,
-                              Brightness.dark => null,
-                            },
-                            CoreStatus.disconnected =>
-                              context.colorScheme.onError,
-                          },
-                        ),
-                        icon: SizedBox(
-                          height: globalState.measure.bodyMediumHeight,
-                          width: globalState.measure.bodyMediumHeight,
-                          child: switch (coreStatus) {
-                            CoreStatus.connecting => Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
-                                color: context.colorScheme.onPrimary,
-                                backgroundColor: Colors.transparent,
-                              ),
-                            ),
-                            CoreStatus.connected => const Icon(
-                              Icons.check_sharp,
-                              fontWeight: FontWeight.w900,
-                            ),
-                            CoreStatus.disconnected => const Icon(
-                              Icons.restart_alt_sharp,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          },
-                        ),
-                        label: Text(switch (coreStatus) {
-                          CoreStatus.connecting => appLocalizations.connecting,
-                          CoreStatus.connected => appLocalizations.connected,
-                          CoreStatus.disconnected =>
-                            appLocalizations.disconnected,
-                        }),
-                      ),
-              ),
+            return _ConnectionStatusBadge(
+              coreStatus: coreStatus,
+              onPressed: _handleConnection,
             );
           },
         ),
@@ -283,6 +203,167 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                     mainAxisSpacing: spacing,
                     children: children,
                   ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Compact AppBar-scale connection-status control shown beside the Dashboard
+/// edit action. Deliberately small (matches the neighbouring [IconButton]'s
+/// hit area) and tinted rather than solid-filled, so it reads as glass
+/// status chrome instead of a standalone success badge.
+class _ConnectionStatusBadge extends StatelessWidget {
+  static const double _hitSize = 44;
+  static const double _badgeSize = 40;
+
+  final CoreStatus coreStatus;
+  final VoidCallback onPressed;
+
+  const _ConnectionStatusBadge({
+    required this.coreStatus,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
+    final colorScheme = context.colorScheme;
+    final isDark = colorScheme.brightness == Brightness.dark;
+
+    final String tooltip;
+    final Color tint;
+    final double tintAlpha;
+    final BorderSide border;
+    final List<BoxShadow>? glow;
+    final Color iconColor;
+    final Widget icon;
+
+    switch (coreStatus) {
+      case CoreStatus.connected:
+        tooltip = appLocalizations.connected;
+        tint = colorScheme.statusConnected;
+        tintAlpha = isDark ? 0.14 : 0.10;
+        border = BorderSide(
+          color: colorScheme.statusConnected.withValues(
+            alpha: isDark ? 0.37 : 0.28,
+          ),
+        );
+        glow = [
+          BoxShadow(
+            color: colorScheme.statusConnected.withValues(
+              alpha: isDark ? 0.10 : 0.06,
+            ),
+            blurRadius: 14,
+            spreadRadius: 1,
+          ),
+        ];
+        iconColor = colorScheme.statusConnected;
+        icon = const Icon(Icons.check_rounded, size: 24);
+        break;
+      case CoreStatus.connecting:
+        tooltip = appLocalizations.connecting;
+        tint = colorScheme.statusWarning;
+        tintAlpha = isDark ? 0.14 : 0.10;
+        border = BorderSide(
+          color: colorScheme.statusWarning.withValues(
+            alpha: isDark ? 0.32 : 0.26,
+          ),
+        );
+        glow = null;
+        iconColor = colorScheme.statusWarning;
+        icon = SizedBox(
+          width: 18,
+          height: 18,
+          child: CircularProgressIndicator(
+            strokeWidth: 2.2,
+            color: colorScheme.statusWarning,
+          ),
+        );
+        break;
+      case CoreStatus.disconnected:
+        tooltip = appLocalizations.disconnected;
+        tint = colorScheme.onSurfaceVariant;
+        tintAlpha = isDark ? 0.10 : 0.08;
+        border = BorderSide(color: colorScheme.outlineVariant);
+        glow = null;
+        iconColor = colorScheme.onSurfaceVariant;
+        icon = const Icon(Icons.power_settings_new_rounded, size: 22);
+        break;
+    }
+
+    final isInteractive = coreStatus != CoreStatus.connecting;
+
+    return Tooltip(
+      message: tooltip,
+      child: Semantics(
+        label: '${appLocalizations.coreStatus}：$tooltip',
+        button: isInteractive,
+        child: SizedBox(
+          width: _hitSize,
+          height: _hitSize,
+          child: Material(
+            color: Colors.transparent,
+            shape: const CircleBorder(),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: isInteractive ? onPressed : null,
+              overlayColor: WidgetStateProperty.resolveWith((states) {
+                if (states.contains(WidgetState.pressed)) {
+                  return tint.withValues(alpha: 0.05);
+                }
+                if (states.contains(WidgetState.hovered) ||
+                    states.contains(WidgetState.focused)) {
+                  return tint.withValues(alpha: 0.08);
+                }
+                return null;
+              }),
+              child: Center(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 260),
+                  transitionBuilder: (child, animation) {
+                    final scale = TweenSequence<double>([
+                      TweenSequenceItem(
+                        tween: Tween(
+                          begin: 0.88,
+                          end: 1.04,
+                        ).chain(CurveTween(curve: Curves.easeOut)),
+                        weight: 60,
+                      ),
+                      TweenSequenceItem(
+                        tween: Tween(
+                          begin: 1.04,
+                          end: 1.0,
+                        ).chain(CurveTween(curve: Curves.easeIn)),
+                        weight: 40,
+                      ),
+                    ]).animate(animation);
+                    return FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(scale: scale, child: child),
+                    );
+                  },
+                  child: Container(
+                    key: ValueKey(coreStatus),
+                    width: _badgeSize,
+                    height: _badgeSize,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: tint.withValues(alpha: tintAlpha),
+                      border: Border.fromBorderSide(border),
+                      boxShadow: glow,
+                    ),
+                    child: Center(
+                      child: IconTheme.merge(
+                        data: IconThemeData(color: iconColor),
+                        child: icon,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
